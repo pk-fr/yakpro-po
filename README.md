@@ -74,10 +74,12 @@ Removes recursivly  target_directory/yakpro-po
 	if the library consist of functions:
 			set the $conf->obfuscate_function_name to false in your yakpro-po.cnf config file,
 			or declare all the functions names you are using in $conf->t_ignore_functions
+			
 	if the library consist of classes :
-			set the $conf->obfuscate_class_name, $conf->obfuscate_property_name, $conf->obfuscate_method_name to false
-			in your yakpro-po.cnf config file, or declare all the classes, properties, methods names you are using in
-			t_ignore_classes,t_ignore_properties,t_ignore_methods.
+			set the $conf->obfuscate_class_name, $conf->obfuscate_property_name, $conf->obfuscate_method_name
+			to false in your yakpro-po.cnf config file, or declare all the classes, properties, methods names
+			you are using in		t_ignore_classes,t_ignore_properties,t_ignore_methods.
 			
 	This is also true for PDO::FETCH_OBJ that retrieves properties from external source (i.e. database columns).
+	
 	
