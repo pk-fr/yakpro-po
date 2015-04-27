@@ -24,8 +24,8 @@ Recursivly obfuscates code to target_directory/yakpro-po (creates it if not alre
 According to config_file_path.
 
 `yakpro --clean`  
-Requires target_directory present  in config file!
-Removes recursivly  target_directory/yakpro-po
+Requires target_directory to be present in your config file!  
+Recursivly removes target_directory/yakpro-po
 
 
 ## Configuration file loading algorythm:
