@@ -10,7 +10,7 @@ coming soon....
 ## Usage:
 `yakpro-po`  
 Obfuscates according configuration file!  
-(See configuration file loading algorythm)
+(See configuration file loading algorithm)
 
 `yakpro-po source_filename`  
 Obfuscates code to stdout
@@ -29,7 +29,7 @@ Requires target_directory to be present in your config file!
 Recursivly removes target_directory/yakpro-po
 
 
-## Configuration file loading algorythm:
+## Configuration file loading algorithm:
 
 (the first found is used)  
 
