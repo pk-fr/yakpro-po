@@ -2,58 +2,58 @@
 // YAK Pro - Php Obfuscator: Config File
 // Do not delete the previous line! it's a magic string for config file!
 //========================================================================
-// Author:	Pascal KISSIAN
-// Resume:	http://pascal.kissian.net
+// Author:  Pascal KISSIAN
+// Resume:  http://pascal.kissian.net
 //
 // CopyRight (c) 2015 Pascal KISSIAN
 //
 // Published under the MIT License
-//			Consider it as a proof of concept!
-//			No warranty of any kind.
-//			Use and abuse at your own risks.
+//          Consider it as a proof of concept!
+//          No warranty of any kind.
+//          Use and abuse at your own risks.
 //========================================================================
 
-$conf->t_ignore_module_methods		= array('core', 'Exception', 'PDO');
+$conf->t_ignore_module_methods      = array('core', 'Exception', 'PDO');
 
-$conf->t_ignore_variables			= null;			// array where values are names to ignore.
-$conf->t_ignore_functions			= null;			// array where values are names to ignore.
-$conf->t_ignore_methods				= null;			// array where values are names to ignore.
-$conf->t_ignore_properties			= null;			// array where values are names to ignore.
-$conf->t_ignore_classes				= null;			// array where values are names to ignore.
+$conf->t_ignore_variables           = null;         // array where values are names to ignore.
+$conf->t_ignore_functions           = null;         // array where values are names to ignore.
+$conf->t_ignore_methods             = null;         // array where values are names to ignore.
+$conf->t_ignore_properties          = null;         // array where values are names to ignore.
+$conf->t_ignore_classes             = null;         // array where values are names to ignore.
 
-$conf->t_ignore_variables_prefix	= null;			// array where values are prefix of names to ignore.
-$conf->t_ignore_functions_prefix	= null;			// array where values are prefix of names to ignore.
-$conf->t_ignore_methods_prefix		= null;			// array where values are prefix of names to ignore.
-$conf->t_ignore_properties_prefix	= null;			// array where values are prefix of names to ignore.
-$conf->t_ignore_classes_prefix		= null;			// array where values are prefix of names to ignore.
-
-
-$conf->scramble_mode				= 'identifier';	// allowed modes are 'identifier', 'hexa', 'numeric'
-$conf->scramble_length				= 5;			// min length of scrambled names (min 	= 2; max 	= 16 for identifier, 32 for hexa and numeric)
-
-$conf->t_obfuscate_php_extension	= array('php');	// array where values are extensions of php files to be obfuscated.
-
-$conf->obfuscate_variable_name		= true;			// self explanatory
-$conf->obfuscate_function_name		= true;			// self explanatory
-$conf->obfuscate_class_name			= true;			// self explanatory
-$conf->obfuscate_property_name		= true;			// self explanatory
-$conf->obfuscate_method_name		= true;			// self explanatory
-
-$conf->strip_indentation			= true;			// all your obfuscated code will be generated on a single line
-$conf->abort_on_error				= true;			// self explanatory
-$conf->confirm						= true;			// rfu : will answer Y on confirmation request (reserved for future use ... or not...)
-$conf->silent						= false;		// display or not Information level messages.
+$conf->t_ignore_variables_prefix    = null;         // array where values are prefix of names to ignore.
+$conf->t_ignore_functions_prefix    = null;         // array where values are prefix of names to ignore.
+$conf->t_ignore_methods_prefix      = null;         // array where values are prefix of names to ignore.
+$conf->t_ignore_properties_prefix   = null;         // array where values are prefix of names to ignore.
+$conf->t_ignore_classes_prefix      = null;         // array where values are prefix of names to ignore.
 
 
-$conf->source_directory				= null;			// self explanatory
-$conf->target_directory				= null;			// self explanatory
+$conf->scramble_mode                = 'identifier'; // allowed modes are 'identifier', 'hexa', 'numeric'
+$conf->scramble_length              = 5;            // min length of scrambled names (min 	= 2; max 	= 16 for identifier, 32 for hexa and numeric)
 
-$conf->t_keep						= null;			// array of directory or file pathnames, to keep 'as is' (i.e. not obfuscate.)
-$conf->t_skip						= null;			// array of directory or file pathnames, to skip when exploring source tree structure ... they will not be on target!
+$conf->t_obfuscate_php_extension    = array('php'); // array where values are extensions of php files to be obfuscated.
 
-$conf->user_comment					= null;			// user comment to insert inside each obfuscated file
+$conf->obfuscate_variable_name      = true;         // self explanatory
+$conf->obfuscate_function_name      = true;         // self explanatory
+$conf->obfuscate_class_name         = true;         // self explanatory
+$conf->obfuscate_property_name      = true;         // self explanatory
+$conf->obfuscate_method_name        = true;         // self explanatory
 
-$conf->extract_comment_from_line	= null;			// when both 2 are set, each obfuscated file will contain an extract of the corresponding source file,
-$conf->extract_comment_to_line		= null;			// starting from extract_comment_from_line number, and endng at extract_comment_to_line line number.
+$conf->strip_indentation            = true;         // all your obfuscated code will be generated on a single line
+$conf->abort_on_error               = true;         // self explanatory
+$conf->confirm                      = true;         // rfu : will answer Y on confirmation request (reserved for future use ... or not...)
+$conf->silent                       = false;        // display or not Information level messages.
+
+
+$conf->source_directory             = null;         // self explanatory
+$conf->target_directory             = null;         // self explanatory
+
+$conf->t_keep                       = null;         // array of directory or file pathnames, to keep 'as is' (i.e. not obfuscate.)
+$conf->t_skip                       = null;         // array of directory or file pathnames, to skip when exploring source tree structure ... they will not be on target!
+
+$conf->user_comment                 = null;         // user comment to insert inside each obfuscated file
+
+$conf->extract_comment_from_line    = null;         // when both 2 are set, each obfuscated file will contain an extract of the corresponding source file,
+$conf->extract_comment_to_line      = null;         // starting from extract_comment_from_line number, and endng at extract_comment_to_line line number.
 
 ?>
