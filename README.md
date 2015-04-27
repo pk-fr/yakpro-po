@@ -34,14 +34,14 @@ Recursivly removes target_directory/yakpro-po
 (the first found is used)  
 
     --config-file argument value
-    YAKPRO_PO_CONFIG_FILE environnement variable value if exist and not empty.
+    YAKPRO_PO_CONFIG_FILE environnement variable value if exists and not empty.
     
     filename selection:
- 	       YAKPRO_PO_CONFIG_FILENAME environnement variable value if exist and not empty.
+ 	       YAKPRO_PO_CONFIG_FILENAME environnement variable value if exists and not empty.
 	       yakpro-po.cnf
 	 
 	 file is then searched in the following directories:
-		    YAKPRO_PO_CONFIG_DIRECTORY  environnement variable value if exist and not empty
+		    YAKPRO_PO_CONFIG_DIRECTORY  environnement variable value if exists and not empty
 		    current_working_directory
 		    current_working_directory/config
 		    home_directory
