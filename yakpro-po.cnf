@@ -54,6 +54,6 @@ $conf->t_skip                       = null;         // array of directory or fil
 $conf->user_comment                 = null;         // user comment to insert inside each obfuscated file
 
 $conf->extract_comment_from_line    = null;         // when both 2 are set, each obfuscated file will contain an extract of the corresponding source file,
-$conf->extract_comment_to_line      = null;         // starting from extract_comment_from_line number, and endng at extract_comment_to_line line number.
+$conf->extract_comment_to_line      = null;         // starting from extract_comment_from_line number, and ending at extract_comment_to_line line number.
 
 ?>
