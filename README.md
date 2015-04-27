@@ -10,7 +10,7 @@ coming soon....
 ## Usage:
 `yakpro-po`  
 Obfuscates according configuration file!  
-(see Configuration file loading algorythm)
+(See configuration file loading algorythm)
 
 `yakpro-po source_filename`  
 Obfuscates code to stdout
