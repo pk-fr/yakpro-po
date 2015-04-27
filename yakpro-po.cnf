@@ -39,7 +39,7 @@ $conf->obfuscate_class_name			= true;			// self explanatory
 $conf->obfuscate_property_name		= true;			// self explanatory
 $conf->obfuscate_method_name		= true;			// self explanatory
 
-$conf->strip_indentation			= true;
+$conf->strip_indentation			= true;			// all your obfuscated code will be generated on a single line
 $conf->abort_on_error				= true;			// self explanatory
 $conf->confirm						= true;			// rfu : will answer Y on confirmation request (reserved for future use ... or not...)
 $conf->silent						= false;		// display or not Information level messages.
