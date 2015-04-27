@@ -54,22 +54,30 @@ Removes recursivly  target_directory/yakpro-po
  	  Do not modify it directly because it will be overwritten at each update!
  	  Use your own yakpro-po.cnf file (for example in the root directory of your project)
  	  
- 	  When working on directories, context is saved in order to reuse the same obfuscation translation table.
+ 	  When working on directories,
+ 	  context is saved in order to reuse the same obfuscation translation table.
  	  When you make some changes in one or several source files,
- 	  yakpro-po uses timestamps to only reobfuscate files that where changed since last obfuscation.
+ 	  yakpro-po uses timestamps to only reobfuscate files that where changed
+ 	  since last obfuscation.
  	  This can saves you a lot of time.
  	  
- 	  caveats: does not delete files that are no more present... use --clean and then re-obfuscate all!
+ 	  caveats: does not delete files that are no more present...
+ 	           use --clean  command line parameter, and then re-obfuscate all!
 
 ## Other command line options:
 
    
 ## YOU MUST BE AWARE OF:
-	If your obfuscated software makes use of external libraries that you do not obfuscate along with your software:
-		if the library consist of functions:
+	If your obfuscated software makes use of external libraries
+	that you do not obfuscate along with your software:
+	
+	if the library consist of functions:
 			set the $conf->obfuscate_function_name to false in your yakpro-po.cnf config file,
 			or declare all the functions names you are using in $conf->t_ignore_functions
-		if the library consist of classes :
-			set the $conf->obfuscate_class_name, $conf->obfuscate_property_name, $conf->obfuscate_method_name to false in your yakpro-po.cnf config file,
-			or declare all the classes, properties, methods names you are using in t_ignore_classes,t_ignore_properties,t_ignore_methods.
-		This is also true for PDO::FETCH_OBJ that retrieves properties from external source (i.e. databas columns).
+	if the library consist of classes :
+			set the $conf->obfuscate_class_name, $conf->obfuscate_property_name, $conf->obfuscate_method_name to false
+			in your yakpro-po.cnf config file, or declare all the classes, properties, methods names you are using in
+			t_ignore_classes,t_ignore_properties,t_ignore_methods.
+			
+	This is also true for PDO::FETCH_OBJ that retrieves properties from external source (i.e. database columns).
+	
