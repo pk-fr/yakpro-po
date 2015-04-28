@@ -29,7 +29,7 @@ $conf->t_ignore_classes_prefix      = null;         // array where values are pr
 
 
 $conf->scramble_mode                = 'identifier'; // allowed modes are 'identifier', 'hexa', 'numeric'
-$conf->scramble_length              = 5;            // min length of scrambled names (min 	= 2; max 	= 16 for identifier, 32 for hexa and numeric)
+$conf->scramble_length              = 5;            // min length of scrambled names (min = 2; max = 16 for identifier, 32 for hexa and numeric)
 
 $conf->t_obfuscate_php_extension    = array('php'); // array where values are extensions of php files to be obfuscated.
 
