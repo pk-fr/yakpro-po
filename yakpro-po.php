@@ -91,9 +91,9 @@ class Scrambler
     private $scramble_type          = null;     // type on which scrambling is done (i.e. variable, function, etc.)
     private $case_sensitive         = null;     // self explanatory
     private $scramble_mode          = null;     // allowed modes are 'identifier', 'hexa', 'numeric'
-    private	$scramble_length        = null;     // current length of scrambled names
-    private	$scramble_length_min    = null;     // min     length of scrambled names
-    private	$scramble_length_max    = null;     // max     length of scrambled names
+    private $scramble_length        = null;     // current length of scrambled names
+    private $scramble_length_min    = null;     // min     length of scrambled names
+    private $scramble_length_max    = null;     // max     length of scrambled names
     private $t_ignore               = null;     // array where keys are names to ignore.
     private $t_ignore_prefix        = null;     // array where keys are prefix of names to ignore.
     private $t_scramble             = null;     // array of scrambled items (key = source name , value = scrambled name)
