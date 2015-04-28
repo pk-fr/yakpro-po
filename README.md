@@ -5,7 +5,25 @@
 This tool makes use of [PHP-Parser](https://github.com/nikic/PHP-Parser) for parsing php.  
 You just have to download the zip archive and uncompress it under the PHP-Parser subdirectory.
 
-coming soon....
+The yakpro-po.cnf self-documented file contains many many configuration options!  
+Take a look at it!
+
+## Installation:
+    put the downloaded files where you want...
+    	chmod a+x yakpro-po.php     would be helpfull...
+    
+    It would be a good idea to create a symbolic link named yakpro-po in /usr/local/bin,
+    pointing to the yakpro-po.php file.
+    
+    put the PHP-Parser directory at the same level that the yakpro-po.php file.
+    
+    modify a copy of the yakpro-po.cnf to fit your needs...
+    read the "Configuration file loading algorithm" section of this document
+    to choose the best location suiting your needs!
+    
+    that's it! you're done!
+    
+    
 
 ## Usage:
 `yakpro-po`  
@@ -114,5 +132,11 @@ Recursivly removes target_directory/yakpro-po
     Do not use indirect variable names!
     	$$my_var = something;
     or put all the variable names you use indirectly in the $conf->t_ignore_variables array!
+     
     
+    Do not use PDO::FETCH_OBJ  but use PDO::FETCH_ASSOC instead!
+    or disable properties obfuscation in the config file.
+    
+    
+   
     
