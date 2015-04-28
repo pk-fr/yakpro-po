@@ -5,7 +5,7 @@
 This tool makes use of [PHP-Parser](https://github.com/nikic/PHP-Parser) for parsing php.  
 You just have to download the zip archive and uncompress it under the PHP-Parser subdirectory.
 
-The yakpro-po.cnf self-documented file contains many many configuration options!  
+The yakpro-po.cnf self-documented file contains many configuration options!  
 Take a look at it!
 
 ## Installation:
@@ -106,7 +106,7 @@ Recursivly removes target_directory/yakpro-po
 			
 	This is also true for PDO::FETCH_OBJ that retrieves properties from external source (i.e. database columns).
 	
-## Hints for preparing your Software to be run obfuscated ##
+## Hints for preparing your Software to be run obfuscated
     
     At first you can test obfuscating only variable names...
     
@@ -139,4 +139,5 @@ Recursivly removes target_directory/yakpro-po
     
     
    
-    
+## TODO
+	obfuscation of namespaces, interfaces, traits is not yet supported!
