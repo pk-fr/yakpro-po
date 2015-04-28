@@ -1,3 +1,4 @@
+Published under the MIT License
 
 Copyright (c) 2015 Pascal KISSIAN
 
