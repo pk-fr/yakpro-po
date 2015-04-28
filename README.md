@@ -66,7 +66,12 @@ Recursivly removes target_directory/yakpro-po
  	           use --clean  command line parameter, and then re-obfuscate all!
 
 ## Other command line options:
-
+    --silent                do not display Information level messages.
+    --debug                 (internal debugging use) displays the syntax tree.
+    -s or
+    --no-strip-indentation  force output not to be on a single line
+    --scramble-mode identifier (or hexa or numeric) force scramble mode
+    
    
 ## YOU MUST BE AWARE OF:
 	If your obfuscated software makes use of external libraries
@@ -83,4 +88,31 @@ Recursivly removes target_directory/yakpro-po
 			
 	This is also true for PDO::FETCH_OBJ that retrieves properties from external source (i.e. database columns).
 	
-	
+## Hints for preparing your Software to be run obfuscated ##
+    
+    At first you can test obfuscating only variable names...
+    
+    
+    If you obfuscate functions, do not use:
+        if (!function_exists('my_function'))
+        {
+        	function my_function () { ... }
+    	}
+    Instead use:
+    	require_once "my_functions.php"
+    and put your functions in the my_function.php file.
+    If you do not do this way, the function name my_function will be obfuscated,
+    but not the 'my_function' string within the function_exists call...
+    
+    
+    If you obfuscate functions, do not use indirect function calls like
+    	$my_var = 'my_function';
+    	$my_var();
+    or put all the function names you call indirectly in the $conf->t_ignore_functions array!
+    
+    
+    Do not use indirect variable names!
+    	$$my_var = something;
+    or put all the variable names you use indirectly in the $conf->t_ignore_variables array!
+    
+    
