@@ -8,6 +8,8 @@ You just have to download the zip archive and uncompress it under the PHP-Parser
 The yakpro-po.cnf self-documented file contains many configuration options!  
 Take a look at it!
 
+Prerequisites:  php 5.3 or higher, [PHP-Parser](https://github.com/nikic/PHP-Parser).
+
 ## Installation:
     put the downloaded files where you want...
     	chmod a+x yakpro-po.php     would be helpfull...
