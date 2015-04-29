@@ -23,7 +23,7 @@ require_once 'PHP-Parser/lib/bootstrap.php';
 
 class Config
 {
-    public $t_ignore_module_methods		= array('core', 'Exception', 'PDO');	// array where values are internal known module names.
+    public $t_ignore_module_methods     = array('core', 'Exception', 'PDO');	// array where values are internal known module names.
 
     public $t_ignore_variables          = null;         // array where values are names to ignore.
     public $t_ignore_functions          = null;         // array where values are names to ignore.
@@ -598,7 +598,7 @@ function obfuscate($filename)                   // takes a filepath as input, re
         if (isset($conf->extract_comment_from_line) && isset($conf->extract_comment_to_line) )
         {
             $t_source = file($filename);
-            for($i=$conf->extract_comment_from_line;$i<=$conf->extract_comment_to_line;++$i) $code .= $t_source[$i].PHP_EOL;
+            for($i=$conf->extract_comment_from_line-1;$i<$conf->extract_comment_to_line;++$i) $code .= $t_source[$i];
         }
         if (isset($conf->user_comment))
         {
@@ -682,7 +682,7 @@ function confirm($str)                                  // self-explanatory not 
     }
 }
 
-function obfuscate_directory($source_dir,$target_dir)   // self-explanatory recursive obfuscation
+function obfuscate_directory($source_dir,$target_dir,$keep_mode=false)   // self-explanatory recursive obfuscation
 {
     global $conf;
 
@@ -697,6 +697,8 @@ function obfuscate_directory($source_dir,$target_dir)   // self-explanatory recu
     {
         if ($entry == "." || $entry == "..")    continue;
 
+        $new_keep_mode = $keep_mode;
+        
         $source_path = "$source_dir/$entry";    $source_stat = @lstat($source_path);
         $target_path = "$target_dir/$entry";    $target_stat = @lstat($target_path);
         if ($source_stat===false)
@@ -740,7 +742,8 @@ function obfuscate_directory($source_dir,$target_dir)   // self-explanatory recu
                 }
             }
             if (!file_exists($target_path)) mkdir($target_path,0777, true);
-            obfuscate_directory($source_path,$target_path);
+            if (isset($conf->t_keep) && is_array($conf->t_keep) && in_array($source_path,$conf->t_keep))    $new_keep_mode = true;
+            obfuscate_directory($source_path,$target_path,$new_keep_mode);
             continue;
         }
         if(is_file($source_path))
@@ -750,24 +753,26 @@ function obfuscate_directory($source_dir,$target_dir)   // self-explanatory recu
 
             $extension  = pathinfo($source_path,PATHINFO_EXTENSION);
 
-            $keep = true;
-            if ( in_array($extension,$conf->t_obfuscate_php_extension) )
+            $keep = $keep_mode;
+            if (isset($conf->t_keep) && is_array($conf->t_keep) && in_array($source_path,$conf->t_keep))    $keep = true;
+            if (!in_array($extension,$conf->t_obfuscate_php_extension) )                                    $keep = true;
+            
+            if ($keep)
             {
-                if (isset($conf->t_keep) && is_array($conf->t_keep) && in_array($source_path,$conf->t_keep))    $keep = true;
-                else
+                file_put_contents($target_path,file_get_contents($source_path));
+            }
+            else
+            {
+                $obfuscated_str =  obfuscate($source_path);
+                if ($obfuscated_str===null)
                 {
-                    $keep = false;
-                    $obfuscated_str =  obfuscate($source_path);
-                    if ($obfuscated_str===null)
+                    if (isset($conf->abort_on_error))
                     {
-                        if (isset($conf->abort_on_error))
-                        {
-                            fprintf(STDERR, "Aborting...%s",PHP_EOL);
-                            exit;
-                        }
+                        fprintf(STDERR, "Aborting...%s",PHP_EOL);
+                        exit;
                     }
-                    file_put_contents($target_path,$obfuscated_str.PHP_EOL);
                 }
+                file_put_contents($target_path,$obfuscated_str.PHP_EOL);
             }
             if ($keep) file_put_contents($target_path,file_get_contents($source_path));
             touch($target_path,$source_stat['mtime']);
