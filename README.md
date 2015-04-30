@@ -13,7 +13,7 @@ Prerequisites:  php 5.3 or higher, [PHP-Parser](https://github.com/nikic/PHP-Par
 
 Published under the MIT License
 
-## Installation:
+## Setup:
     put the downloaded files where you want...
         chmod a+x yakpro-po.php     would be helpfull...
 
