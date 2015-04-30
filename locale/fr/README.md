@@ -53,7 +53,7 @@ Exécutera une obfuscation récursive du code vers le répertoire répertoire_ci
 `yakpro-po --config-file chemin_du_fichier_de_config`  
 Permet de spécifier un fichier de config.
 
-`yakpro --clean`  
+`yakpro-po --clean`  
 Le répertoire cible doit être renseigné dans le fichier de configuration!  
 Supprime récursivement le répertoire répertoire_cible/yakpro-po
 
@@ -97,7 +97,7 @@ Supprime récursivement le répertoire répertoire_cible/yakpro-po
 
 ## Autre options de la ligne de commande :
     --silent                   ommet l'affichage des messages de niveau Information.
-    --debug                    (utilisation interne pour le debug) affichage l'arbe syntaxique.
+    --debug                    (utilisation interne pour le debug) affichage de l'arbre syntaxique.
     -s ou
     --no-strip-indentation     force la sortie à ne pas être sur une seule ligne.
     --scramble-mode identifier (ou hexa ou numeric) force le scramble mode.
