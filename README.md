@@ -27,9 +27,9 @@ Published under the MIT License
     
     that's it! you're done!
     
-    
-
+####
 ## Usage:
+
 `yakpro-po`  
 Obfuscates according configuration file!  
 (See configuration file loading algorithm)
@@ -52,7 +52,6 @@ Recursivly removes target_directory/yakpro-po
 
 
 ## Configuration file loading algorithm:
-
 (the first found is used)  
 
     --config-file argument value
@@ -93,7 +92,8 @@ Recursivly removes target_directory/yakpro-po
     -s or
     --no-strip-indentation  force output not to be on a single line
     --scramble-mode identifier (or hexa or numeric) force scramble mode
-    
+
+####    
    
 ## YOU MUST BE AWARE OF:
 	If your obfuscated software makes use of external libraries
