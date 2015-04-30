@@ -2,10 +2,11 @@
 
 **YAK Pro** stands for **Y**et **A**nother **K**iller **Pro**duct.
 
-This tool makes use of [PHP-Parser](https://github.com/nikic/PHP-Parser) for parsing php.
-You just have to download the zip archive and uncompress it under the PHP-Parser subdirectory.
+This tool makes use of [PHP-Parser](https://github.com/nikic/PHP-Parser) for parsing php.  
+You just have to download the zip archive and uncompress it under the PHP-Parser subdirectory.  
+or make a git clone ...
 
-The yakpro-po.cnf self-documented file contains many configuration options!
+The yakpro-po.cnf self-documented file contains many configuration options!  
 Take a look at it!
 
 Prerequisites:  php 5.3 or higher, [PHP-Parser](https://github.com/nikic/PHP-Parser).
@@ -31,24 +32,24 @@ Published under the MIT License
 
 ## Usage:
 
-`yakpro-po`
-Obfuscates according configuration file!
+`yakpro-po`  
+Obfuscates according configuration file!  
 (See configuration file loading algorithm)
 
-`yakpro-po source_filename`
-Obfuscates code to stdout
+`yakpro-po source_filename`  
+Obfuscates code to stdout  
 
-`yakpro-po source_filename -o target_filename`
-Obfuscates code to target_filename
+`yakpro-po source_filename -o target_filename`  
+Obfuscates code to target_filename  
 
-`yakpro-po source_directory -o target_directory`
+`yakpro-po source_directory -o target_directory`  
 Recursivly obfuscates code to target_directory/yakpro-po (creates it if not already exists).
 
-`yakpro-po --config-file config_file_path`
+`yakpro-po --config-file config_file_path`  
 According to config_file_path.
 
-`yakpro --clean`
-Requires target_directory to be present in your config file!
+`yakpro --clean`  
+Requires target_directory to be present in your config file!  
 Recursivly removes target_directory/yakpro-po
 
 
