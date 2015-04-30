@@ -99,6 +99,7 @@ class Scrambler
     private $t_scramble             = null;     // array of scrambled items (key = source name , value = scrambled name)
     private $t_rscramble            = null;     // array of reversed scrambled items (key = scrambled name, value = source name)
     private $context_directory      = null;     // where to save/restore context
+    private $silent                 = null;     // display or not Information level messages.
 
     private $t_reserved_variable_names = array('this', '_SERVER', '_POST', '_GET', '_REQUEST', '_COOKIE','_SESSION', '_ENV', '_FILES');
     private $t_reserved_function_names = array( '__halt_compiler','__autoload', 'abstract', 'and', 'array', 'as', 'bool', 'break', 'callable', 'case', 'catch',
@@ -130,6 +131,7 @@ class Scrambler
         $this->t_chars              = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_';
         $this->r                    = md5(microtime(true));     // random seed
         $this->t_scramble           = array();
+        $this->silent               = $conf->silent;
         if (isset($conf->scramble_mode))
         {
             switch($conf->scramble_mode)
@@ -266,6 +268,7 @@ class Scrambler
         if (isset($this->context_directory))    // the desstructor will save the current context
         {
             file_put_contents("{$this->context_directory}/yakpro-po/context/{$this->scramble_type}",serialize(array($this->t_scramble,$this->t_rscramble)));
+            if (!$this->silent) fprintf(STDERR,"Info:\t[%-8s] scrambled \t= %7d%s",$this->scramble_type,sizeof($this->t_scramble),PHP_EOL);
         }
     }
 
@@ -798,6 +801,22 @@ $yakpro_po_dirname      = $t_yakpro_po_pathinfo['dirname'];
 $config_filename        = '';
 $process_mode           = '';	// can be: 'file' or 'directory'
 
+$pos = array_search('-h',$t_args); if (!isset($pos) || ($pos===false)) $pos = array_search('--help',$t_args);
+if (isset($pos) && ($pos!==false) )
+{
+    $lang = '';
+    if (($x = getenv('LANG'))!==false) $s = strtolower($x); $x = explode('_',$x); $x = $x[0];
+         if (file_exists("$yakpro_po_dirname/locale/$x/README.md"))  $help = file_get_contents("$yakpro_po_dirname/locale/$x/README.md");
+    else if (file_exists("$yakpro_po_dirname/README.md"))            $help = file_get_contents("$yakpro_po_dirname/README.md");
+    else $help = "Help File not found!";
+
+    $pos    = stripos($help,'####');    if ($pos!==false) $help = substr($help,$pos+strlen('####'));
+    $pos    = stripos($help,'####');    if ($pos!==false) $help = substr($help,0,$pos);
+    $help   = trim(str_replace(array('## ','`'),array('',''),$help));
+    echo "$help".PHP_EOL;
+    exit;
+}
+
 $pos = array_search('--config-file',$t_args);
 if ( isset($pos) && ($pos!==false) && isset($t_args[$pos+1]) )
 {
@@ -912,7 +931,7 @@ switch(count($t_args))
                 if ( ($target_file!=='') && file_exists($target_file) )
                 {
                     $x = realpath($target_file);
-                    if ($is_dir($x))
+                    if (is_dir($x))
                     {
                         fprintf(STDERR,"Error:\tTarget file [%s] is a directory!%s", ($x!==false) ? $x : $target_file,PHP_EOL);
                         exit(-1);
@@ -984,11 +1003,11 @@ $parser             = new PhpParser\Parser(new PhpParser\Lexer\Emulative);      
 $traverser          = new PhpParser\NodeTraverser;
 $prettyPrinter      = new PhpParser\PrettyPrinter\Standard;
 
-$FunctionScrambler  = new Scrambler('function',$conf, ($process_mode=='directory') ? $target_directory : null);
 $VariableScrambler  = new Scrambler('variable',$conf, ($process_mode=='directory') ? $target_directory : null);
-$ClassScrambler     = new Scrambler('class',   $conf, ($process_mode=='directory') ? $target_directory : null);
-$PropertyScrambler  = new Scrambler('property',$conf, ($process_mode=='directory') ? $target_directory : null);
+$FunctionScrambler  = new Scrambler('function',$conf, ($process_mode=='directory') ? $target_directory : null);
 $MethodScrambler    = new Scrambler('method',  $conf, ($process_mode=='directory') ? $target_directory : null);
+$PropertyScrambler  = new Scrambler('property',$conf, ($process_mode=='directory') ? $target_directory : null);
+$ClassScrambler     = new Scrambler('class',   $conf, ($process_mode=='directory') ? $target_directory : null);
 
 $traverser->addVisitor(new MyNodeVisitor);
 
