@@ -154,6 +154,13 @@ Recursivly removes target_directory/yakpro-po
     or disable properties obfuscation in the config file.
 
 
+    If you use the define function for defining constants, the only allowed form is when
+    define function has exactly 2 arguments, and the first one is a litteral string!
+    You MUST disable constants obfuscation in the config file,
+    if you use other forms of the define function!
+    There is no probleme with the const MY_CONT = something form!
+
+
 
 ## TODO
     obfuscation of namespaces, interfaces, traits is not yet supported!
