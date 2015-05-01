@@ -16,7 +16,6 @@ require_once 'PHP-Parser/lib/bootstrap.php';
 
 // case-sensitive:      variable names, constant name, array keys, class properties
 // case-insensitive:    function names, class names, class method names, namespaces, keywords and constructs
-// Warning: You must not use define function with case insensitive param as true !! disable constant obfuscationg if you use it!
 
 // when we use the word ignore, that means that it is ignored during the obfuscation process (i.e. not obfuscated)
 
