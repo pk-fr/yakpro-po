@@ -164,6 +164,15 @@ Supprime récursivement le répertoire répertoire_cible/yakpro-po
     ou alors désactivez l'obfuscation des attributs dans le fichier de configuration.
 
 
+    Si vous utilisez la fonction define pour définir des constantes, la seule forme autorisée
+    est lorsque la fonction define est utilisée avec exactement 2 arguments,
+    et que le premier argument est une chaine de caractères !
+    Vous DEVEZ désactiver l'obfuscation des constantes dans le fichier de configuration
+    si vous utilisez la fonction define autrement !
+    Il n'y a aucune restriction si vous utilisez la construction :
+        const MA_CONSTANTE = quelque_chose;
+
+
 
 ## TODO
     L'obfuscation des  namespaces, interfaces, traits n'est pas encore implémentée!
