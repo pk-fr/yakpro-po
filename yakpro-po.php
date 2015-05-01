@@ -16,6 +16,7 @@ require_once 'PHP-Parser/lib/bootstrap.php';
 
 // case-sensitive:      variable names, constant name, array keys, class properties
 // case-insensitive:    function names, class names, class method names, namespaces, keywords and constructs
+// Warning: You must not use define function with case insensitive param as true !! disable constant obfuscationg if you use it!
 
 // when we use the word ignore, that means that it is ignored during the obfuscation process (i.e. not obfuscated)
 
@@ -25,12 +26,14 @@ class Config
 {
     public $t_ignore_module_methods     = array('core', 'Exception', 'PDO');	// array where values are internal known module names.
 
+    public $t_ignore_constants          = null;         // array where values are names to ignore.
     public $t_ignore_variables          = null;         // array where values are names to ignore.
     public $t_ignore_functions          = null;         // array where values are names to ignore.
     public $t_ignore_methods            = null;         // array where values are names to ignore.
     public $t_ignore_properties         = null;         // array where values are names to ignore.
     public $t_ignore_classes            = null;         // array where values are names to ignore.
 
+    public $t_ignore_constants_prefix   = null;         // array where values are prefix of names to ignore.
     public $t_ignore_variables_prefix   = null;         // array where values are prefix of names to ignore.
     public $t_ignore_functions_prefix   = null;         // array where values are prefix of names to ignore.
     public $t_ignore_methods_prefix     = null;         // array where values are prefix of names to ignore.
@@ -44,6 +47,7 @@ class Config
 
     public $t_obfuscate_php_extension   = array('php');
 
+    public $obfuscate_constant_name     = true;         // self explanatory
     public $obfuscate_variable_name     = true;         // self explanatory
     public $obfuscate_function_name     = true;         // self explanatory
     public $obfuscate_class_name        = true;         // self explanatory
@@ -167,6 +171,21 @@ class Scrambler
         }
         switch($type)
         {
+            case 'constant':
+                $this->case_sensitive       = true;
+                $this->t_ignore             = array_flip($this->t_reserved_function_names);
+                $this->t_ignore             = array_merge($this->t_ignore,get_defined_constants(false));
+                if (isset($conf->t_ignore_constants))
+                {
+                    $t                      = $conf->t_ignore_constants;                $t = array_flip($t);
+                    $this->t_ignore         = array_merge($this->t_ignore,$t);
+                }
+                if (isset($conf->t_ignore_constants_prefix))
+                {
+                    $t                      = $conf->t_ignore_constants_prefix;         $t = array_flip($t);
+                    $this->t_ignore_prefix  = $t;
+                }
+                break;
             case 'variable':
                 $this->case_sensitive       = true;
                 $this->t_ignore             = array_flip($this->t_reserved_variable_names);
@@ -341,12 +360,15 @@ class MyNodeVisitor extends PhpParser\NodeVisitorAbstract       // all parsing a
     public function enterNode(PhpParser\Node $node)
     {
         global $conf;
+        global $ConstantScrambler;
         global $VariableScrambler;
         global $FunctionScrambler;
         global $ClassScrambler;
         global $PropertyScrambler;
         global $MethodScrambler;
 
+        $node_modified = false;
+        
         if ($conf->obfuscate_variable_name && (($node instanceof PhpParser\Node\Expr\Variable) || ($node instanceof PhpParser\Node\Stmt\StaticVar) || ($node instanceof PhpParser\Node\Param)) )
         {
             $name = $node->name;
@@ -356,7 +378,7 @@ class MyNodeVisitor extends PhpParser\NodeVisitorAbstract       // all parsing a
                 if ($r!==$name)
                 {
                     $node->name = $r;
-                    return $node;
+                    $node_modified = true;
                 }
             }
         }
@@ -370,7 +392,7 @@ class MyNodeVisitor extends PhpParser\NodeVisitorAbstract       // all parsing a
                 if ($r!==$name)
                 {
                     $node->name = $r;
-                    return $node;
+                    $node_modified = true;
                 }
             }
         }
@@ -386,7 +408,7 @@ class MyNodeVisitor extends PhpParser\NodeVisitorAbstract       // all parsing a
                     if ($r!==$name)
                     {
                         $node->name = $r;
-                        return $node;
+                        $node_modified = true;
                     }
                 }
             }
@@ -400,7 +422,7 @@ class MyNodeVisitor extends PhpParser\NodeVisitorAbstract       // all parsing a
                     if ($r!==$name)
                     {
                         $node->class->parts[count($parts)-1] = $r;
-                        return $node;
+                        $node_modified = true;
                     }
                 }
             }
@@ -417,7 +439,7 @@ class MyNodeVisitor extends PhpParser\NodeVisitorAbstract       // all parsing a
                     if ($r!==$name)
                     {
                         $node->name = $r;
-                        return $node;
+                        $node_modified = true;
                     }
                 }
             }
@@ -433,7 +455,7 @@ class MyNodeVisitor extends PhpParser\NodeVisitorAbstract       // all parsing a
                         if ($r!==$name)
                         {
                             $node->name->parts[count($parts)-1] = $r;
-                            return $node;
+                            $node_modified = true;
                         }
                     }
                 }
@@ -453,7 +475,7 @@ class MyNodeVisitor extends PhpParser\NodeVisitorAbstract       // all parsing a
                     if ($r!==$name)
                     {
                         $node->name = $r;
-                        return $node;
+                        $node_modified = true;
                     }
                 }
             }
@@ -486,7 +508,7 @@ class MyNodeVisitor extends PhpParser\NodeVisitorAbstract       // all parsing a
                     }
                 }
             }
-            return $node;
+            $node_modified = true;
         }
 
         if ($node instanceof PhpParser\Node\Expr\StaticPropertyFetch)
@@ -516,7 +538,7 @@ class MyNodeVisitor extends PhpParser\NodeVisitorAbstract       // all parsing a
                     }
                 }
             }
-            return $node;
+            $node_modified = true;
         }
 
         if ($node instanceof PhpParser\Node\Stmt\Catch_)
@@ -546,8 +568,70 @@ class MyNodeVisitor extends PhpParser\NodeVisitorAbstract       // all parsing a
                     }
                 }
             }
-            return $node;
+            $node_modified = true;
         }
+
+        if ($conf->obfuscate_constant_name)
+        {
+            if ($node instanceof PhpParser\Node\Expr\FuncCall)      // processing define('constant_name',value);
+            {
+                if (isset($node->name->parts))                      // not set when indirect call (i.e.function name is a variable value!)
+                {
+                    $parts = $node->name->parts;
+                    $name  = $parts[count($parts)-1];
+                    if ( is_string($name) && ($name=='define') )
+                    {
+                        for($ok=false;;)
+                        {
+                            if (!isset($node->args[0]->value))      break;
+                            if (count($node->args)!=2)              break;
+                            $arg = $node->args[0]->value;           if (! ($arg instanceof PhpParser\Node\Scalar\String_) ) break;
+                            $name = $arg->value;                    if (! is_string($name) || (strlen($name) == 0) )        break;
+                            $ok     = true;
+                            $r = $ConstantScrambler->scramble($name);
+                            if ($r!==$name)
+                            {
+                                $arg->value = $r;
+                                $node_modified = true;
+                            }
+                            break;
+                        }
+                        if (!$ok)
+                        {
+                            throw new Exception("Error: your use of define() function is not compatible with yakpro-po!".PHP_EOL."\tOnly 2 paremeters, when first ia a string is allowed...");
+                        }
+                    }
+                }
+            }
+            if ($node instanceof PhpParser\Node\Expr\ConstFetch)
+            {
+                $parts = $node->name->parts;
+                $name  = $parts[count($parts)-1];
+                if ( is_string($name) && (strlen($name) !== 0) )
+                {
+                    $r = $ConstantScrambler->scramble($name);
+                    if ($r!==$name)
+                    {
+                        $node->name->parts[count($parts)-1] = $r;
+                        $node_modified = true;
+                    }
+                }
+            }
+            if ($node instanceof PhpParser\Node\Const_)
+            {
+                $name = $node->name;
+                if ( is_string($name) && (strlen($name) !== 0) )
+                {
+                    $r = $ConstantScrambler->scramble($name);
+                    if ($r!==$name)
+                    {
+                        $node->name = $r;
+                        $node_modified = true;
+                    }
+                }
+            }
+        }
+        if ($node_modified) return $node;
     }
 /*
     Not used yet...
@@ -612,7 +696,7 @@ function obfuscate($filename)                   // takes a filepath as input, re
     }
     catch (Exception $e)
     {
-        fprintf(STDERR,"Obfuscator Parse Error [%s]: %s%s", $filename, $e->getMessage(),PHP_EOL);
+        fprintf(STDERR,"Obfuscator Parse Error [%s]:%s\t%s%s", $filename,PHP_EOL, $e->getMessage(),PHP_EOL);
         return null;
     }
 }
@@ -1003,6 +1087,7 @@ $parser             = new PhpParser\Parser(new PhpParser\Lexer\Emulative);      
 $traverser          = new PhpParser\NodeTraverser;
 $prettyPrinter      = new PhpParser\PrettyPrinter\Standard;
 
+$ConstantScrambler  = new Scrambler('constant',$conf, ($process_mode=='directory') ? $target_directory : null);
 $VariableScrambler  = new Scrambler('variable',$conf, ($process_mode=='directory') ? $target_directory : null);
 $FunctionScrambler  = new Scrambler('function',$conf, ($process_mode=='directory') ? $target_directory : null);
 $MethodScrambler    = new Scrambler('method',  $conf, ($process_mode=='directory') ? $target_directory : null);
