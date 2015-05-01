@@ -15,12 +15,14 @@
 
 $conf->t_ignore_module_methods      = array('core', 'Exception', 'PDO');
 
+$conf->t_ignore_constants           = null;         // array where values are names to ignore.
 $conf->t_ignore_variables           = null;         // array where values are names to ignore.
 $conf->t_ignore_functions           = null;         // array where values are names to ignore.
 $conf->t_ignore_methods             = null;         // array where values are names to ignore.
 $conf->t_ignore_properties          = null;         // array where values are names to ignore.
 $conf->t_ignore_classes             = null;         // array where values are names to ignore.
 
+$conf->t_ignore_constants_prefix    = null;         // array where values are names to ignore.
 $conf->t_ignore_variables_prefix    = null;         // array where values are prefix of names to ignore.
 $conf->t_ignore_functions_prefix    = null;         // array where values are prefix of names to ignore.
 $conf->t_ignore_methods_prefix      = null;         // array where values are prefix of names to ignore.
@@ -33,6 +35,7 @@ $conf->scramble_length              = 5;            // min length of scrambled n
 
 $conf->t_obfuscate_php_extension    = array('php'); // array where values are extensions of php files to be obfuscated.
 
+$conf->obfuscate_constant_name      = true;         // self explanatory
 $conf->obfuscate_variable_name      = true;         // self explanatory
 $conf->obfuscate_function_name      = true;         // self explanatory
 $conf->obfuscate_class_name         = true;         // self explanatory
