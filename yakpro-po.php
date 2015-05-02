@@ -368,42 +368,14 @@ class MyNodeVisitor extends PhpParser\NodeVisitorAbstract       // all parsing a
 
         $node_modified = false;
         
-        if ($conf->obfuscate_variable_name && (($node instanceof PhpParser\Node\Expr\Variable) || ($node instanceof PhpParser\Node\Stmt\StaticVar) || ($node instanceof PhpParser\Node\Param)) )
+        if ($conf->obfuscate_variable_name)
         {
-            $name = $node->name;
-            if ( is_string($name) && (strlen($name) !== 0) )
-            {
-                $r = $VariableScrambler->scramble($name);
-                if ($r!==$name)
-                {
-                    $node->name = $r;
-                    $node_modified = true;
-                }
-            }
-        }
-
-        if ($conf->obfuscate_property_name && (($node instanceof PhpParser\Node\Expr\PropertyFetch) || ($node instanceof PhpParser\Node\Stmt\PropertyProperty)) )
-        {
-            $name = $node->name;
-            if ( is_string($name) && (strlen($name) !== 0) )
-            {
-                $r = $PropertyScrambler->scramble($name);
-                if ($r!==$name)
-                {
-                    $node->name = $r;
-                    $node_modified = true;
-                }
-            }
-        }
-
-        if ($conf->obfuscate_class_name)
-        {
-            if ($node instanceof PhpParser\Node\Stmt\Class_)
+            if ( ($node instanceof PhpParser\Node\Expr\Variable) || ($node instanceof PhpParser\Node\Stmt\StaticVar) || ($node instanceof PhpParser\Node\Param) )
             {
                 $name = $node->name;
                 if ( is_string($name) && (strlen($name) !== 0) )
                 {
-                    $r = $ClassScrambler->scramble($name);
+                    $r = $VariableScrambler->scramble($name);
                     if ($r!==$name)
                     {
                         $node->name = $r;
@@ -411,16 +383,15 @@ class MyNodeVisitor extends PhpParser\NodeVisitorAbstract       // all parsing a
                     }
                 }
             }
-            if ($node instanceof PhpParser\Node\Expr\New_ )
+            if ($node instanceof PhpParser\Node\Stmt\Catch_)
             {
-                $parts = $node->class->parts;
-                $name  = $parts[count($parts)-1];
-                if ( is_string($name) && (strlen($name) !== 0) )
-                {
-                    $r = $ClassScrambler->scramble($name);
+                $name = $node->{'var'};                             // equivalent to $node->var, that works also on my php version!
+                if ( is_string($name) && (strlen($name) !== 0) )    // but 'var' is a reserved function name, so there is no warranty
+                {                                                   // that it will work in the future, so the $node->{'var'} form
+                    $r = $VariableScrambler->scramble($name);       // has been used!
                     if ($r!==$name)
                     {
-                        $node->class->parts[count($parts)-1] = $r;
+                        $node->{'var'} = $r;
                         $node_modified = true;
                     }
                 }
@@ -461,11 +432,72 @@ class MyNodeVisitor extends PhpParser\NodeVisitorAbstract       // all parsing a
             }
         }
 
+        if ($conf->obfuscate_class_name)
+        {
+            if ($node instanceof PhpParser\Node\Stmt\Class_)
+            {
+                $name = $node->name;
+                if ( is_string($name) && (strlen($name) !== 0) )
+                {
+                    $r = $ClassScrambler->scramble($name);
+                    if ($r!==$name)
+                    {
+                        $node->name = $r;
+                        $node_modified = true;
+                    }
+                }
+            }
+            if ( ($node instanceof PhpParser\Node\Expr\New_) || ($node instanceof PhpParser\Node\Expr\StaticCall) || ($node instanceof PhpParser\Node\Expr\StaticPropertyFetch) )
+            {
+                $parts = $node->class->parts;
+                $name  = $parts[count($parts)-1];
+                if ( is_string($name) && (strlen($name) !== 0) )
+                {
+                    $r = $ClassScrambler->scramble($name);
+                    if ($r!==$name)
+                    {
+                        $node->class->parts[count($parts)-1] = $r;
+                        $node_modified = true;
+                    }
+                }
+            }
+            if ($node instanceof PhpParser\Node\Stmt\Catch_)
+            {
+                $parts = $node->type->parts;
+                $name  = $parts[count($parts)-1];
+                if ( is_string($name) && (strlen($name) !== 0) )
+                {
+                    $r = $ClassScrambler->scramble($name);
+                    if ($r!==$name)
+                    {
+                        $node->class->parts[count($parts)-1] = $r;
+                        $node_modified = true;
+                    }
+                }
+            }
+        }
+        
+
+        if ($conf->obfuscate_property_name)
+        {
+            if ( ($node instanceof PhpParser\Node\Expr\PropertyFetch) || ($node instanceof PhpParser\Node\Stmt\PropertyProperty) || ($node instanceof PhpParser\Node\Expr\StaticPropertyFetch) )
+            {
+                $name = $node->name;
+                if ( is_string($name) && (strlen($name) !== 0) )
+                {
+                    $r = $PropertyScrambler->scramble($name);
+                    if ($r!==$name)
+                    {
+                        $node->name = $r;
+                        $node_modified = true;
+                    }
+                }
+            }
+        }
+
         if ($conf->obfuscate_method_name)
         {
-            if (   ($node instanceof PhpParser\Node\Stmt\ClassMethod)
-                || ($node instanceof PhpParser\Node\Expr\MethodCall )
-            )
+            if ( ($node instanceof PhpParser\Node\Stmt\ClassMethod) || ($node instanceof PhpParser\Node\Expr\MethodCall) || ($node instanceof PhpParser\Node\Expr\StaticCall) )
             {
                 $name = $node->name;
                 if ( is_string($name) && (strlen($name) !== 0) )
@@ -478,96 +510,6 @@ class MyNodeVisitor extends PhpParser\NodeVisitorAbstract       // all parsing a
                     }
                 }
             }
-        }
-
-        if ($node instanceof PhpParser\Node\Expr\StaticCall)
-        {
-            if ($conf->obfuscate_class_name)
-            {
-                $parts = $node->class->parts;
-                $name  = $parts[count($parts)-1];
-                if ( is_string($name) && (strlen($name) !== 0) )
-                {
-                    $r = $ClassScrambler->scramble($name);
-                    if ($r!==$name)
-                    {
-                        $node->class->parts[count($parts)-1] = $r;
-                    }
-                }
-            }
-            if ($conf->obfuscate_method_name)
-            {
-                $name = $node->name;
-                if ( is_string($name) && (strlen($name) !== 0) )
-                {
-                    $r = $MethodScrambler->scramble($name);
-                    if ($r!==$name)
-                    {
-                        $node->name = $r;
-                    }
-                }
-            }
-            $node_modified = true;
-        }
-
-        if ($node instanceof PhpParser\Node\Expr\StaticPropertyFetch)
-        {
-            if ($conf->obfuscate_class_name)
-            {
-                $parts = $node->class->parts;
-                $name  = $parts[count($parts)-1];
-                if ( is_string($name) && (strlen($name) !== 0) )
-                {
-                    $r = $ClassScrambler->scramble($name);
-                    if ($r!==$name)
-                    {
-                        $node->class->parts[count($parts)-1] = $r;
-                    }
-                }
-            }
-            if ($conf->obfuscate_property_name)
-            {
-                $name = $node->name;
-                if ( is_string($name) && (strlen($name) !== 0) )
-                {
-                    $r = $PropertyScrambler->scramble($name);
-                    if ($r!==$name)
-                    {
-                        $node->name = $r;
-                    }
-                }
-            }
-            $node_modified = true;
-        }
-
-        if ($node instanceof PhpParser\Node\Stmt\Catch_)
-        {
-            if ($conf->obfuscate_class_name)
-            {
-                $parts = $node->type->parts;
-                $name  = $parts[count($parts)-1];
-                if ( is_string($name) && (strlen($name) !== 0) )
-                {
-                    $r = $ClassScrambler->scramble($name);
-                    if ($r!==$name)
-                    {
-                        $node->class->parts[count($parts)-1] = $r;
-                    }
-                }
-            }
-            if ($conf->obfuscate_variable_name)
-            {
-                $name = $node->{'var'};                             // equivalent to $node->var, that works also on my php version!
-                if ( is_string($name) && (strlen($name) !== 0) )    // but 'var' is a reserved function name, so there is no warranty
-                {                                                   // that it will work in the future, so the $node->{'var'} form
-                    $r = $VariableScrambler->scramble($name);       // has been used!
-                    if ($r!==$name)
-                    {
-                        $node->{'var'} = $r;
-                    }
-                }
-            }
-            $node_modified = true;
         }
 
         if ($conf->obfuscate_constant_name)
@@ -1086,12 +1028,12 @@ $parser             = new PhpParser\Parser(new PhpParser\Lexer\Emulative);      
 $traverser          = new PhpParser\NodeTraverser;
 $prettyPrinter      = new PhpParser\PrettyPrinter\Standard;
 
-$ConstantScrambler  = new Scrambler('constant',$conf, ($process_mode=='directory') ? $target_directory : null);
 $VariableScrambler  = new Scrambler('variable',$conf, ($process_mode=='directory') ? $target_directory : null);
 $FunctionScrambler  = new Scrambler('function',$conf, ($process_mode=='directory') ? $target_directory : null);
 $MethodScrambler    = new Scrambler('method',  $conf, ($process_mode=='directory') ? $target_directory : null);
 $PropertyScrambler  = new Scrambler('property',$conf, ($process_mode=='directory') ? $target_directory : null);
 $ClassScrambler     = new Scrambler('class',   $conf, ($process_mode=='directory') ? $target_directory : null);
+$ConstantScrambler  = new Scrambler('constant',$conf, ($process_mode=='directory') ? $target_directory : null);
 
 $traverser->addVisitor(new MyNodeVisitor);
 
