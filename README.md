@@ -197,7 +197,7 @@ Recursivly removes target_directory/yakpro-po
     define function has exactly 2 arguments, and the first one is a litteral string!
     You MUST disable constants obfuscation in the config file, if you use any other forms
     of the define function!
-    There is no probleme with the const MY_CONST = something; form!
+    There is no problem with the const MY_CONST = something; form!
 
 
 
