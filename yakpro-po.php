@@ -31,6 +31,7 @@ class Config
     public $t_ignore_methods            = null;         // array where values are names to ignore.
     public $t_ignore_properties         = null;         // array where values are names to ignore.
     public $t_ignore_classes            = null;         // array where values are names to ignore.
+    public $t_ignore_namespaces         = null;         // array where values are names to ignore.
 
     public $t_ignore_constants_prefix   = null;         // array where values are prefix of names to ignore.
     public $t_ignore_variables_prefix   = null;         // array where values are prefix of names to ignore.
@@ -38,6 +39,7 @@ class Config
     public $t_ignore_methods_prefix     = null;         // array where values are prefix of names to ignore.
     public $t_ignore_properties_prefix  = null;         // array where values are prefix of names to ignore.
     public $t_ignore_classes_prefix     = null;         // array where values are prefix of names to ignore.
+    public $t_ignore_namespaces_prefix  = null;         // array where values are prefix of names to ignore.
 
 
 
@@ -52,6 +54,7 @@ class Config
     public $obfuscate_class_name        = true;         // self explanatory
     public $obfuscate_property_name     = true;         // self explanatory
     public $obfuscate_method_name       = true;         // self explanatory
+    public $obfuscate_namespace_name    = true;         // self explanatory
 
     public $strip_indentation           = true;         // all your obfuscated code will be generated on a single line
     public $abort_on_error              = true;         // self explanatory
@@ -268,6 +271,20 @@ class Scrambler
                     $this->t_ignore_prefix  = $t;
                 }
                 break;
+            case 'namespace':
+                $this->case_sensitive       = false;
+                $this->t_ignore             = array_flip($this->t_reserved_function_names);
+                if (isset($conf->t_ignore_namespaces))
+                {
+                    $t                      = $conf->t_ignore_namespaces;                $t = array_flip($t);
+                    $this->t_ignore         = array_merge($this->t_ignore,$t);
+                }
+                if (isset($conf->t_ignore_namespaces_prefix))
+                {
+                    $t                      = $conf->t_ignore_namespaces_prefix;         $t = array_flip($t);
+                    $this->t_ignore_prefix  = $t;
+                }
+                break;
         }
         if (isset($target_directory))           // the constructor will restore previous saved context if exists
         {
@@ -283,7 +300,7 @@ class Scrambler
 
     function __destruct()
     {
-        if (!$this->silent) fprintf(STDERR,"Info:\t[%-8s] scrambled \t: %7d%s",$this->scramble_type,sizeof($this->t_scramble),PHP_EOL);
+        if (!$this->silent) fprintf(STDERR,"Info:\t[%-9s] scrambled \t: %7d%s",$this->scramble_type,sizeof($this->t_scramble),PHP_EOL);
         if (isset($this->context_directory))    // the desstructor will save the current context
         {
             file_put_contents("{$this->context_directory}/yakpro-po/context/{$this->scramble_type}",serialize(array($this->t_scramble,$this->t_rscramble)));
@@ -359,23 +376,19 @@ class MyNodeVisitor extends PhpParser\NodeVisitorAbstract       // all parsing a
     public function enterNode(PhpParser\Node $node)
     {
         global $conf;
-        global $ConstantScrambler;
-        global $VariableScrambler;
-        global $FunctionScrambler;
-        global $ClassScrambler;
-        global $PropertyScrambler;
-        global $MethodScrambler;
+        global $t_scrambler;
 
         $node_modified = false;
         
         if ($conf->obfuscate_variable_name)
         {
+            $scrambler = $t_scrambler['variable'];
             if ( ($node instanceof PhpParser\Node\Expr\Variable) || ($node instanceof PhpParser\Node\Stmt\StaticVar) || ($node instanceof PhpParser\Node\Param) )
             {
                 $name = $node->name;
                 if ( is_string($name) && (strlen($name) !== 0) )
                 {
-                    $r = $VariableScrambler->scramble($name);
+                    $r = $scrambler->scramble($name);
                     if ($r!==$name)
                     {
                         $node->name = $r;
@@ -388,7 +401,7 @@ class MyNodeVisitor extends PhpParser\NodeVisitorAbstract       // all parsing a
                 $name = $node->{'var'};                             // equivalent to $node->var, that works also on my php version!
                 if ( is_string($name) && (strlen($name) !== 0) )    // but 'var' is a reserved function name, so there is no warranty
                 {                                                   // that it will work in the future, so the $node->{'var'} form
-                    $r = $VariableScrambler->scramble($name);       // has been used!
+                    $r = $scrambler->scramble($name);               // has been used!
                     if ($r!==$name)
                     {
                         $node->{'var'} = $r;
@@ -400,12 +413,13 @@ class MyNodeVisitor extends PhpParser\NodeVisitorAbstract       // all parsing a
 
         if ($conf->obfuscate_function_name)
         {
+            $scrambler = $t_scrambler['function'];
             if ($node instanceof PhpParser\Node\Stmt\Function_)
             {
                 $name = $node->name;
                 if ( is_string($name) && (strlen($name) !== 0) )
                 {
-                    $r = $FunctionScrambler->scramble($name);
+                    $r = $scrambler->scramble($name);
                     if ($r!==$name)
                     {
                         $node->name = $r;
@@ -421,7 +435,7 @@ class MyNodeVisitor extends PhpParser\NodeVisitorAbstract       // all parsing a
                     $name  = $parts[count($parts)-1];
                     if ( is_string($name) && (strlen($name) !== 0) )
                     {
-                        $r = $FunctionScrambler->scramble($name);
+                        $r = $scrambler->scramble($name);
                         if ($r!==$name)
                         {
                             $node->name->parts[count($parts)-1] = $r;
@@ -434,12 +448,13 @@ class MyNodeVisitor extends PhpParser\NodeVisitorAbstract       // all parsing a
 
         if ($conf->obfuscate_class_name)
         {
+            $scrambler = $t_scrambler['class'];
             if ($node instanceof PhpParser\Node\Stmt\Class_)
             {
                 $name = $node->name;
                 if ( is_string($name) && (strlen($name) !== 0) )
                 {
-                    $r = $ClassScrambler->scramble($name);
+                    $r = $scrambler->scramble($name);
                     if ($r!==$name)
                     {
                         $node->name = $r;
@@ -453,7 +468,7 @@ class MyNodeVisitor extends PhpParser\NodeVisitorAbstract       // all parsing a
                 $name  = $parts[count($parts)-1];
                 if ( is_string($name) && (strlen($name) !== 0) )
                 {
-                    $r = $ClassScrambler->scramble($name);
+                    $r = $scrambler->scramble($name);
                     if ($r!==$name)
                     {
                         $node->class->parts[count($parts)-1] = $r;
@@ -467,7 +482,7 @@ class MyNodeVisitor extends PhpParser\NodeVisitorAbstract       // all parsing a
                 $name  = $parts[count($parts)-1];
                 if ( is_string($name) && (strlen($name) !== 0) )
                 {
-                    $r = $ClassScrambler->scramble($name);
+                    $r = $scrambler->scramble($name);
                     if ($r!==$name)
                     {
                         $node->class->parts[count($parts)-1] = $r;
@@ -480,12 +495,13 @@ class MyNodeVisitor extends PhpParser\NodeVisitorAbstract       // all parsing a
 
         if ($conf->obfuscate_property_name)
         {
+            $scrambler = $t_scrambler['property'];
             if ( ($node instanceof PhpParser\Node\Expr\PropertyFetch) || ($node instanceof PhpParser\Node\Stmt\PropertyProperty) || ($node instanceof PhpParser\Node\Expr\StaticPropertyFetch) )
             {
                 $name = $node->name;
                 if ( is_string($name) && (strlen($name) !== 0) )
                 {
-                    $r = $PropertyScrambler->scramble($name);
+                    $r = $scrambler->scramble($name);
                     if ($r!==$name)
                     {
                         $node->name = $r;
@@ -497,12 +513,13 @@ class MyNodeVisitor extends PhpParser\NodeVisitorAbstract       // all parsing a
 
         if ($conf->obfuscate_method_name)
         {
+            $scrambler = $t_scrambler['method'];
             if ( ($node instanceof PhpParser\Node\Stmt\ClassMethod) || ($node instanceof PhpParser\Node\Expr\MethodCall) || ($node instanceof PhpParser\Node\Expr\StaticCall) )
             {
                 $name = $node->name;
                 if ( is_string($name) && (strlen($name) !== 0) )
                 {
-                    $r = $MethodScrambler->scramble($name);
+                    $r = $scrambler->scramble($name);
                     if ($r!==$name)
                     {
                         $node->name = $r;
@@ -514,6 +531,7 @@ class MyNodeVisitor extends PhpParser\NodeVisitorAbstract       // all parsing a
 
         if ($conf->obfuscate_constant_name)
         {
+            $scrambler = $t_scrambler['constant'];
             if ($node instanceof PhpParser\Node\Expr\FuncCall)      // processing define('constant_name',value);
             {
                 if (isset($node->name->parts))                      // not set when indirect call (i.e.function name is a variable value!)
@@ -529,7 +547,7 @@ class MyNodeVisitor extends PhpParser\NodeVisitorAbstract       // all parsing a
                             $arg = $node->args[0]->value;           if (! ($arg instanceof PhpParser\Node\Scalar\String_) ) break;
                             $name = $arg->value;                    if (! is_string($name) || (strlen($name) == 0) )        break;
                             $ok     = true;
-                            $r = $ConstantScrambler->scramble($name);
+                            $r = $scrambler->scramble($name);
                             if ($r!==$name)
                             {
                                 $arg->value = $r;
@@ -550,7 +568,7 @@ class MyNodeVisitor extends PhpParser\NodeVisitorAbstract       // all parsing a
                 $name  = $parts[count($parts)-1];
                 if ( is_string($name) && (strlen($name) !== 0) )
                 {
-                    $r = $ConstantScrambler->scramble($name);
+                    $r = $scrambler->scramble($name);
                     if ($r!==$name)
                     {
                         $node->name->parts[count($parts)-1] = $r;
@@ -563,7 +581,7 @@ class MyNodeVisitor extends PhpParser\NodeVisitorAbstract       // all parsing a
                 $name = $node->name;
                 if ( is_string($name) && (strlen($name) !== 0) )
                 {
-                    $r = $ConstantScrambler->scramble($name);
+                    $r = $scrambler->scramble($name);
                     if ($r!==$name)
                     {
                         $node->name = $r;
@@ -571,6 +589,11 @@ class MyNodeVisitor extends PhpParser\NodeVisitorAbstract       // all parsing a
                     }
                 }
             }
+        }
+        
+        if ($conf->obfuscate_namespace_name)
+        {
+            $scrambler = $t_scrambler['namespace'];
         }
         if ($node_modified) return $node;
     }
@@ -1028,12 +1051,11 @@ $parser             = new PhpParser\Parser(new PhpParser\Lexer\Emulative);      
 $traverser          = new PhpParser\NodeTraverser;
 $prettyPrinter      = new PhpParser\PrettyPrinter\Standard;
 
-$VariableScrambler  = new Scrambler('variable',$conf, ($process_mode=='directory') ? $target_directory : null);
-$FunctionScrambler  = new Scrambler('function',$conf, ($process_mode=='directory') ? $target_directory : null);
-$MethodScrambler    = new Scrambler('method',  $conf, ($process_mode=='directory') ? $target_directory : null);
-$PropertyScrambler  = new Scrambler('property',$conf, ($process_mode=='directory') ? $target_directory : null);
-$ClassScrambler     = new Scrambler('class',   $conf, ($process_mode=='directory') ? $target_directory : null);
-$ConstantScrambler  = new Scrambler('constant',$conf, ($process_mode=='directory') ? $target_directory : null);
+$t_scrambler = array();
+foreach(array('variable','function','method','property','class','constant','namespace') as $dummy => $scramble_what)
+{
+    $t_scrambler[$scramble_what] = new Scrambler($scramble_what, $conf, ($process_mode=='directory') ? $target_directory : null);
+}
 
 $traverser->addVisitor(new MyNodeVisitor);
 
