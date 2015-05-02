@@ -21,6 +21,7 @@ $conf->t_ignore_functions           = null;         // array where values are na
 $conf->t_ignore_methods             = null;         // array where values are names to ignore.
 $conf->t_ignore_properties          = null;         // array where values are names to ignore.
 $conf->t_ignore_classes             = null;         // array where values are names to ignore.
+$conf->t_ignore_namespaces          = null;         // array where values are names to ignore.
 
 $conf->t_ignore_constants_prefix    = null;         // array where values are names to ignore.
 $conf->t_ignore_variables_prefix    = null;         // array where values are prefix of names to ignore.
@@ -28,6 +29,7 @@ $conf->t_ignore_functions_prefix    = null;         // array where values are pr
 $conf->t_ignore_methods_prefix      = null;         // array where values are prefix of names to ignore.
 $conf->t_ignore_properties_prefix   = null;         // array where values are prefix of names to ignore.
 $conf->t_ignore_classes_prefix      = null;         // array where values are prefix of names to ignore.
+$conf->t_ignore_namespaces_prefix   = null;         // array where values are prefix of names to ignore.
 
 
 $conf->scramble_mode                = 'identifier'; // allowed modes are 'identifier', 'hexa', 'numeric'
@@ -41,6 +43,7 @@ $conf->obfuscate_function_name      = true;         // self explanatory
 $conf->obfuscate_class_name         = true;         // self explanatory
 $conf->obfuscate_property_name      = true;         // self explanatory
 $conf->obfuscate_method_name        = true;         // self explanatory
+$conf->obfuscate_namespace_name     = true;         // self explanatory
 
 $conf->strip_indentation            = true;         // all your obfuscated code will be generated on a single line
 $conf->abort_on_error               = true;         // self explanatory
