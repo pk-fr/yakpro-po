@@ -14,6 +14,51 @@ Pré-requis:  php 5.3 ou supérieur, [PHP-Parser](https://github.com/nikic/PHP-P
 
 Publié sous les termes de la licence MIT.
 
+## Qu'est-ce qu'un Obfuscateur Php ?
+
+Lorsque vous désirez distribuer un projet écrit en php, comme php est un langage interprété,
+vous distribuez aussi tous les sources de votre logiciel !
+
+Il se peut que vous ne désiriez pas, quelle qu'en soit la raison, que d'autres personnes comprennent le
+fonctionnement, modifient ou bien adaptent votre logiciel.
+
+Comme votre programme doit pouvoir être compris par **l'interprète php**, mais doit rester
+incompréhensible (ou bien très difficilement compréhensible) par les personnes humaines,
+l'obfuscation est un très bon moyen de parvenir à vos fins.
+
+### Principales fonctionnalités de YAK Pro - Php Obfuscator :
+
+- Supprime tous les commentaires, les indentations et génère un programme sur une seule ligne.
+- Génère des noms aléatoires pour :
+  - Les Variables.
+  - Les Fonctions.
+  - Les Constantes.
+  - Les Classes.
+  - Les Attributs.
+  - Les Méthodes.
+- Obfusque récursivement le répertoire d'un projet.
+- Un mécanisme de type Makefile, basé sur l'horodatage des fichiers, permet de ne re-obfusquer que les fichiers
+ayant été modifiés depuis la dernière obfuscation.
+- De nombreuses options de configuration vous permettent d'avoir un **contrôle total** sur ce qui est
+obfusqué dans votre projet !
+
+
+### Pourquoi un Obfuscateur php de plus ?
+J'ai commencé par tester quelques outils d'obfuscation php, mais je n'en ai trouvé aucun qui répondait
+à tous mes besoins.  
+Je voulais un outil sous la forme d'une **simple** ligne de commande, basé sur un fichier de configuration
+**personnalisable à l'extrème**, qui :
+- Serait rapide, et ne re-obfusquerait que les fichiers ayant été modifiés depuis la dernière obfuscation.
+- Permettrait de ne pas obfusquer certains fichiers et/ou répertoires.
+- Permettrait de ne pas inclure dans le résultat de l'obfuscation, certains fichiers et/ou répertoires
+qui existent dans le source du projet.
+- Accepterait des listes de noms ou de préfixes de noms à ne pas obfusquer.
+
+J'ai donc commencé à écrire cet outil.  
+La version 1.0 a été écrite en quelques jours...   
+Veuillez vous attendre à de multiples évolutions...
+
+
 ## Installation :
     Placez l'arborescence téléchargée (ou faites un git clone ...)  ou vous voulez ...
 
