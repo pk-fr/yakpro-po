@@ -26,15 +26,15 @@ to understand by human people, obfuscation is a very good way to achieve this go
 ### YAK Pro - Php Obfuscator Obfuscation Main Features:  
 
 - Removes all comments, indentation, and generates a single line program file.
-- Scrambles :
-  - Variable names.
-  - Function names.
-  - Constant names.
-  - Class names.
-  - Property names.
-  - Method names.
+- Scramble names for:
+  - Variables.
+  - Functions.
+  - Constants.
+  - Classes.
+  - Properties.
+  - Methods.
 - Recursivly obfuscates a project's directory.
-- Makefile like, timestamps based mechanism, to re-obfuscate only files thaht were changed since last obfuscation.
+- Makefile like, timestamps based mechanism, to re-obfuscate only files that were changed since last obfuscation.
 - Many configuration options thats let you have **full control** of what is obfuscated within your project!
 
 
@@ -42,7 +42,7 @@ to understand by human people, obfuscation is a very good way to achieve this go
 I began testing some already existing php obfuscation tools, but I did'nt found one that whas
 fitting all my needs.  
 I wanted a **simple** command line tool, based on a **highly customisable** config file, that would be able to:
-- Be fast and re-obfuscate only files that were changed based on timestamps of file.
+- Be fast and re-obfuscates only files that were changed based on timestamps of file.
 - Preserve some files and/or directories from obfuscation.
 - Do not include in the obfuscated target, some files/directories that are present on the source project.
 - Accept lists of names and/or name prefixes to not obfuscate.
@@ -53,19 +53,19 @@ Expect many improvements to come...
 
 
 ## Setup:
-    put the downloaded files where you want...
+    Put the downloaded files where you want...
         chmod a+x yakpro-po.php     would be helpfull...
 
     It would be a good idea to create a symbolic link named yakpro-po in /usr/local/bin,
     pointing to the yakpro-po.php file.
 
-    put the PHP-Parser directory at the same level that the yakpro-po.php file.
+    Put the PHP-Parser directory at the same level that the yakpro-po.php file.
 
-    modify a copy of the yakpro-po.cnf to fit your needs...
-    read the "Configuration file loading algorithm" section of this document
+    Modify a copy of the yakpro-po.cnf to fit your needs...
+    Read the "Configuration file loading algorithm" section of this document
     to choose the best location suiting your needs!
 
-    that's it! you're done!
+    That's it! You're done!
 
 ####
 
@@ -195,8 +195,8 @@ Recursivly removes target_directory/yakpro-po
 
     If you use the define function for defining constants, the only allowed form is when
     define function has exactly 2 arguments, and the first one is a litteral string!
-    You MUST disable constants obfuscation in the config file,
-    if you use any other forms of the define function!
+    You MUST disable constants obfuscation in the config file, if you use any other forms
+    of the define function!
     There is no probleme with the const MY_CONST = something; form!
 
 
