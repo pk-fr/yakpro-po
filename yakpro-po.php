@@ -283,10 +283,10 @@ class Scrambler
 
     function __destruct()
     {
+        if (!$this->silent) fprintf(STDERR,"Info:\t[%-8s] scrambled \t: %7d%s",$this->scramble_type,sizeof($this->t_scramble),PHP_EOL);
         if (isset($this->context_directory))    // the desstructor will save the current context
         {
             file_put_contents("{$this->context_directory}/yakpro-po/context/{$this->scramble_type}",serialize(array($this->t_scramble,$this->t_rscramble)));
-            if (!$this->silent) fprintf(STDERR,"Info:\t[%-8s] scrambled \t= %7d%s",$this->scramble_type,sizeof($this->t_scramble),PHP_EOL);
         }
     }
 
