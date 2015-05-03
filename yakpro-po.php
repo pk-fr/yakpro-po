@@ -16,6 +16,7 @@ require_once 'PHP-Parser/lib/bootstrap.php';
 
 // case-sensitive:      variable names, constant name, array keys, class properties
 // case-insensitive:    function names, class names, class method names, namespaces, keywords and constructs
+// classes, interfaces, and traits share the same internal naming_space! only a single Scrambler instance for all of them!
 
 // when we use the word ignore, that means that it is ignored during the obfuscation process (i.e. not obfuscated)
 
@@ -31,6 +32,8 @@ class Config
     public $t_ignore_methods            = null;         // array where values are names to ignore.
     public $t_ignore_properties         = null;         // array where values are names to ignore.
     public $t_ignore_classes            = null;         // array where values are names to ignore.
+    public $t_ignore_interfaces         = null;         // array where values are names to ignore.
+    public $t_ignore_traits             = null;         // array where values are names to ignore.
     public $t_ignore_namespaces         = null;         // array where values are names to ignore.
 
     public $t_ignore_constants_prefix   = null;         // array where values are prefix of names to ignore.
@@ -39,6 +42,8 @@ class Config
     public $t_ignore_methods_prefix     = null;         // array where values are prefix of names to ignore.
     public $t_ignore_properties_prefix  = null;         // array where values are prefix of names to ignore.
     public $t_ignore_classes_prefix     = null;         // array where values are prefix of names to ignore.
+    public $t_ignore_interfaces_prefix  = null;         // array where values are names to ignore.
+    public $t_ignore_traits_prefix      = null;         // array where values are names to ignore.
     public $t_ignore_namespaces_prefix  = null;         // array where values are prefix of names to ignore.
 
 
@@ -52,6 +57,8 @@ class Config
     public $obfuscate_variable_name     = true;         // self explanatory
     public $obfuscate_function_name     = true;         // self explanatory
     public $obfuscate_class_name        = true;         // self explanatory
+    public $obfuscate_interface_name    = true;         // self explanatory
+    public $obfuscate_trait_name        = true;         // self explanatory
     public $obfuscate_property_name     = true;         // self explanatory
     public $obfuscate_method_name       = true;         // self explanatory
     public $obfuscate_namespace_name    = true;         // self explanatory
@@ -121,7 +128,7 @@ class Scrambler
     private $t_reserved_class_names = array('parent', 'self', 'static',                    // same reserved names for classes, interfaces  and traits...
                                             'int', 'float', 'bool', 'string', 'true', 'false', 'null', 'resource', 'object', 'scalar', 'mixed', 'numeric',
                                             'directory', 'exception', 'closure', 'generator',
-                                            'PDOException' );
+                                            'pdoexception' );
 
     private $t_reserved_method_names = array( 'core'      => array('__construct', '__destruct', '__call', '__callstatic', '__get', '__set', '__isset', '__unset', '__sleep', '__wakeup', '__tostring', '__invoke', '__set_state', '__clone','__debuginfo' ),
                                               'Exception' => array('getmessage', 'getprevious', 'getcode', 'getfile', 'getline', 'gettrace', 'gettraceasstring'),
@@ -232,7 +239,7 @@ class Scrambler
                     $this->t_ignore_prefix  = $t;
                 }
                 break;
-            case 'class':
+            case 'class':           // same instance is used for scrambling classes, interfaces, and traits.
                 $this->case_sensitive       = false;
                 $this->t_ignore             = array_flip($this->t_reserved_class_names);
                 $this->t_ignore             = array_merge($this->t_ignore, array_flip($this->t_reserved_variable_names));
@@ -244,9 +251,29 @@ class Scrambler
                     $t                      = $conf->t_ignore_classes;                  $t = array_map('strtolower',$t);                $t = array_flip($t);
                     $this->t_ignore         = array_merge($this->t_ignore,$t);
                 }
+                if (isset($conf->t_ignore_interfaces))
+                {
+                    $t                      = $conf->t_ignore_interfaces;               $t = array_map('strtolower',$t);                $t = array_flip($t);
+                    $this->t_ignore         = array_merge($this->t_ignore,$t);
+                }
+                if (isset($conf->t_ignore_traits))
+                {
+                    $t                      = $conf->t_ignore_traits;                   $t = array_map('strtolower',$t);                $t = array_flip($t);
+                    $this->t_ignore         = array_merge($this->t_ignore,$t);
+                }
                 if (isset($conf->t_ignore_classes_prefix))
                 {
                     $t                      = $conf->t_ignore_classes_prefix;           $t = array_map('strtolower',$t);                $t = array_flip($t);
+                    $this->t_ignore_prefix  = $t;
+                }
+                if (isset($conf->t_ignore_interfaces_prefix))
+                {
+                    $t                      = $conf->t_ignore_interfaces_prefix;        $t = array_map('strtolower',$t);                $t = array_flip($t);
+                    $this->t_ignore_prefix  = $t;
+                }
+                if (isset($conf->t_ignore_traits_prefix))
+                {
+                    $t                      = $conf->t_ignore_traits_prefix;            $t = array_map('strtolower',$t);                $t = array_flip($t);
                     $this->t_ignore_prefix  = $t;
                 }
                 break;
@@ -286,7 +313,7 @@ class Scrambler
                 }
                 break;
         }
-        if (isset($target_directory))           // the constructor will restore previous saved context if exists
+        if (isset($target_directory))                                   // the constructor will restore previous saved context if exists
         {
             $this->context_directory = $target_directory;
             if (file_exists("{$this->context_directory}/yakpro-po/context/{$this->scramble_type}"))
@@ -300,8 +327,9 @@ class Scrambler
 
     function __destruct()
     {
+        //print_r($this->t_scramble);
         if (!$this->silent) fprintf(STDERR,"Info:\t[%-9s] scrambled \t: %7d%s",$this->scramble_type,sizeof($this->t_scramble),PHP_EOL);
-        if (isset($this->context_directory))    // the desstructor will save the current context
+        if (isset($this->context_directory))                            // the destructor will save the current context
         {
             file_put_contents("{$this->context_directory}/yakpro-po/context/{$this->scramble_type}",serialize(array($this->t_scramble,$this->t_rscramble)));
         }
@@ -329,7 +357,7 @@ class Scrambler
         return $s;
     }
 
-    private function case_shuffle($s)   // this function is used to even more obfuscate insensitive names: on each acces to the name, a differrent randomized case of each letter is used.
+    private function case_shuffle($s)   // this function is used to even more obfuscate insensitive names: on each acces to the name, a different randomized case of each letter is used.
     {
         for($i=0;$i<strlen($s);++$i) $s{$i} = mt_rand(0,1) ? strtoupper($s{$i}) : strtolower($s{$i});
         return $s;
@@ -461,37 +489,146 @@ class MyNodeVisitor extends PhpParser\NodeVisitorAbstract       // all parsing a
                         $node_modified = true;
                     }
                 }
+                if (isset($node->{'extends'}))
+                {
+                    $parts = $node->{'extends'}->parts;
+                    $name  = $parts[count($parts)-1];
+                    if ( is_string($name) && (strlen($name) !== 0) )
+                    {
+                        $r = $scrambler->scramble($name);
+                        if ($r!==$name)
+                        {
+                            $node->{'extends'}->parts[count($parts)-1] = $r;
+                            $node_modified = true;
+                        }
+                    }
+                }
             }
             if ( ($node instanceof PhpParser\Node\Expr\New_) || ($node instanceof PhpParser\Node\Expr\StaticCall) || ($node instanceof PhpParser\Node\Expr\StaticPropertyFetch) )
             {
-                $parts = $node->class->parts;
+                $parts = $node->{'class'}->parts;
                 $name  = $parts[count($parts)-1];
                 if ( is_string($name) && (strlen($name) !== 0) )
                 {
                     $r = $scrambler->scramble($name);
                     if ($r!==$name)
                     {
-                        $node->class->parts[count($parts)-1] = $r;
+                        $node->{'class'}->parts[count($parts)-1] = $r;
                         $node_modified = true;
                     }
                 }
             }
-            if ($node instanceof PhpParser\Node\Stmt\Catch_)
+            if ($node instanceof PhpParser\Node\Param)
             {
-                $parts = $node->type->parts;
-                $name  = $parts[count($parts)-1];
-                if ( is_string($name) && (strlen($name) !== 0) )
+                if (isset($node->type) && isset($node->type->parts))
                 {
-                    $r = $scrambler->scramble($name);
-                    if ($r!==$name)
+                    $parts = $node->type->parts;
+                    $name  = $parts[count($parts)-1];
+                    if ( is_string($name) && (strlen($name) !== 0) )
                     {
-                        $node->class->parts[count($parts)-1] = $r;
-                        $node_modified = true;
+                        $r = $scrambler->scramble($name);
+                        if ($r!==$name)
+                        {
+                            $node->type->parts[count($parts)-1] = $r;
+                            $node_modified = true;
+                        }
                     }
                 }
             }
         }
-        
+
+        if ($conf->obfuscate_interface_name)
+        {
+            $scrambler = $t_scrambler['class'];
+            if ($node instanceof PhpParser\Node\Stmt\Interface_)
+            {
+                $name = $node->name;
+                if ( is_string($name) && (strlen($name) !== 0) )
+                {
+                    $r = $scrambler->scramble($name);
+                    if ($r!==$name)
+                    {
+                        $node->name = $r;
+                        $node_modified = true;
+                    }
+                }
+                if ( isset($node->{'extends'}) && count($node->{'extends'}) )
+                {
+                    for($j=0;$j<count($node->{'extends'});++$j)
+                    {
+                        $parts = $node->{'extends'}[$j]->parts;
+                        $name  = $parts[count($parts)-1];
+                        if ( is_string($name) && (strlen($name) !== 0) )
+                        {
+                            $r = $scrambler->scramble($name);
+                            if ($r!==$name)
+                            {
+                                $node->{'extends'}[$j]->parts[count($parts)-1] = $r;
+                                $node_modified = true;
+                            }
+                        }
+                    }
+                }
+            }
+            if ($node instanceof PhpParser\Node\Stmt\Class_)
+            {
+                if ( isset($node->{'implements'}) && count($node->{'implements'}) )
+                {
+                    for($j=0;$j<count($node->{'implements'});++$j)
+                    {
+                        $parts = $node->{'implements'}[$j]->parts;
+                        $name  = $parts[count($parts)-1];
+                        if ( is_string($name) && (strlen($name) !== 0) )
+                        {
+                            $r = $scrambler->scramble($name);
+                            if ($r!==$name)
+                            {
+                                $node->{'implements'}[$j]->parts[count($parts)-1] = $r;
+                                $node_modified = true;
+                            }
+                        }
+                    }
+                }
+            }
+       }
+
+        if ($conf->obfuscate_trait_name)
+        {
+            $scrambler = $t_scrambler['class'];
+            if ($node instanceof PhpParser\Node\Stmt\Trait_)
+            {
+                $name = $node->name;
+                if ( is_string($name) && (strlen($name) !== 0) )
+                {
+                    $r = $scrambler->scramble($name);
+                    if ($r!==$name)
+                    {
+                        $node->name = $r;
+                        $node_modified = true;
+                    }
+                }
+            }
+            if ($node instanceof PhpParser\Node\Stmt\TraitUse)
+            {
+                if ( isset($node->{'traits'}) && count($node->{'traits'}) )
+                {
+                    for($j=0;$j<count($node->{'traits'});++$j)
+                    {
+                        $parts = $node->{'traits'}[$j]->parts;
+                        $name  = $parts[count($parts)-1];
+                        if ( is_string($name) && (strlen($name) !== 0) )
+                        {
+                            $r = $scrambler->scramble($name);
+                            if ($r!==$name)
+                            {
+                                $node->{'traits'}[$j]->parts[count($parts)-1] = $r;
+                                $node_modified = true;
+                            }
+                        }
+                    }
+                }
+            }
+        }
 
         if ($conf->obfuscate_property_name)
         {
@@ -594,6 +731,185 @@ class MyNodeVisitor extends PhpParser\NodeVisitorAbstract       // all parsing a
         if ($conf->obfuscate_namespace_name)
         {
             $scrambler = $t_scrambler['namespace'];
+            if ( ($node instanceof PhpParser\Node\Stmt\Namespace_)|| ($node instanceof PhpParser\Node\Stmt\UseUse) )
+            {
+                if (isset($node->name->parts))
+                {
+                    $parts = $node->name->parts;
+                    for($i=0;$i<count($parts);++$i)
+                    {
+                        $name  = $parts[$i];
+                        if ( is_string($name) && (strlen($name) !== 0) )
+                        {
+                            $r = $scrambler->scramble($name);
+                            if ($r!==$name)
+                            {
+                                $node->name->parts[$i] = $r;
+                                $node_modified = true;
+                            }
+                        }
+                    }
+                }
+            }
+            if ($node instanceof PhpParser\Node\Stmt\UseUse)
+            {
+                $name = $node->alias;
+                if ( is_string($name) && (strlen($name) !== 0) )
+                {
+                    $r = $scrambler->scramble($name);
+                    if ($r!==$name)
+                    {
+                        $node->alias = $r;
+                        $node_modified = true;
+                    }
+                }
+            }
+            if ( ($node instanceof PhpParser\Node\Expr\FuncCall) || ($node instanceof PhpParser\Node\Expr\ConstFetch) )
+            {
+                if (isset($node->name->parts))              // not set when indirect call (i.e.function name is a variable value!)
+                {
+                    $parts = $node->name->parts;
+                    for($i=0;$i<count($parts)-1;++$i)       // skip last part, that is processed in his own section
+                    {
+                        $name  = $parts[$i];
+                        if ( is_string($name) && (strlen($name) !== 0) )
+                        {
+                            $r = $scrambler->scramble($name);
+                            if ($r!==$name)
+                            {
+                                $node->name->parts[$i] = $r;
+                                $node_modified = true;
+                            }
+                        }
+                    }
+                }
+            }
+            if ($node instanceof PhpParser\Node\Expr\New_)
+            {
+                if (isset($node->{'class'}->parts))              // not set when indirect call (i.e.function name is a variable value!)
+                {
+                    $parts = $node->{'class'}->parts;
+                    for($i=0;$i<count($parts)-1;++$i)       // skip last part, that is processed in his own section
+                    {
+                        $name  = $parts[$i];
+                        if ( is_string($name) && (strlen($name) !== 0) )
+                        {
+                            $r = $scrambler->scramble($name);
+                            if ($r!==$name)
+                            {
+                                $node->{'class'}->parts[$i] = $r;
+                                $node_modified = true;
+                            }
+                        }
+                    }
+                }
+            }
+            if ($node instanceof PhpParser\Node\Stmt\Class_)
+            {
+                if (isset($node->{'extends'}) && isset($node->{'extends'}->parts))
+                {
+                    $parts = $node->{'extends'}->parts;
+                    for($i=0;$i<count($parts)-1;++$i)       // skip last part, that is processed in his own section
+                    {
+                        $name  = $parts[$i];
+                        if ( is_string($name) && (strlen($name) !== 0) )
+                        {
+                            $r = $scrambler->scramble($name);
+                            if ($r!==$name)
+                            {
+                                $node->{'extends'}->parts[$i] = $r;
+                                $node_modified = true;
+                            }
+                        }
+                    }
+                }
+                if ( isset($node->{'implements'}) && count($node->{'implements'}) )
+                {
+                    for($j=0;$j<count($node->{'implements'});++$j)
+                    {
+                        $parts = $node->{'implements'}[$j]->parts;
+                        for($i=0;$i<count($parts)-1;++$i)       // skip last part, that is processed in his own section
+                        {
+                            $name  = $parts[$i];
+                            if ( is_string($name) && (strlen($name) !== 0) )
+                            {
+                                $r = $scrambler->scramble($name);
+                                if ($r!==$name)
+                                {
+                                    $node->{'implements'}[$j]->parts[$i] = $r;
+                                    $node_modified = true;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            if ($node instanceof PhpParser\Node\Param)
+            {
+                if (isset($node->type) && isset($node->type->parts))
+                {
+                    $parts = $node->type->parts;
+                    for($i=0;$i<count($parts)-1;++$i)       // skip last part, that is processed in his own section
+                    {
+                        $name  = $parts[$i];
+                        if ( is_string($name) && (strlen($name) !== 0) )
+                        {
+                            $r = $scrambler->scramble($name);
+                            if ($r!==$name)
+                            {
+                                $node->type->parts[$i] = $r;
+                                $node_modified = true;
+                            }
+                        }
+                    }
+                }
+            }
+            if ($node instanceof PhpParser\Node\Stmt\Interface_)
+            {
+                if (isset($node->{'extends'}) && isset($node->{'extends'}->parts))
+                {
+                    for($j=0;$j<count($node->{'extends'});++$j)
+                    {
+                        $parts = $node->{'extends'}[$j]->parts;
+                        for($i=0;$i<count($parts)-1;++$i)       // skip last part, that is processed in his own section
+                        {
+                            $name  = $parts[$i];
+                            if ( is_string($name) && (strlen($name) !== 0) )
+                            {
+                                $r = $scrambler->scramble($name);
+                                if ($r!==$name)
+                                {
+                                    $node->{'extends'}[$j]->parts[$i] = $r;
+                                    $node_modified = true;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            if ($node instanceof PhpParser\Node\Stmt\TraitUse)
+            {
+                if ( isset($node->{'traits'}) && count($node->{'traits'}) )
+                {
+                    for($j=0;$j<count($node->{'traits'});++$j)
+                    {
+                        $parts = $node->{'traits'}[$j]->parts;
+                        for($i=0;$i<count($parts)-1;++$i)       // skip last part, that is processed in his own section
+                        {
+                            $name  = $parts[$i];
+                            if ( is_string($name) && (strlen($name) !== 0) )
+                            {
+                                $r = $scrambler->scramble($name);
+                                if ($r!==$name)
+                                {
+                                    $node->{'traits'}[$j]->parts[$i] = $r;
+                                    $node_modified = true;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
         if ($node_modified) return $node;
     }
