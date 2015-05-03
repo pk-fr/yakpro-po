@@ -21,6 +21,8 @@ $conf->t_ignore_functions           = null;         // array where values are na
 $conf->t_ignore_methods             = null;         // array where values are names to ignore.
 $conf->t_ignore_properties          = null;         // array where values are names to ignore.
 $conf->t_ignore_classes             = null;         // array where values are names to ignore.
+$conf->t_ignore_interfaces          = null;         // array where values are names to ignore.
+$conf->t_ignore_traits              = null;         // array where values are names to ignore.
 $conf->t_ignore_namespaces          = null;         // array where values are names to ignore.
 
 $conf->t_ignore_constants_prefix    = null;         // array where values are names to ignore.
@@ -29,6 +31,8 @@ $conf->t_ignore_functions_prefix    = null;         // array where values are pr
 $conf->t_ignore_methods_prefix      = null;         // array where values are prefix of names to ignore.
 $conf->t_ignore_properties_prefix   = null;         // array where values are prefix of names to ignore.
 $conf->t_ignore_classes_prefix      = null;         // array where values are prefix of names to ignore.
+$conf->t_ignore_interfaces_prefix   = null;         // array where values are names to ignore.
+$conf->t_ignore_traits_prefix       = null;         // array where values are names to ignore.
 $conf->t_ignore_namespaces_prefix   = null;         // array where values are prefix of names to ignore.
 
 
@@ -41,6 +45,8 @@ $conf->obfuscate_constant_name      = true;         // self explanatory
 $conf->obfuscate_variable_name      = true;         // self explanatory
 $conf->obfuscate_function_name      = true;         // self explanatory
 $conf->obfuscate_class_name         = true;         // self explanatory
+$conf->obfuscate_interface_name     = true;         // self explanatory
+$conf->obfuscate_trait_name         = true;         // self explanatory
 $conf->obfuscate_property_name      = true;         // self explanatory
 $conf->obfuscate_method_name        = true;         // self explanatory
 $conf->obfuscate_namespace_name     = true;         // self explanatory
