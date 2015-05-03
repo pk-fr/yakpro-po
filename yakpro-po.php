@@ -1311,6 +1311,7 @@ switch(count($t_args))
                             fprintf(STDERR,"Error:\tTarget file [%s] exists and is not an obfuscated file!%s", ($x!==false) ? $x : $target_file,PHP_EOL);
                             exit(-1);
                         }
+                        fclose($fp);
                     }
                 }
                 break;
