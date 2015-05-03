@@ -33,9 +33,10 @@ l'obfuscation est un très bon moyen de parvenir à vos fins.
   - Les Variables.
   - Les Fonctions.
   - Les Constantes.
-  - Les Classes.
+  - Les Classes, Les Interfaces, les Traits.
   - Les Attributs.
   - Les Méthodes.
+  - Les Espaces de Noms.
 - Obfusque récursivement le répertoire d'un projet.
 - Un mécanisme de type Makefile, basé sur l'horodatage des fichiers, permet de ne re-obfusquer que les fichiers
 ayant été modifiés depuis la dernière obfuscation.
@@ -218,6 +219,3 @@ Supprime récursivement le répertoire répertoire_cible/yakpro-po
         const MA_CONSTANTE = quelque_chose;
 
 
-
-## TODO
-    L'obfuscation des  namespaces, interfaces, traits n'est pas encore implémentée!
