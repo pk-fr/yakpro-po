@@ -15,12 +15,12 @@ Published under the MIT License
 
 ## What is Php Obfuscation?
 
-When you have a php project you want do distribute, as php is a script interpretor,
+When you have a php project you want to distribute, as php is a script interpretor,
 you distribute also all the sources of your software!
 
 You may want, for any reason, that other people do not understand, modify, or adapt your software.
 
-As your software must be understandable by the **php runtime**, but needs to very difficult
+As your software must be understandable by the **php runtime**, but needs to be very difficult
 to understand by human people, obfuscation is a very good way to achieve this goal.
 
 ### YAK Pro - Php Obfuscator Obfuscation Main Features:  
@@ -30,19 +30,20 @@ to understand by human people, obfuscation is a very good way to achieve this go
   - Variables.
   - Functions.
   - Constants.
-  - Classes.
+  - Classes, Interfaces, Traits,
   - Properties.
   - Methods.
+  - Namespaces.
 - Recursivly obfuscates a project's directory.
 - Makefile like, timestamps based mechanism, to re-obfuscate only files that were changed since last obfuscation.
-- Many configuration options thats let you have **full control** of what is obfuscated within your project!
+- Many configuration options that lets you have **full control** of what is obfuscated within your project!
 
 
 ### Why Yet Another Php Obfuscator?
 I began testing some already existing php obfuscation tools, but I did'nt found one that whas
 fitting all my needs.  
 I wanted a **simple** command line tool, based on a **highly customisable** config file, that would be able to:
-- Be fast and re-obfuscates only files that were changed based on timestamps of file.
+- Be fast and re-obfuscates only files that were changed based on timestamps of files.
 - Preserve some files and/or directories from obfuscation.
 - Do not include in the obfuscated target, some files/directories that are present on the source project.
 - Accept lists of names and/or name prefixes to not obfuscate.
@@ -199,7 +200,4 @@ Recursivly removes target_directory/yakpro-po
     of the define function!
     There is no problem with the const MY_CONST = something; form!
 
-
-
-## TODO
-    obfuscation of namespaces, interfaces, traits is not yet supported!
+    
