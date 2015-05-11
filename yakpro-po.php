@@ -14,7 +14,7 @@
 
 require_once 'PHP-Parser/lib/bootstrap.php';
 
-// case-sensitive:      variable names, constant name, array keys, class properties
+// case-sensitive:      variable names, constant name, array keys, class properties, labels
 // case-insensitive:    function names, class names, class method names, namespaces, keywords and constructs
 // classes, interfaces, and traits share the same internal naming_space! only a single Scrambler instance for all of them!
 
@@ -35,6 +35,7 @@ class Config
     public $t_ignore_interfaces         = null;         // array where values are names to ignore.
     public $t_ignore_traits             = null;         // array where values are names to ignore.
     public $t_ignore_namespaces         = null;         // array where values are names to ignore.
+    public $t_ignore_labels             = null;         // array where values are names to ignore.
 
     public $t_ignore_constants_prefix   = null;         // array where values are prefix of names to ignore.
     public $t_ignore_variables_prefix   = null;         // array where values are prefix of names to ignore.
@@ -45,7 +46,7 @@ class Config
     public $t_ignore_interfaces_prefix  = null;         // array where values are names to ignore.
     public $t_ignore_traits_prefix      = null;         // array where values are names to ignore.
     public $t_ignore_namespaces_prefix  = null;         // array where values are prefix of names to ignore.
-
+    public $t_ignore_labels_prefix      = null;         // array where values are prefix of names to ignore.
 
 
     public $scramble_mode               = 'identifier'; // allowed modes are identifier, hexa, numeric
@@ -62,6 +63,8 @@ class Config
     public $obfuscate_property_name     = true;         // self explanatory
     public $obfuscate_method_name       = true;         // self explanatory
     public $obfuscate_namespace_name    = true;         // self explanatory
+    public $obfuscate_label_name        = true;         // label: , goto label;  obfuscation
+    public $obfuscate_control_statement = true;         // obfuscate if else elseif statements
 
     public $strip_indentation           = true;         // all your obfuscated code will be generated on a single line
     public $abort_on_error              = true;         // self explanatory
@@ -128,7 +131,7 @@ class Scrambler
     private $t_reserved_class_names = array('parent', 'self', 'static',                    // same reserved names for classes, interfaces  and traits...
                                             'int', 'float', 'bool', 'string', 'true', 'false', 'null', 'resource', 'object', 'scalar', 'mixed', 'numeric',
                                             'directory', 'exception', 'closure', 'generator',
-                                            'pdoexception' );
+                                            'pdo','pdoexception' );
 
     private $t_reserved_method_names = array( 'core'      => array('__construct', '__destruct', '__call', '__callstatic', '__get', '__set', '__isset', '__unset', '__sleep', '__wakeup', '__tostring', '__invoke', '__set_state', '__clone','__debuginfo' ),
                                               'Exception' => array('getmessage', 'getprevious', 'getcode', 'getfile', 'getline', 'gettrace', 'gettraceasstring'),
@@ -312,6 +315,20 @@ class Scrambler
                     $this->t_ignore_prefix  = $t;
                 }
                 break;
+            case 'label':
+                $this->case_sensitive       = true;
+                $this->t_ignore             = array_flip($this->t_reserved_function_names);
+                if (isset($conf->t_ignore_labels))
+                {
+                    $t                      = $conf->t_ignore_labels;                   $t = array_flip($t);
+                    $this->t_ignore         = array_merge($this->t_ignore,$t);
+                }
+                if (isset($conf->t_ignore_labels_prefix))
+                {
+                    $t                      = $conf->t_ignore_labels_prefix;            $t = array_flip($t);
+                    $this->t_ignore_prefix  = $t;
+                }
+                break;
         }
         if (isset($target_directory))                                   // the constructor will restore previous saved context if exists
         {
@@ -401,7 +418,7 @@ class Scrambler
 
 class MyNodeVisitor extends PhpParser\NodeVisitorAbstract       // all parsing and replacement of scrambled names is done here!
 {                                                               // see PHP-Parser for documentation!
-    public function enterNode(PhpParser\Node $node)
+    public function leaveNode(PhpParser\Node $node)
     {
         global $conf;
         global $t_scrambler;
@@ -469,6 +486,38 @@ class MyNodeVisitor extends PhpParser\NodeVisitorAbstract       // all parsing a
                             $node->name->parts[count($parts)-1] = $r;
                             $node_modified = true;
                         }
+                    }
+                }
+            }
+            if ($node instanceof PhpParser\Node\Expr\FuncCall)      // processing function_exists('function_name');
+            {
+                if (isset($node->name->parts))                      // not set when indirect call (i.e.function name is a variable value!)
+                {
+                    $parts = $node->name->parts;
+                    $name  = $parts[count($parts)-1];
+                    if ( is_string($name) && ($name=='function_exists') )
+                    {
+                        for($ok=false;;)
+                        {
+                            if (!isset($node->args[0]->value))      break;
+                            if (count($node->args)!=1)              break;
+                            $arg = $node->args[0]->value;           if (! ($arg instanceof PhpParser\Node\Scalar\String_) ) { $ok = true; $warning = true; break; }
+                            $name = $arg->value;                    if (! is_string($name) || (strlen($name) == 0) )        break;
+                            $ok     = true;
+                            $warning= false;
+                            $r = $scrambler->scramble($name);
+                            if ($r!==$name)
+                            {
+                                $arg->value = $r;
+                                $node_modified = true;
+                            }
+                            break;
+                        }
+                        if (!$ok)
+                        {
+                            throw new Exception("Error: your use of function_exists() function is not compatible with yakpro-po!".PHP_EOL."\tOnly 1 litteral string parameter is allowed...");
+                        }
+                        if ($warning) fprintf(STDERR, "Warning: your use of function_exists() function is not compatible with yakpro-po!".PHP_EOL."\t Only 1 litteral string parameter is allowed...".PHP_EOL);
                     }
                 }
             }
@@ -694,7 +743,7 @@ class MyNodeVisitor extends PhpParser\NodeVisitorAbstract       // all parsing a
                         }
                         if (!$ok)
                         {
-                            throw new Exception("Error: your use of define() function is not compatible with yakpro-po!".PHP_EOL."\tOnly 2 paremeters, when first ia a string is allowed...");
+                            throw new Exception("Error: your use of define() function is not compatible with yakpro-po!".PHP_EOL."\tOnly 2 parameters, when first ia a litteral string is allowed...");
                         }
                     }
                 }
@@ -911,6 +960,109 @@ class MyNodeVisitor extends PhpParser\NodeVisitorAbstract       // all parsing a
                 }
             }
         }
+        
+        if ($conf->obfuscate_label_name)                    // label: goto label;   -
+        {
+            $scrambler = $t_scrambler['label'];
+            if ( ($node instanceof PhpParser\Node\Stmt\Label) || ($node instanceof PhpParser\Node\Stmt\Goto_) )
+            {
+                $name = $node->name;
+                if ( is_string($name) && (strlen($name) !== 0) )
+                {
+                    $r = $scrambler->scramble($name);
+                    if ($r!==$name)
+                    {
+                        $node->name = $r;
+                        $node_modified = true;
+                    }
+                }
+            }
+        }
+        
+        if ($conf->obfuscate_control_statement)             // if else elseif   are replaced by goto ...
+        {
+            $scrambler = $t_scrambler['label'];
+            if ( ($node instanceof PhpParser\Node\Stmt\If_) )
+            {
+                $condition              = $node->cond;
+                $stmts                  = $node->stmts;
+                $else                   = isset($node->{'else'}) ? $node->{'else'}->stmts : null;
+                $elseif                 = $node->elseifs;
+
+                if (isset($elseif) && count($elseif))       // elseif mode
+                {
+                    $label_endif_name   = $scrambler->scramble(generate_label_name());
+                    $label_endif        = array(new PhpParser\Node\Stmt\Label($label_endif_name));
+                    $goto_endif         = array(new PhpParser\Node\Stmt\Goto_($label_endif_name));
+                    
+                    $new_nodes_1        = array();
+                    $new_nodes_2        = array();
+                    $label_if_name      = $scrambler->scramble(generate_label_name());
+                    $label_if           = array(new PhpParser\Node\Stmt\Label($label_if_name));
+                    $goto_if            = array(new PhpParser\Node\Stmt\Goto_($label_if_name));
+                    $if                 = new PhpParser\Node\Stmt\If_($condition);
+                    $if->stmts          = $goto_if;
+                    $new_nodes_1        = array_merge($new_nodes_1,array($if));
+                    $new_nodes_2        = array_merge($new_nodes_2,$label_if,$stmts,$goto_endif);
+                    
+                    for($i=0;$i<count($elseif);++$i)
+                    {
+                        $condition      = $elseif[$i]->cond;
+                        $stmts          = $elseif[$i]->stmts;
+                        $label_if_name  = $scrambler->scramble(generate_label_name());
+                        $label_if       = array(new PhpParser\Node\Stmt\Label($label_if_name));
+                        $goto_if        = array(new PhpParser\Node\Stmt\Goto_($label_if_name));
+                        $if             = new PhpParser\Node\Stmt\If_($condition);
+                        $if->stmts      = $goto_if;
+                        $new_nodes_1    = array_merge($new_nodes_1,array($if));
+                        $new_nodes_2    = array_merge($new_nodes_2,$label_if,$stmts);
+                        if ($i<count($elseif)-1)
+                        {
+                            $new_nodes_2= array_merge($new_nodes_2,$goto_endif);
+                        }
+                    }
+                    if (isset($else))
+                    {
+                        $new_nodes_1    = array_merge($new_nodes_1,$else);
+                    }
+                    $new_nodes_1        = array_merge($new_nodes_1,$goto_endif);
+                    $new_nodes_2        = array_merge($new_nodes_2,$label_endif);
+                                        return array_merge($new_nodes_1,$new_nodes_2);
+                }
+                else                                    // no elseif :  if , else 
+                {
+                    if (isset($else))                   // else statement found
+                    {
+                        $label_then_name    = $scrambler->scramble(generate_label_name());
+                        $label_then         = array(new PhpParser\Node\Stmt\Label($label_then_name));
+                        $goto_then          = array(new PhpParser\Node\Stmt\Goto_($label_then_name));
+                        $label_endif_name   = $scrambler->scramble(generate_label_name());
+                        $label_endif        = array(new PhpParser\Node\Stmt\Label($label_endif_name));
+                        $goto_endif         = array(new PhpParser\Node\Stmt\Goto_($label_endif_name));
+                        $node->stmts        = $goto_then;
+                        $node->{'else'}     = null;
+                                            return array_merge(array($node),$else,$goto_endif,$label_then,$stmts,$label_endif);
+                    }
+                    else                                // no else statement found
+                    {
+                        if ($condition instanceof PhpParser\Node\Expr\BooleanNot)     // avoid !! in generated code
+                        {
+                            $new_condition      = $condition->expr;
+                        }
+                        else
+                        {
+                            $new_condition      = new PhpParser\Node\Expr\BooleanNot($condition);
+                        }
+                        $label_endif_name   = $scrambler->scramble(generate_label_name());
+                        $label_endif        = array(new PhpParser\Node\Stmt\Label($label_endif_name));
+                        $goto_endif         = array(new PhpParser\Node\Stmt\Goto_($label_endif_name));
+                        $node->cond         = $new_condition;
+                        $node->stmts        = $goto_endif;
+                                            return array_merge(array($node),$stmts,$label_endif);
+                    }
+                }
+            }
+        }
         if ($node_modified) return $node;
     }
 /*
@@ -1047,6 +1199,13 @@ function confirm($str)                                  // self-explanatory not 
         if ($r=='y')    return true;
         if ($r=='n')    return false;
     }
+}
+
+function generate_label_name($prefix = "!label")
+{
+    static $counter = 0;
+
+    return $prefix.($counter++);
 }
 
 function obfuscate_directory($source_dir,$target_dir,$keep_mode=false)   // self-explanatory recursive obfuscation
@@ -1369,7 +1528,7 @@ $traverser          = new PhpParser\NodeTraverser;
 $prettyPrinter      = new PhpParser\PrettyPrinter\Standard;
 
 $t_scrambler = array();
-foreach(array('variable','function','method','property','class','constant','namespace') as $dummy => $scramble_what)
+foreach(array('variable','function','method','property','class','constant','namespace','label') as $dummy => $scramble_what)
 {
     $t_scrambler[$scramble_what] = new Scrambler($scramble_what, $conf, ($process_mode=='directory') ? $target_directory : null);
 }
