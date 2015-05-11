@@ -2,7 +2,9 @@
 
 **YAK Pro** stands for **Y**et **A**nother **K**iller **Pro**duct.
 
-This tool makes use of [PHP-Parser](https://github.com/nikic/PHP-Parser) for parsing php.  
+This tool parses php with [PHP-Parser](https://github.com/nikic/PHP-Parser),  
+which is an awesome parsing php library written by [nikic](https://github.com/nikic).  
+
 You just have to download the zip archive and uncompress it under the PHP-Parser subdirectory.  
 or make a git clone ...
 
@@ -26,21 +28,20 @@ to understand by human people, obfuscation is a very good way to achieve this go
 ### YAK Pro - Php Obfuscator Obfuscation Main Features:  
 
 - Removes all comments, indentation, and generates a single line program file.
+- Obfuscates **if else elseif** by replacing them with **if goto** statements.
 - Scramble names for:
-  - Variables.
-  - Functions.
-  - Constants.
+  - Variables, Functions, Constants.
   - Classes, Interfaces, Traits,
-  - Properties.
-  - Methods.
-  - Namespaces.
+  - Properties, Methods.
+  - Namespaces
+  - Labels.
 - Recursivly obfuscates a project's directory.
 - Makefile like, timestamps based mechanism, to re-obfuscate only files that were changed since last obfuscation.
 - Many configuration options that lets you have **full control** of what is obfuscated within your project!
 
 
 ### Why Yet Another Php Obfuscator?
-I began testing some already existing php obfuscation tools, but I did'nt found one that whas
+I began testing some already existing php obfuscation tools, but I did'nt found one that was
 fitting all my needs.  
 I wanted a **simple** command line tool, based on a **highly customisable** config file, that would be able to:
 - Be fast and re-obfuscates only files that were changed based on timestamps of files.
@@ -165,18 +166,6 @@ Recursivly removes target_directory/yakpro-po
 ## Hints for preparing your Software to be run obfuscated
 
     At first you can test obfuscating only variable names...
-
-
-    If you obfuscate functions, do not use:
-        if (!function_exists('my_function'))
-        {
-            function my_function () { ... }
-        }
-    Instead use:
-        require_once "my_functions.php";
-    and put your functions in the my_function.php file.
-    If you do not do this way, the function name my_function will be obfuscated,
-    but not the 'my_function' string within the function_exists call...
 
 
     If you obfuscate functions, do not use indirect function calls like
