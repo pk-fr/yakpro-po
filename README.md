@@ -3,7 +3,7 @@
 **YAK Pro** stands for **Y**et **A**nother **K**iller **Pro**duct.
 
 This tool parses php with [PHP-Parser](https://github.com/nikic/PHP-Parser),  
-which is an awesome parsing php library written by [nikic](https://github.com/nikic).  
+which is an awesome php parsing library written by [nikic](https://github.com/nikic).  
 
 You just have to download the zip archive and uncompress it under the PHP-Parser subdirectory.  
 or make a git clone ...
