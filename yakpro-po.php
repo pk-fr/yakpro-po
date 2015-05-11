@@ -20,8 +20,6 @@ require_once 'PHP-Parser/lib/bootstrap.php';
 
 // when we use the word ignore, that means that it is ignored during the obfuscation process (i.e. not obfuscated)
 
-//TODO : namespaces, interfaces ,traits
-
 class Config
 {
     public $t_ignore_module_methods     = array('core', 'Exception', 'PDO');	// array where values are internal known module names.
