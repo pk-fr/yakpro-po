@@ -3,6 +3,8 @@
 **YAK Pro** vient de  **Y**et **A**nother **K**iller **Pro**duct.
 
 Ce programme utilise [PHP-Parser](https://github.com/nikic/PHP-Parser) pour analyser le php.  
+[PHP-Parser](https://github.com/nikic/PHP-Parser) est une remarquable bibliothèque développée par [nikic](https://github.com/nikic).
+
 Télécharger l'archive zip et décompressez la dans le sous-répertoire PHP-Parser .
 ou alors utilisez git clone.
 
@@ -29,14 +31,13 @@ l'obfuscation est un très bon moyen de parvenir à vos fins.
 ### Principales fonctionnalités de YAK Pro - Php Obfuscator :
 
 - Supprime tous les commentaires, les indentations et génère un programme sur une seule ligne.
+- Obfusque les  instructions **if else elseif** en les remplaçant par des instructions **if goto**.
 - Génère des noms aléatoires pour :
-  - Les Variables.
-  - Les Fonctions.
-  - Les Constantes.
-  - Les Classes, Les Interfaces, les Traits.
-  - Les Attributs.
-  - Les Méthodes.
+  - Les Variables, les Fonctions, les Constantes.
+  - Les Classes, les Interfaces, les Traits.
+  - Les Attributs, les Méthodes.
   - Les Espaces de Noms.
+  - Les étiquettes.
 - Obfusque récursivement le répertoire d'un projet.
 - Un mécanisme de type Makefile, basé sur l'horodatage des fichiers, permet de ne re-obfusquer que les fichiers
 ayant été modifiés depuis la dernière obfuscation.
@@ -179,18 +180,6 @@ Supprime récursivement le répertoire répertoire_cible/yakpro-po
 ## Conseils pour préparer votre Logiciel à s'exécuter correctement lorsqu'il est obfusqué
 
     Commencez par tester en n'obfusquant que les variables.
-
-
-    Si vous obfusquez des fonctions, n'utilisez pas :
-        if (!function_exists('ma_function'))
-        {
-            function ma_function () { ... }
-        }
-    Utilisez à la place :
-        require_once "mes_fonctions.php";
-    et mettez vos fonctions dans le fichier mes_fonctions.php.
-    Si non, le nom de fonction ma_fonction sera obfusquée, mais pas la chaine 'ma_fonction'
-    testée par l'appel à function_exists ...
 
 
     Si vous obfusquez des fonctions, n'utilisez pas d'appels indirects tels que:
