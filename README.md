@@ -2,8 +2,10 @@
 
 **YAK Pro** stands for **Y**et **A**nother **K**iller **Pro**duct.
 
+Free, Open Source, Published under the MIT License.  
+
 This tool parses php with [PHP-Parser](https://github.com/nikic/PHP-Parser),  
-which is an awesome php parsing library written by [nikic](https://github.com/nikic).  
+which is an awesome php parsing library written by [nikic](https://github.com/nikic).
 
 You just have to download the zip archive and uncompress it under the PHP-Parser subdirectory.  
 or make a git clone ...
@@ -13,7 +15,6 @@ Take a look at it!
 
 Prerequisites:  php 5.3 or higher, [PHP-Parser](https://github.com/nikic/PHP-Parser).
 
-Published under the MIT License
 
 ## What is Php Obfuscation?
 
@@ -47,7 +48,7 @@ I wanted a **simple** command line tool, based on a **highly customisable** conf
 - Be fast and re-obfuscates only files that were changed based on timestamps of files.
 - Preserve some files and/or directories from obfuscation.
 - Do not include in the obfuscated target, some files/directories that are present on the source project.
-- Accept lists of names and/or name prefixes to not obfuscate.
+- Accepts lists of names and/or name prefixes to not obfuscate.
 
 So I started to write this tool.  
 Version 1.0 has been written within a few days...  
