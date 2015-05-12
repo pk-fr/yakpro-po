@@ -2,6 +2,8 @@
 
 **YAK Pro** vient de  **Y**et **A**nother **K**iller **Pro**duct.
 
+Gratuit, Open Source, Publié sous les termes de la licence MIT.  
+
 Ce programme utilise [PHP-Parser](https://github.com/nikic/PHP-Parser) pour analyser le php.  
 [PHP-Parser](https://github.com/nikic/PHP-Parser) est une remarquable bibliothèque développée par [nikic](https://github.com/nikic).
 
@@ -14,7 +16,6 @@ Un petit coup d'oeil vaut le détour.
 
 Pré-requis:  php 5.3 ou supérieur, [PHP-Parser](https://github.com/nikic/PHP-Parser).
 
-Publié sous les termes de la licence MIT.
 
 ## Qu'est-ce qu'un Obfuscateur Php ?
 
