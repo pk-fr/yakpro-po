@@ -4,7 +4,7 @@
 
 Free, Open Source, Published under the MIT License.  
 
-This tool parses php with [PHP-Parser](https://github.com/nikic/PHP-Parser),  
+This tool parses php with the best existing php parser [PHP-Parser](https://github.com/nikic/PHP-Parser),  
 which is an awesome php parsing library written by [nikic](https://github.com/nikic).
 
 You just have to download the zip archive and uncompress it under the PHP-Parser subdirectory.  
@@ -29,13 +29,15 @@ to understand by human people, obfuscation is a very good way to achieve this go
 ### YAK Pro - Php Obfuscator Obfuscation Main Features:  
 
 - Removes all comments, indentation, and generates a single line program file.
-- Obfuscates **if else elseif** by replacing them with **if goto** statements.
+- Obfuscates **if, else, elseif, for, while, do while** by replacing them with **if goto** statements.
+- Obfuscate string literals.
 - Scramble names for:
   - Variables, Functions, Constants.
   - Classes, Interfaces, Traits,
   - Properties, Methods.
   - Namespaces
   - Labels.
+
 - Recursivly obfuscates a project's directory.
 - Makefile like, timestamps based mechanism, to re-obfuscate only files that were changed since last obfuscation.
 - Many configuration options that lets you have **full control** of what is obfuscated within your project!
@@ -52,7 +54,6 @@ I wanted a **simple** command line tool, based on a **highly customisable** conf
 
 So I started to write this tool.  
 Version 1.0 has been written within a few days...  
-Expect many improvements to come...
 
 
 ## Setup:
