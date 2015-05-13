@@ -4,7 +4,7 @@
 
 Gratuit, Open Source, Publié sous les termes de la licence MIT.  
 
-Ce programme utilise [PHP-Parser](https://github.com/nikic/PHP-Parser) pour analyser le php.  
+Ce programme utilise le meilleur parser php [PHP-Parser](https://github.com/nikic/PHP-Parser) pour analyser le php.
 [PHP-Parser](https://github.com/nikic/PHP-Parser) est une remarquable bibliothèque développée par [nikic](https://github.com/nikic).
 
 Télécharger l'archive zip et décompressez la dans le sous-répertoire PHP-Parser .
@@ -32,7 +32,8 @@ l'obfuscation est un très bon moyen de parvenir à vos fins.
 ### Principales fonctionnalités de YAK Pro - Php Obfuscator :
 
 - Supprime tous les commentaires, les indentations et génère un programme sur une seule ligne.
-- Obfusque les  instructions **if else elseif** en les remplaçant par des instructions **if goto**.
+- Obfusque les  instructions **if, else, elseif, for, while, do while** en les remplaçant par des instructions **if goto**.
+- Obfusque les chaines de caractères.
 - Génère des noms aléatoires pour :
   - Les Variables, les Fonctions, les Constantes.
   - Les Classes, les Interfaces, les Traits.
@@ -59,7 +60,6 @@ qui existent dans le source du projet.
 
 J'ai donc commencé à écrire cet outil.  
 La version 1.0 a été écrite en quelques jours...   
-Veuillez vous attendre à de multiples évolutions...
 
 
 ## Installation :
