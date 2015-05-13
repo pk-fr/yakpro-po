@@ -62,7 +62,9 @@ class Config
     public $obfuscate_method_name       = true;         // self explanatory
     public $obfuscate_namespace_name    = true;         // self explanatory
     public $obfuscate_label_name        = true;         // label: , goto label;  obfuscation
-    public $obfuscate_control_statement = true;         // obfuscate if else elseif statements
+    public $obfuscate_if_statement      = true;         // obfuscate if else elseif statements
+    public $obfuscate_loop_statement    = true;         // obfuscate for while do while statements
+    public $obfuscate_string_literal    = true;         // pseudo-obfuscate string literals
 
     public $strip_indentation           = true;         // all your obfuscated code will be generated on a single line
     public $abort_on_error              = true;         // self explanatory
@@ -114,6 +116,7 @@ class Scrambler
     private $t_rscramble            = null;     // array of reversed scrambled items (key = scrambled name, value = source name)
     private $context_directory      = null;     // where to save/restore context
     private $silent                 = null;     // display or not Information level messages.
+    private $label_counter          =    0;     // internal label counter.
 
     private $t_reserved_variable_names = array('this', '_SERVER', '_POST', '_GET', '_REQUEST', '_COOKIE','_SESSION', '_ENV', '_FILES');
     private $t_reserved_function_names = array( '__halt_compiler','__autoload', 'abstract', 'and', 'array', 'as', 'bool', 'break', 'callable', 'case', 'catch',
@@ -334,8 +337,16 @@ class Scrambler
             if (file_exists("{$this->context_directory}/yakpro-po/context/{$this->scramble_type}"))
             {
                 $t = unserialize(file_get_contents("{$this->context_directory}/yakpro-po/context/{$this->scramble_type}"));
-                $this->t_scramble	= $t[0];
-                $this->t_rscramble	= $t[1];
+                if ($t[0] !== '1.0')
+                {
+                    fprintf(STDERR,"Error:\tContext format has changed! run with --clean option!".PHP_EOL);
+                    $this->context_directory = null;        // do not overwrite incoherent values when exiting
+                    exit(-1);
+                }
+                $this->t_scramble	    = $t[1];
+                $this->t_rscramble      = $t[2];
+                $this->scramble_length  = $t[3];
+                $this->label_counter    = $t[4];
             }
         }
     }
@@ -343,10 +354,16 @@ class Scrambler
     function __destruct()
     {
         //print_r($this->t_scramble);
-        if (!$this->silent) fprintf(STDERR,"Info:\t[%-9s] scrambled \t: %7d%s",$this->scramble_type,sizeof($this->t_scramble),PHP_EOL);
+        if (!$this->silent) fprintf(STDERR,"Info:\t[%-9s] scrambled \t: %8d%s",$this->scramble_type,count($this->t_scramble),PHP_EOL);
         if (isset($this->context_directory))                            // the destructor will save the current context
         {
-            file_put_contents("{$this->context_directory}/yakpro-po/context/{$this->scramble_type}",serialize(array($this->t_scramble,$this->t_rscramble)));
+            $t      = array();
+            $t[0]   = '1.0';
+            $t[1]   = $this->t_scramble;
+            $t[2]   = $this->t_rscramble;
+            $t[3]   = $this->scramble_length;
+            $t[4]   = $this->label_counter;
+            file_put_contents("{$this->context_directory}/yakpro-po/context/{$this->scramble_type}",serialize($t));
         }
     }
 
@@ -411,15 +428,79 @@ class Scrambler
         }
         return $this->case_sensitive ? $this->t_scramble[$r] : $this->case_shuffle($this->t_scramble[$r]);
     }
+
+    public function generate_label_name($prefix = "!label")
+    {
+        return $prefix.($this->label_counter++);
+    }
 }
 
+class myPrettyprinter extends PhpParser\PrettyPrinter\Standard
+{
+    private function obfuscate_string($str)
+    {
+        $l = strlen($str);
+        $result = '';
+        for($i=0;$i<$l;++$i)
+        {
+            $result .= mt_rand(0,1) ? "\x".dechex(ord($str{$i})) : "\\".decoct(ord($str{$i}));
+        }
+        return $result;
+    }
+    
+
+    public function pScalar_String(PhpParser\Node\Scalar\String_ $node)
+    {
+        $result = $this->obfuscate_string($node->value);            if (!strlen($result)) return "''";
+        return  '"'.$this->obfuscate_string($node->value).'"';
+    }
+    
+    public function pScalar_Encapsed(PhpParser\Node\Scalar\Encapsed $node)
+    {
+        $result = '';
+        foreach ($node->parts as $element)
+        {
+            if (is_string($element))
+            {
+                $result .=  $this->obfuscate_string($element);
+            }
+            else
+            {
+                $result .= '{' . $this->p($element) . '}';
+            }
+        }
+        return '"'.$result.'"';
+    }
+}
 
 class MyNodeVisitor extends PhpParser\NodeVisitorAbstract       // all parsing and replacement of scrambled names is done here!
 {                                                               // see PHP-Parser for documentation!
+    private $t_loop_stack = array();
+
+    public function enterNode(PhpParser\Node $node)
+    {
+        global $conf;
+        global $t_scrambler;
+
+        if ($conf->obfuscate_loop_statement)             // loop statements  are replaced by goto ...
+        {
+            $scrambler = $t_scrambler['label'];
+            if (   ($node instanceof PhpParser\Node\Stmt\For_)   || ($node instanceof PhpParser\Node\Stmt\Foreach_) || ($node instanceof PhpParser\Node\Stmt\Switch_)
+                || ($node instanceof PhpParser\Node\Stmt\While_) || ($node instanceof PhpParser\Node\Stmt\Do_) )
+            {
+                $label_loop_break_name      = $scrambler->scramble($scrambler->generate_label_name());
+                $label_loop_continue_name   = $scrambler->scramble($scrambler->generate_label_name());
+                $this->t_loop_stack[] = array($label_loop_break_name,$label_loop_continue_name);
+           }
+           
+        }
+    }
+    
     public function leaveNode(PhpParser\Node $node)
     {
         global $conf;
         global $t_scrambler;
+        global $debug_mode;
 
         $node_modified = false;
         
@@ -513,9 +594,9 @@ class MyNodeVisitor extends PhpParser\NodeVisitorAbstract       // all parsing a
                         }
                         if (!$ok)
                         {
-                            throw new Exception("Error: your use of function_exists() function is not compatible with yakpro-po!".PHP_EOL."\tOnly 1 litteral string parameter is allowed...");
+                            throw new Exception("Error: your use of function_exists() function is not compatible with yakpro-po!".PHP_EOL."\tOnly 1 literal string parameter is allowed...");
                         }
-                        if ($warning) fprintf(STDERR, "Warning: your use of function_exists() function is not compatible with yakpro-po!".PHP_EOL."\t Only 1 litteral string parameter is allowed...".PHP_EOL);
+                        if ($warning) fprintf(STDERR, "Warning: your use of function_exists() function is not compatible with yakpro-po!".PHP_EOL."\t Only 1 literal string parameter is allowed...".PHP_EOL);
                     }
                 }
             }
@@ -741,7 +822,7 @@ class MyNodeVisitor extends PhpParser\NodeVisitorAbstract       // all parsing a
                         }
                         if (!$ok)
                         {
-                            throw new Exception("Error: your use of define() function is not compatible with yakpro-po!".PHP_EOL."\tOnly 2 parameters, when first ia a litteral string is allowed...");
+                            throw new Exception("Error: your use of define() function is not compatible with yakpro-po!".PHP_EOL."\tOnly 2 parameters, when first is a literal string is allowed...");
                         }
                     }
                 }
@@ -977,7 +1058,7 @@ class MyNodeVisitor extends PhpParser\NodeVisitorAbstract       // all parsing a
             }
         }
         
-        if ($conf->obfuscate_control_statement)             // if else elseif   are replaced by goto ...
+        if ($conf->obfuscate_if_statement)                  // if else elseif   are replaced by goto ...
         {
             $scrambler = $t_scrambler['label'];
             if ( ($node instanceof PhpParser\Node\Stmt\If_) )
@@ -989,13 +1070,13 @@ class MyNodeVisitor extends PhpParser\NodeVisitorAbstract       // all parsing a
 
                 if (isset($elseif) && count($elseif))       // elseif mode
                 {
-                    $label_endif_name   = $scrambler->scramble(generate_label_name());
+                    $label_endif_name   = $scrambler->scramble($scrambler->generate_label_name());
                     $label_endif        = array(new PhpParser\Node\Stmt\Label($label_endif_name));
                     $goto_endif         = array(new PhpParser\Node\Stmt\Goto_($label_endif_name));
                     
                     $new_nodes_1        = array();
                     $new_nodes_2        = array();
-                    $label_if_name      = $scrambler->scramble(generate_label_name());
+                    $label_if_name      = $scrambler->scramble($scrambler->generate_label_name());
                     $label_if           = array(new PhpParser\Node\Stmt\Label($label_if_name));
                     $goto_if            = array(new PhpParser\Node\Stmt\Goto_($label_if_name));
                     $if                 = new PhpParser\Node\Stmt\If_($condition);
@@ -1007,7 +1088,7 @@ class MyNodeVisitor extends PhpParser\NodeVisitorAbstract       // all parsing a
                     {
                         $condition      = $elseif[$i]->cond;
                         $stmts          = $elseif[$i]->stmts;
-                        $label_if_name  = $scrambler->scramble(generate_label_name());
+                        $label_if_name  = $scrambler->scramble($scrambler->generate_label_name());
                         $label_if       = array(new PhpParser\Node\Stmt\Label($label_if_name));
                         $goto_if        = array(new PhpParser\Node\Stmt\Goto_($label_if_name));
                         $if             = new PhpParser\Node\Stmt\If_($condition);
@@ -1031,10 +1112,10 @@ class MyNodeVisitor extends PhpParser\NodeVisitorAbstract       // all parsing a
                 {
                     if (isset($else))                   // else statement found
                     {
-                        $label_then_name    = $scrambler->scramble(generate_label_name());
+                        $label_then_name    = $scrambler->scramble($scrambler->generate_label_name());
                         $label_then         = array(new PhpParser\Node\Stmt\Label($label_then_name));
                         $goto_then          = array(new PhpParser\Node\Stmt\Goto_($label_then_name));
-                        $label_endif_name   = $scrambler->scramble(generate_label_name());
+                        $label_endif_name   = $scrambler->scramble($scrambler->generate_label_name());
                         $label_endif        = array(new PhpParser\Node\Stmt\Label($label_endif_name));
                         $goto_endif         = array(new PhpParser\Node\Stmt\Goto_($label_endif_name));
                         $node->stmts        = $goto_then;
@@ -1051,7 +1132,7 @@ class MyNodeVisitor extends PhpParser\NodeVisitorAbstract       // all parsing a
                         {
                             $new_condition      = new PhpParser\Node\Expr\BooleanNot($condition);
                         }
-                        $label_endif_name   = $scrambler->scramble(generate_label_name());
+                        $label_endif_name   = $scrambler->scramble($scrambler->generate_label_name());
                         $label_endif        = array(new PhpParser\Node\Stmt\Label($label_endif_name));
                         $goto_endif         = array(new PhpParser\Node\Stmt\Goto_($label_endif_name));
                         $node->cond         = $new_condition;
@@ -1061,14 +1142,164 @@ class MyNodeVisitor extends PhpParser\NodeVisitorAbstract       // all parsing a
                 }
             }
         }
+            
+        if ($conf->obfuscate_loop_statement)                  // for while do while   are replaced by goto ...
+        {
+            $scrambler = $t_scrambler['label'];
+            if ($node instanceof PhpParser\Node\Stmt\For_)
+            {
+                list($label_loop_break_name,$label_loop_continue_name) = array_pop($this->t_loop_stack);
+
+                $init                   = $node->init;
+                $condition              = (isset($node->cond) && sizeof($node->cond)) ? $node->cond[0] : null;
+                $loop                   = $node->loop;
+                $stmts                  = $node->stmts;
+                $label_loop_name        = $scrambler->scramble($scrambler->generate_label_name());
+                $label_loop             = array(new PhpParser\Node\Stmt\Label($label_loop_name));
+                $goto_loop              = array(new PhpParser\Node\Stmt\Goto_($label_loop_name));
+                $label_break            = array(new PhpParser\Node\Stmt\Label($label_loop_break_name));
+                $goto_break             = array(new PhpParser\Node\Stmt\Goto_($label_loop_break_name));
+                $label_continue         = array(new PhpParser\Node\Stmt\Label($label_loop_continue_name));
+                $goto_continue          = array(new PhpParser\Node\Stmt\Goto_($label_loop_continue_name));
+
+                $new_node               = array();
+                if (isset($init))
+                {
+                    $new_node           = array_merge($new_node,$init);
+                }
+                $new_node               = array_merge($new_node,$label_loop);
+                if (isset($condition))
+                {
+                    if ($condition instanceof PhpParser\Node\Expr\BooleanNot)     // avoid !! in generated code
+                    {
+                        $new_condition  = $condition->expr;
+                    }
+                    else
+                    {
+                        $new_condition  = new PhpParser\Node\Expr\BooleanNot($condition);
+                    }
+                    $if                 = new PhpParser\Node\Stmt\If_($new_condition);
+                    $if->stmts          = $goto_break;
+                    $new_node           = array_merge($new_node,array($if));
+               }
+                if (isset($stmts))
+                {
+                    $new_node           = array_merge($new_node,$stmts);
+                }
+                $new_node               = array_merge($new_node,$label_continue);
+                if (isset($loop))
+                {
+                    $new_node           = array_merge($new_node,$loop);
+                }
+                $new_node               = array_merge($new_node,$goto_loop);
+                $new_node               = array_merge($new_node,$label_break);
+                return $new_node;
+            }
+
+            if ( $node instanceof PhpParser\Node\Stmt\Foreach_)
+            {
+                list($label_loop_break_name,$label_loop_continue_name) = array_pop($this->t_loop_stack);
+
+                $label_break            = array(new PhpParser\Node\Stmt\Label($label_loop_break_name));
+                $node->stmts[]          = new PhpParser\Node\Stmt\Label($label_loop_continue_name);
+                return                  array_merge(array($node),$label_break);
+            }
+
+            if ( $node instanceof PhpParser\Node\Stmt\Switch_)
+            {
+                list($label_loop_break_name,$label_loop_continue_name) = array_pop($this->t_loop_stack);
+
+                $label_break            = array(new PhpParser\Node\Stmt\Label($label_loop_break_name));
+                $label_continue         = array(new PhpParser\Node\Stmt\Label($label_loop_continue_name));
+                return                  array_merge(array($node),$label_continue,$label_break);
+            }
+
+            if ( $node instanceof PhpParser\Node\Stmt\While_)
+            {
+                list($label_loop_break_name,$label_loop_continue_name) = array_pop($this->t_loop_stack);
+
+                $condition              = $node->cond;
+                $stmts                  = $node->stmts;
+                $label_break            = array(new PhpParser\Node\Stmt\Label($label_loop_break_name));
+                $goto_break             = array(new PhpParser\Node\Stmt\Goto_($label_loop_break_name));
+                $label_continue         = array(new PhpParser\Node\Stmt\Label($label_loop_continue_name));
+                $goto_continue          = array(new PhpParser\Node\Stmt\Goto_($label_loop_continue_name));
+                if ($condition instanceof PhpParser\Node\Expr\BooleanNot)     // avoid !! in generated code
+                {
+                    $new_condition      = $condition->expr;
+                }
+                else
+                {
+                    $new_condition      = new PhpParser\Node\Expr\BooleanNot($condition);
+                }
+                $if                     = new PhpParser\Node\Stmt\If_($new_condition);
+                $if->stmts              = $goto_break;
+                return                  array_merge($label_continue,array($if),$stmts,$goto_continue,$label_break);
+            }
+
+            if ( $node instanceof PhpParser\Node\Stmt\Do_)
+            {
+                list($label_loop_break_name,$label_loop_continue_name) = array_pop($this->t_loop_stack);
+
+                $condition              = $node->cond;
+                $stmts                  = $node->stmts;
+                $label_break            = array(new PhpParser\Node\Stmt\Label($label_loop_break_name));
+                $label_continue         = array(new PhpParser\Node\Stmt\Label($label_loop_continue_name));
+                $goto_continue          = array(new PhpParser\Node\Stmt\Goto_($label_loop_continue_name));
+                $if                     = new PhpParser\Node\Stmt\If_($condition);
+                $if->stmts              = $goto_continue;
+                return                  array_merge($label_continue,$stmts,array($if),$label_break);
+            }
+            
+            if ($node instanceof PhpParser\Node\Stmt\Break_)
+            {
+                $n = 1;
+                if (isset($node->num))
+                {
+                    if ($node->num instanceof PhpParser\Node\Scalar\LNumber)
+                    {
+                        $n = $node->num->value;
+                    }
+                    else
+                    {
+                        throw new Exception("Error: your use of break statement is not compatible with yakpro-po!".PHP_EOL."\tAt max 1 literal numeric parameter is allowed...");
+                    }
+                }
+                if (count($this->t_loop_stack) - $n <0)
+                {
+                    throw new Exception("Error: break statement outside loop found!;".PHP_EOL.(($debug_mode==2) ? print_r($node,true) : '') );
+                }
+                list($label_loop_break_name,$label_loop_continue_name) = $this->t_loop_stack[count($this->t_loop_stack) - $n ];
+                $node = new PhpParser\Node\Stmt\Goto_($label_loop_break_name);
+                $node_modified = true;
+            }
+            if ($node instanceof PhpParser\Node\Stmt\Continue_)
+            {
+                $n = 1;
+                if (isset($node->num))
+                {
+                    if ($node->num instanceof PhpParser\Node\Scalar\LNumber)
+                    {
+                        $n = $node->num->value;
+                    }
+                    else
+                    {
+                        throw new Exception("Error: your use of continue statement is not compatible with yakpro-po!".PHP_EOL."\tAt max 1 literal numeric parameter is allowed...");
+                    }
+                }
+                if (count($this->t_loop_stack) - $n <0)
+                {
+                    throw new Exception("Error: continue statement outside loop found!;".PHP_EOL.(($debug_mode==2) ? print_r($node,true) : ''));
+                }
+                list($label_loop_break_name,$label_loop_continue_name) = $this->t_loop_stack[count($this->t_loop_stack) - $n ];
+                $node = new PhpParser\Node\Stmt\Goto_($label_loop_continue_name);
+                $node_modified = true;
+            }
+
+            
+        }
         if ($node_modified) return $node;
     }
-/*
-    Not used yet...
-    public function beforeTraverse(array $nodes)    { }
-    public function leaveNode(PhpParser\Node $node) { }
-    public function afterTraverse(array $nodes)     { }
-*/
 }
 
 
@@ -1089,6 +1320,11 @@ function obfuscate($filename)                   // takes a filepath as input, re
             $stmts	= $parser->parse($source.PHP_EOL.PHP_EOL);  // PHP-Parser returns the syntax tree
         }
         catch (PhpParser\Error $e)                              // if an error occurs, then redo it without php_strip_whitespace, in order to display the right line number with error!
+        {
+            $source = file_get_contents($filename);
+            $stmts  = $parser->parse($source.PHP_EOL.PHP_EOL);
+        }
+        if ($debug_mode===2)                                    //  == 2 is true when debug_mode is true!
         {
             $source = file_get_contents($filename);
             $stmts  = $parser->parse($source.PHP_EOL.PHP_EOL);
@@ -1197,13 +1433,6 @@ function confirm($str)                                  // self-explanatory not 
         if ($r=='y')    return true;
         if ($r=='n')    return false;
     }
-}
-
-function generate_label_name($prefix = "!label")
-{
-    static $counter = 0;
-
-    return $prefix.($counter++);
 }
 
 function obfuscate_directory($source_dir,$target_dir,$keep_mode=false)   // self-explanatory recursive obfuscation
@@ -1373,6 +1602,13 @@ if (isset($pos) && ($pos!==false) )
     array_splice($t_args,$pos,1);           // remove the arg and reorder
 } else $debug_mode = false;;
 
+$pos = array_search('--debug',$t_args);     // repeated --debug
+if (isset($pos) && ($pos!==false) )
+{
+    $debug_mode = 2;
+    array_splice($t_args,$pos,1);           // remove the arg and reorder
+}
+
 
 // $t_args now containes remaining parameters.
 // We will first look for config file, and then we will analyze $t_args accordingly
@@ -1523,7 +1759,9 @@ if ($clean_mode && file_exists("$target_directory/yakpro-po/.yakpro-po-directory
 
 $parser             = new PhpParser\Parser(new PhpParser\Lexer\Emulative);      // $parser = new PhpParser\Parser(new PhpParser\Lexer);
 $traverser          = new PhpParser\NodeTraverser;
-$prettyPrinter      = new PhpParser\PrettyPrinter\Standard;
+
+if ($conf->obfuscate_string_literal)    $prettyPrinter      = new myPrettyprinter;
+else                                    $prettyPrinter      = new PhpParser\PrettyPrinter\Standard;
 
 $t_scrambler = array();
 foreach(array('variable','function','method','property','class','constant','namespace','label') as $dummy => $scramble_what)
