@@ -53,7 +53,9 @@ $conf->obfuscate_property_name      = true;         // self explanatory
 $conf->obfuscate_method_name        = true;         // self explanatory
 $conf->obfuscate_namespace_name     = true;         // self explanatory
 $conf->obfuscate_label_name         = true;         // label: , goto label;  obfuscation
-$conf->obfuscate_control_statement  = true;         // obfuscation of  if else elseif statements
+$conf->obfuscate_if_statement       = true;         // obfuscation of  if else elseif statements
+$conf->obfuscate_loop_statement     = true;         // obfuscation of  for while do while statements
+$conf->obfuscate_string_literal     = true;         // pseudo-obfuscation of  string literals
 
 $conf->strip_indentation            = true;         // all your obfuscated code will be generated on a single line
 $conf->abort_on_error               = true;         // self explanatory
