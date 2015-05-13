@@ -12,6 +12,7 @@
 //          No warranty of any kind.
 //          Use and abuse at your own risks.
 //========================================================================
+// when we use the word ignore, that means that it is ignored during the obfuscation process (i.e. not obfuscated)
 
 $conf->t_ignore_module_methods      = array('core', 'Exception', 'PDO');
 
