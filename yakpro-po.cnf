@@ -26,7 +26,7 @@ $conf->t_ignore_traits              = null;         // array where values are na
 $conf->t_ignore_namespaces          = null;         // array where values are names to ignore.
 $conf->t_ignore_labels              = null;         // array where values are names to ignore.
 
-$conf->t_ignore_constants_prefix    = null;         // array where values are names to ignore.
+$conf->t_ignore_constants_prefix    = null;         // array where values are prefix of names to ignore.
 $conf->t_ignore_variables_prefix    = null;         // array where values are prefix of names to ignore.
 $conf->t_ignore_functions_prefix    = null;         // array where values are prefix of names to ignore.
 $conf->t_ignore_methods_prefix      = null;         // array where values are prefix of names to ignore.
