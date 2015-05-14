@@ -105,6 +105,7 @@ else
     $config_filename = realpath($config_filename);
     if (!$conf->silent) fprintf(STDERR,"Info:\tUsing [%s] Config File...%s",$config_filename,PHP_EOL);
     require_once $config_filename;
+    $conf->validate();
     if ($force_conf_silent) $conf->silent = true;
 }
 //var_dump($conf);
