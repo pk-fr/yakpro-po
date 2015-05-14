@@ -37,6 +37,7 @@ to understand by human people, obfuscation is a very good way to achieve this go
   - Properties, Methods.
   - Namespaces
   - Labels.
+- Shuffles Statements
 
 - Recursivly obfuscates a project's directory.
 - Makefile like, timestamps based mechanism, to re-obfuscate only files that were changed since last obfuscation.
@@ -191,4 +192,24 @@ Recursivly removes target_directory/yakpro-po
     of the define function!
     There is no problem with the const MY_CONST = something; form!
 
+
+## Performance considerations
+
+    Except for the statements shuffling obfuscation option,  
+    the obfuscated program speed is almost the same that the orinal one.
+
+    $conf->shuffle_stmts    is set to true by default.
+
+    If you encounter performance issues, you can either set the option to false,
+    or fine tune the shuffle parameters with the associated options.
+
+    You must know that lesser is the chunk size, better is the obfuscation,  
+    and lower is your software performance!
+
+    (during my own tests, for the maximum of obfuscation, it costs me about 13% of performance)
+
+    You can tune it as you whish!
+
+
     
+   
