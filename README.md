@@ -196,7 +196,7 @@ Recursivly removes target_directory/yakpro-po
 ## Performance considerations
 
     Except for the statements shuffling obfuscation option,  
-    the obfuscated program speed is almost the same that the orinal one.
+    the obfuscated program speed is almost the same that the original one.
 
     $conf->shuffle_stmts    is set to true by default.
 
