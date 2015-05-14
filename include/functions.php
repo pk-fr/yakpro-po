@@ -40,6 +40,12 @@ function obfuscate($filename)                   // takes a file_path as input, r
         if ($debug_mode) var_dump($stmts);
 
         $stmts  = $traverser->traverse($stmts);                 //  Use PHP-Parser function to traverse the syntax tree and obfuscate names
+        if ($conf->shuffle_stmts)
+        {
+            $last_inst  = array_pop($stmts);
+            $stmts      = shuffle_statements($stmts);
+            $stmts[]    = $last_inst;
+        }
         $code   = $prettyPrinter->prettyPrintFile($stmts);      //  Use PHP-Parser function to output the obfuscated source, taking the modified obfuscated syntax tree as input
         $code   = trim($code);
 
@@ -243,5 +249,77 @@ function obfuscate_directory($source_dir,$target_dir,$keep_mode=false)   // self
     closedir($dp);
 }
 
+function shuffle_get_chunk_size(&$stmts)
+{
+    global $conf;
+
+    $n = count($stmts);
+    switch($conf->shuffle_stmts_chunk_mode)
+    {
+        case 'ratio':
+            $chunk_size = sprintf("%d",$n/$conf->shuffle_stmts_chunk_ratio)+0;
+            if ($chunk_size<$conf->shuffle_stmts_min_chunk_size) $chunk_size = $conf->shuffle_stmts_min_chunk_size;
+            break;
+        case 'fixed':
+            $chunk_size = $conf->shuffle_stmts_min_chunk_size;
+            break;
+        default:
+            $chunk_size =  -1;       // should never occur!
+    }
+    return $chunk_size;
+}
+
+function shuffle_statements($stmts)
+{
+    global $conf;
+    global $t_scrambler;
+
+    if (!$conf->shuffle_stmts)          return $stmts;
+    
+    $chunk_size = shuffle_get_chunk_size($stmts);
+    if ($chunk_size<=0)                 return $stmts; // should never occur!
+    
+    $n = count($stmts);
+    if ($n<(2*$chunk_size))             return $stmts;
+    
+    $scrambler              = $t_scrambler['label'];
+    $label_name_prev        = $scrambler->scramble($scrambler->generate_label_name());
+    $first_goto             = new PhpParser\Node\Stmt\Goto_($label_name_prev);
+    $t                      = array();
+    $t_chunk                = array();
+    for($i=0;$i<$n;++$i)
+    {
+        $t_chunk[]              = $stmts[$i];
+        if (count($t_chunk)>=$chunk_size)
+        {
+            $label              = array(new PhpParser\Node\Stmt\Label($label_name_prev));
+            $label_name         = $scrambler->scramble($scrambler->generate_label_name());
+            $goto               = array(new PhpParser\Node\Stmt\Goto_($label_name));
+            $t[]                = array_merge($label,$t_chunk,$goto);
+            $label_name_prev    = $label_name;
+            $t_chunk            = array();
+        }
+    }
+    if (count($t_chunk)>0)
+    {
+        $label              = array(new PhpParser\Node\Stmt\Label($label_name_prev));
+        $label_name         = $scrambler->scramble($scrambler->generate_label_name());
+        $goto               = array(new PhpParser\Node\Stmt\Goto_($label_name));
+        $t[]                = array_merge($label,$t_chunk,$goto);
+        $label_name_prev    = $label_name;
+        $t_chunk            = array();
+    }
+    
+    $last_label             = new PhpParser\Node\Stmt\Label($label_name);
+    shuffle($t);
+    $stmts = array();
+    $stmts[] = $first_goto;
+    foreach($t as $dummy => $stmt)
+    {
+        foreach($stmt as $dummy => $inst) $stmts[] = $inst;
+    }
+    $stmts[] = $last_label;
+    return $stmts;
+}
 
 ?>
