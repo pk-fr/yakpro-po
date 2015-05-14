@@ -4,7 +4,7 @@
 
 Gratuit, Open Source, Publié sous les termes de la licence MIT.  
 
-Ce programme utilise le meilleur parser php [PHP-Parser](https://github.com/nikic/PHP-Parser) pour analyser le php.
+Ce programme utilise le meilleur parser php [PHP-Parser](https://github.com/nikic/PHP-Parser) pour analyser le php.  
 [PHP-Parser](https://github.com/nikic/PHP-Parser) est une remarquable bibliothèque développée par [nikic](https://github.com/nikic).
 
 Télécharger l'archive zip et décompressez la dans le sous-répertoire PHP-Parser .
@@ -40,6 +40,8 @@ l'obfuscation est un très bon moyen de parvenir à vos fins.
   - Les Attributs, les Méthodes.
   - Les Espaces de Noms.
   - Les étiquettes.
+- Mélange les instructions.
+
 - Obfusque récursivement le répertoire d'un projet.
 - Un mécanisme de type Makefile, basé sur l'horodatage des fichiers, permet de ne re-obfusquer que les fichiers
 ayant été modifiés depuis la dernière obfuscation.
@@ -208,4 +210,23 @@ Supprime récursivement le répertoire répertoire_cible/yakpro-po
     Il n'y a aucune restriction si vous utilisez la construction :
         const MA_CONSTANTE = quelque_chose;
 
+
+
+
+## Considerations sur les Performances
+
+    Excepté pour l'option d'obfuscation concernant le mélange des instructions,  
+    la vitesse du programme obfusqué est équivalent à celle du programme original.
+
+    $conf->shuffle_stmts    est positionné à  true par défaut.  
+
+    Si vous rencontrez des problèmes de performance, vous pouvez soit désactiver l'option,  
+    soit paramétrer finement les options de mélange...  
+
+    Plus la taille du chunk est petite, meilleure sera l'obfuscation,  
+    ... et plus le coût sur les performance de votre logiciel sera élevé...
+    
+    (lors de mes propres tests, avec l'obfuscation maximale, la dégradation est de l'ordre de 13%)
+    
+    Vous avez tous les paramètres nécessaires à votre disposition pour parvenir à votre meilleur compromis.
 
