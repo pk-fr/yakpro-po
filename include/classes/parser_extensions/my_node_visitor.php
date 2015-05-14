@@ -859,7 +859,7 @@ class MyNodeVisitor extends PhpParser\NodeVisitorAbstract       // all parsing a
             }
         }
         
-        if ($conf->shuffle_stmts)       // TODO: switch
+        if ($conf->shuffle_stmts)
         {
             if (    ($node instanceof PhpParser\Node\Stmt\Function_)
                  || ($node instanceof PhpParser\Node\Stmt\ClassMethod)
