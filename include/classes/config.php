@@ -59,6 +59,12 @@ class Config
     public $obfuscate_loop_statement    = true;         // obfuscate for while do while statements
     public $obfuscate_string_literal    = true;         // pseudo-obfuscate string literals
 
+    public $shuffle_stmts               = true;         // shuffle chunks of statements!  disable this obfuscation (or minimize the number of chunks) if performance is important for you!
+    public $shuffle_stmts_min_chunk_size=    1;         // minimum number of statements in a chunk! the min value is 1, that gives you the maximum of obfuscation ... and the minimum of performance...
+    public $shuffle_stmts_chunk_mode    = 'fixed';      // 'fixed' or 'ratio' in fixed mode, the chunk_size is always equal to the min chunk size!
+    public $shuffle_stmts_chunk_ratio   =   20;         // ratio > 1  100/ratio is the percentage of chunks in a statements sequence  ratio = 2 means 50%  ratio = 100 mins 1% ...
+                                                        // if you increase the number of chunks, you increase also the obfuscation level ... and you increase also the performance overhead!
+
     public $strip_indentation           = true;         // all your obfuscated code will be generated on a single line
     public $abort_on_error              = true;         // self explanatory
     public $confirm                     = true;         // rfu : will answer Y on confirmation request (reserved for future use ... or not...)
@@ -87,6 +93,17 @@ class Config
     }
 
     public function get_comment() { return $this->comment; }
+
+    public function validate()
+    {
+        $this->shuffle_stmts_min_chunk_size += 0;
+        if ($this->shuffle_stmts_min_chunk_size<1)  $this->shuffle_stmts_min_chunk_size = 1;
+        
+        $this->shuffle_stmts_chunk_ratio += 0;
+        if ($this->shuffle_stmts_chunk_ratio<2)     $this->shuffle_stmts_chunk_ratio = 2;
+
+        if ($this->shuffle_stmts_chunk_mode!='ratio') $this->shuffle_stmts_chunk_mode = 'fixed';
+    }
 }
 
 ?>
