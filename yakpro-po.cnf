@@ -58,6 +58,12 @@ $conf->obfuscate_if_statement       = true;         // obfuscation of  if else e
 $conf->obfuscate_loop_statement     = true;         // obfuscation of  for while do while statements
 $conf->obfuscate_string_literal     = true;         // pseudo-obfuscation of  string literals
 
+$conf->shuffle_stmts                = true;         // shuffle chunks of statements!  disable this obfuscation (or minimize the number of chunks) if performance is important for you!
+$conf->shuffle_stmts_min_chunk_size =    1;         // minimum number of statements in a chunk! the min value is 1, that gives you the maximum of obfuscation ... and the minimum of performance...
+$conf->shuffle_stmts_chunk_mode     = 'fixed';      // 'fixed' or 'ratio' in fixed mode, the chunk_size is always equal to the min chunk size!
+$conf->shuffle_stmts_chunk_ratio    =   20;         // ratio > 1  100/ratio is the percentage of chunks in a statements sequence  ratio = 2 means 50%  ratio = 100 mins 1% ...
+                                                    // if you increase the number of chunks, you increase also the obfuscation level ... and you increase also the performance overhead!
+
 $conf->strip_indentation            = true;         // all your obfuscated code will be generated on a single line
 $conf->abort_on_error               = true;         // self explanatory
 $conf->confirm                      = true;         // rfu : will answer Y on confirmation request (reserved for future use ... or not...)
