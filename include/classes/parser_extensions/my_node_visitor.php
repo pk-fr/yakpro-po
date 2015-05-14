@@ -15,6 +15,30 @@ class MyNodeVisitor extends PhpParser\NodeVisitorAbstract       // all parsing a
 {                                                               // see PHP-Parser for documentation!
     private $t_loop_stack = array();
 
+    private function shuffle_stmts(PhpParser\Node &$node)
+    {
+        global $conf;
+        if ($conf->shuffle_stmts)
+        {
+            if (isset($node->stmts))
+            {
+                $stmts              = $node->stmts;
+                $chunk_size = shuffle_get_chunk_size($stmts);
+                if ($chunk_size<=0)                 return false; // should never occur!
+                
+                if (count($stmts)>(2*$chunk_size))
+                {
+                    //    $last_inst      = array_pop($stmts);
+                    $stmts          = shuffle_statements($stmts);
+                    //    $stmts[]        = $last_inst;
+                    $node->stmts    = $stmts;
+                    return  true;
+                }
+            }
+        }
+        return false;
+    }
+
     public function enterNode(PhpParser\Node $node)
     {
         global $conf;
@@ -739,6 +763,7 @@ class MyNodeVisitor extends PhpParser\NodeVisitorAbstract       // all parsing a
 
                 $label_break            = array(new PhpParser\Node\Stmt\Label($label_loop_break_name));
                 $node->stmts[]          = new PhpParser\Node\Stmt\Label($label_loop_continue_name);
+                                        $this->shuffle_stmts($node);
                 return                  array_merge(array($node),$label_break);
             }
 
@@ -832,9 +857,40 @@ class MyNodeVisitor extends PhpParser\NodeVisitorAbstract       // all parsing a
                 $node = new PhpParser\Node\Stmt\Goto_($label_loop_continue_name);
                 $node_modified = true;
             }
-
-
         }
+        
+        if ($conf->shuffle_stmts)       // TODO: switch
+        {
+            if (    ($node instanceof PhpParser\Node\Stmt\Function_)
+                 || ($node instanceof PhpParser\Node\Stmt\ClassMethod)
+                 || ($node instanceof PhpParser\Node\Stmt\Foreach_)     // occurs when $conf->obfuscate_loop_statement is set to false
+                 || ($node instanceof PhpParser\Node\Stmt\If_)          // occurs when $conf->obfuscate_loop_statement is set to false
+                 || ($node instanceof PhpParser\Node\Stmt\TryCatch)
+                 || ($node instanceof PhpParser\Node\Stmt\Catch_)
+                 || ($node instanceof PhpParser\Node\Stmt\Case_)
+              )
+            {
+                if ($this->shuffle_stmts($node))  $node_modified  = true;
+            }
+
+            if ( ($node instanceof PhpParser\Node\Stmt\If_) )           // occurs when $conf->obfuscate_if_statement is set to false
+            {
+                if (isset($node->{'else'}))
+                {
+                    if ($this->shuffle_stmts($node->{'else'}))  $node_modified  = true;
+                }
+                
+                $elseif                 = $node->elseifs;
+                if (isset($elseif) && count($elseif))       // elseif mode
+                {
+                    for($i=0;$i<count($elseif);++$i)
+                    {
+                        if ($this->shuffle_stmts($elseif[$i]))  $node_modified  = true;
+                    }
+                }
+            }
+        }
+        
         if ($node_modified) return $node;
     }
 }
