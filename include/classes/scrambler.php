@@ -15,8 +15,11 @@
 // case-insensitive:    function names, class names, class method names, namespaces, keywords and constructs
 // classes, interfaces, and traits share the same internal naming_space! only a single Scrambler instance for all of them!
 
+
 class Scrambler
 {
+    const SCRAMBLER_CONTEXT_VERSION = '1.0';
+
     private $t_first_chars          = null;     // allowed first char of a generated identifier
     private $t_chars                = null;     // allowed all except first char of a generated identifier
     private $l1                     = null;     // length of $t_first_chars string
@@ -255,7 +258,7 @@ class Scrambler
             if (file_exists("{$this->context_directory}/yakpro-po/context/{$this->scramble_type}"))
             {
                 $t = unserialize(file_get_contents("{$this->context_directory}/yakpro-po/context/{$this->scramble_type}"));
-                if ($t[0] !== '1.0')
+                if ($t[0] !== self::SCRAMBLER_CONTEXT_VERSION)
                 {
                     fprintf(STDERR,"Error:\tContext format has changed! run with --clean option!".PHP_EOL);
                     $this->context_directory = null;        // do not overwrite incoherent values when exiting
@@ -276,7 +279,7 @@ class Scrambler
         if (isset($this->context_directory))                            // the destructor will save the current context
         {
             $t      = array();
-            $t[0]   = '1.0';
+            $t[0]   = self::SCRAMBLER_CONTEXT_VERSION;
             $t[1]   = $this->t_scramble;
             $t[2]   = $this->t_rscramble;
             $t[3]   = $this->scramble_length;
