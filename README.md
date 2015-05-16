@@ -11,7 +11,9 @@ You just have to download the zip archive and uncompress it under the PHP-Parser
 or make a git clone ...
 
 The yakpro-po.cnf self-documented file contains many configuration options!  
-Take a look at it!
+Take a look at it!  
+
+Demo : [yakpro-po demo](http://php-obfuscator.yakpro.com/?demo).
 
 Prerequisites:  php 5.3 or higher, [PHP-Parser](https://github.com/nikic/PHP-Parser).
 
