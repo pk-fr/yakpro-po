@@ -13,7 +13,7 @@ or make a git clone ...
 The yakpro-po.cnf self-documented file contains many configuration options!  
 Take a look at it!  
 
-Demo : [yakpro-po demo](http://php-obfuscator.yakpro.com/?demo).
+Demo : [yakpro-po demo](https://www.php-obfuscator.com/?demo).
 
 Prerequisites:  php 5.3 or higher, [PHP-Parser](https://github.com/nikic/PHP-Parser).
 
