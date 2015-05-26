@@ -14,7 +14,7 @@ Le fichier de configuration yakpro-po.cnf est auto-documenté et contient de
 nombreuses options de configuration !  
 Un petit coup d'oeil vaut le détour.  
 
-Démo : [yakpro-po demo](http://php-obfuscator.yakpro.com/?demo).  
+Démo : [yakpro-po demo](https://www.php-obfuscator.com/?demo).
 
 Pré-requis:  php 5.3 ou supérieur, [PHP-Parser](https://github.com/nikic/PHP-Parser).
 
@@ -215,7 +215,7 @@ Supprime récursivement le répertoire répertoire_cible/yakpro-po
 
 
 
-## Considerations sur les Performances
+## Considérations sur les Performances
 
     Excepté pour l'option d'obfuscation concernant le mélange des instructions,  
     la vitesse du programme obfusqué est équivalent à celle du programme original.
