@@ -18,6 +18,9 @@ Démo : [yakpro-po demo](https://www.php-obfuscator.com/?demo).
 
 Pré-requis:  php 5.3 ou supérieur, [PHP-Parser](https://github.com/nikic/PHP-Parser).
 
+Remarque : Cet outil à été conçu dans le but d'obfusquer des sources en php pur.  
+Il n'a pas été conçu pour être utilisé avec du html avec des bouts de code php à l'intérieur.
+
 
 ## Qu'est-ce qu'un Obfuscateur Php ?
 
