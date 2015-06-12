@@ -18,7 +18,8 @@ Demo : [yakpro-po demo](https://www.php-obfuscator.com/?demo).
 Prerequisites:  php 5.3 or higher, [PHP-Parser](https://github.com/nikic/PHP-Parser).
 
 Note: This tool has been written to obfuscate pure php sources.  
-it is not intended to be used with html and embeded php inside.
+it is not intended to be used with html and embeded php inside.  
+You can still embed html within php using the echo <<<END ... END; syntax!
 
 ## What is Php Obfuscation?
 
