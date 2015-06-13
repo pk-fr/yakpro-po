@@ -153,11 +153,61 @@ Supprime récursivement le répertoire répertoire_cible/yakpro-po
                  utilisez l'option  --clean  et ré-obfusquez l'ensemble du projet.
 
 ## Autre options de la ligne de commande :
+( modifient les options du fichier de configuration )
+
     --silent                   ommet l'affichage des messages de niveau Information.
     --debug                    (utilisation interne pour le debug) affichage de l'arbre syntaxique.
-    -s ou
-    --no-strip-indentation     force la sortie à ne pas être sur une seule ligne.
-    --scramble-mode identifier (ou hexa ou numeric) force le scramble mode.
+
+    -s or
+    --no-strip-indentation          génère le code sur plusieurs lignes indentées
+    --strip-indentation             génère tout sur une seule ligne
+
+    --no-shuffle-statements         ne pas mélanger les instructions
+    --shuffle-statements                   mélanger les instructions
+
+    --no-obfuscate-string-literal   ne pas obfusquer les chaines de caractères
+    --obfuscate-string-literal             obfusquer les chaines de caractères
+
+    --no-obfuscate-loop-statement   ne pas obfusquer les boucles
+    --obfuscate-loop-statement             obfusquer les boucles
+
+    --no-obfuscate-if-statement     ne pas obfusquer les "if"
+    --obfuscate-if-statement               obfusquer les "if"
+
+    --no-obfuscate-constant-name    ne pas obfusquer les noms de constantes
+    --obfuscate-constant-name              obfusquer les noms de constantes
+
+    --no-obfuscate-variable-name    ne pas obfusquer les noms de variables
+    --obfuscate-variable-name              obfusquer les noms de variables
+
+    --no-obfuscate-function-name    ne pas obfusquer les noms de functions
+    --obfuscate-function-name              obfusquer les noms de functions
+
+    --no-obfuscate-class-name       ne pas obfusquer les noms de classes
+    --obfuscate-class-name                 obfusquer les noms de classes
+
+    --no-obfuscate-interface-name   ne pas obfusquer les noms d'interfaces
+    --obfuscate-interface-name             obfusquer les noms d'interfaces
+
+    --no-obfuscate-trait-name       ne pas obfusquer les noms de traits
+    --obfuscate-trait-name                 obfusquer les noms de traits
+
+    --no-obfuscate-property-name    ne pas obfusquer les noms d'attributs
+    --obfuscate-property-name              obfusquer les noms d'attributs
+
+    --no-obfuscate-method-name      ne pas obfusquer les noms de méthodes
+    --obfuscate-method-name                obfusquer les noms de méthodes
+
+    --no-obfuscate-namespace-name   ne pas obfusquer les noms de namespaces
+    --obfuscate-namespace-name             obfusquer les noms de namespaces
+
+    --no-obfuscate-label-name       ne pas obfusquer les étiquettes
+    --obfuscate-label-name                 obfusquer les étiquettes
+
+    --scramble-mode     identifier|hexa|numeric         force le scramble mode
+    --scramble-length   longueur ( min=2; max = 16 pour scramble_mode=identifier,
+                                          max = 32 pour scramble_mode = hexa ou numeric)
+
     -h ou
     --help                     affiche l'aide.
 
