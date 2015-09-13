@@ -98,7 +98,7 @@ function check_config_file($filename)                       // self-explanatory
         $ok     = true;
         break;
     }
-    if (!$ok && $display_warning) fprintf(STDERR,"Warning:[%S] is not a valid yakpro-po config file!%s\tCheck if file is php, and if magic line is present!%s",$filename,PHP_EOL,PHP_EOL);
+    if (!$ok) fprintf(STDERR,"Warning:[%s] is not a valid yakpro-po config file!%s\tCheck if file is php, and if magic line is present!%s",$filename,PHP_EOL,PHP_EOL);
     return $ok;
 }
 
@@ -127,7 +127,7 @@ function remove_directory($path)                            // self-explanatory
             if ($entry ==  ".") continue;
             if ($entry == "..") continue;
 
-                 if (is_link("$path/$entry"))   unlink("$path/$entry" );            // remove symbolinc links first, to not dereference...
+                 if (is_link("$path/$entry"))   unlink("$path/$entry" );            // remove symbolic links first, to not dereference...
             else if (is_dir ("$path/$entry"))   remove_directory("$path/$entry");
             else                                unlink("$path/$entry" );
         }
