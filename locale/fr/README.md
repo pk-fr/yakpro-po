@@ -118,7 +118,7 @@ Supprime récursivement le répertoire répertoire_cible/yakpro-po
 ## Algorithme de chargement du fichier de configuration :
 (Le premier trouvé sera utilisé)
 
-    --config-file répertoire_cible
+    --config-file chemin_du_fichier_de_config
     La valeur de la variable d'environnement YAKPRO_PO_CONFIG_FILE
     si elle existe et est non vide.
 
