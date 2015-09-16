@@ -402,7 +402,7 @@ class MyNodeVisitor extends PhpParser\NodeVisitorAbstract       // all parsing a
                     }
                 }
             }
-            if ($node instanceof PhpParser\Node\Const_)
+            if ( ($node instanceof PhpParser\Node\Const_) || ($node instanceof PhpParser\Node\Expr\ClassConstFetch) )
             {
                 $name = $node->name;
                 if ( is_string($name) && (strlen($name) !== 0) )
