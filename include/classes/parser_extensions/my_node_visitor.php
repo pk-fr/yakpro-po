@@ -193,7 +193,11 @@ class MyNodeVisitor extends PhpParser\NodeVisitorAbstract       // all parsing a
                     }
                 }
             }
-            if ( ($node instanceof PhpParser\Node\Expr\New_) || ($node instanceof PhpParser\Node\Expr\StaticCall) || ($node instanceof PhpParser\Node\Expr\StaticPropertyFetch) )
+            if (  ($node instanceof PhpParser\Node\Expr\New_)
+               || ($node instanceof PhpParser\Node\Expr\StaticCall)
+               || ($node instanceof PhpParser\Node\Expr\StaticPropertyFetch)
+               || ($node instanceof PhpParser\Node\Expr\ClassConstFetch)
+               )
             {
                 $parts = $node->{'class'}->parts;
                 $name  = $parts[count($parts)-1];
@@ -420,7 +424,7 @@ class MyNodeVisitor extends PhpParser\NodeVisitorAbstract       // all parsing a
         if ($conf->obfuscate_namespace_name)
         {
             $scrambler = $t_scrambler['namespace'];
-            if ( ($node instanceof PhpParser\Node\Stmt\Namespace_)|| ($node instanceof PhpParser\Node\Stmt\UseUse) )
+            if ( ($node instanceof PhpParser\Node\Stmt\Namespace_ )|| ($node instanceof PhpParser\Node\Stmt\UseUse) )
             {
                 if (isset($node->name->parts))
                 {
