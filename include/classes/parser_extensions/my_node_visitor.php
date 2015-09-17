@@ -424,7 +424,7 @@ class MyNodeVisitor extends PhpParser\NodeVisitorAbstract       // all parsing a
         if ($conf->obfuscate_namespace_name)
         {
             $scrambler = $t_scrambler['namespace'];
-            if ( ($node instanceof PhpParser\Node\Stmt\Namespace_ )|| ($node instanceof PhpParser\Node\Stmt\UseUse) )
+            if ( ($node instanceof PhpParser\Node\Stmt\Namespace_) || ($node instanceof PhpParser\Node\Stmt\UseUse) )
             {
                 if (isset($node->name->parts))
                 {
