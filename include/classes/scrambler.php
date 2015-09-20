@@ -120,6 +120,21 @@ class Scrambler
                     $this->t_ignore_prefix  = $t;
                 }
                 break;
+            case 'class_constant':
+                $this->case_sensitive       = true;
+                $this->t_ignore             = array_flip($this->t_reserved_function_names);
+                $this->t_ignore             = array_merge($this->t_ignore,get_defined_constants(false));
+                if (isset($conf->t_ignore_class_constants))
+                {
+                    $t                      = $conf->t_ignore_class_constants;          $t = array_flip($t);
+                    $this->t_ignore         = array_merge($this->t_ignore,$t);
+                }
+                if (isset($conf->t_ignore_class_constants_prefix))
+                {
+                    $t                      = $conf->t_ignore_class_constants_prefix;   $t = array_flip($t);
+                    $this->t_ignore_prefix  = $t;
+                }
+                break;
             case 'variable':
                 $this->case_sensitive       = true;
                 $this->t_ignore             = array_flip($this->t_reserved_variable_names);
@@ -205,8 +220,14 @@ class Scrambler
             case 'method':
                 $this->case_sensitive       = false;
                 $this->t_ignore             = array_flip($this->t_reserved_function_names);
-                if (isset($conf->t_ignore_module_methods)) foreach($conf->t_ignore_module_methods as $dummy => $module_name)
+                
+                if (!isset($conf->t_ignore_module_methods)) $conf->t_ignore_module_methods = array();
+                $conf->t_ignore_module_methods = array_flip($conf->t_ignore_module_methods);
+                $conf->t_ignore_module_methods['core'] = 1;         // force core!
+                
+                foreach(array_keys($conf->t_ignore_module_methods) as $module_name)
                 {
+                    if (!isset($this->t_reserved_method_names[$module_name])) continue;
                     $t                      = array_map('strtolower',$this->t_reserved_method_names[$module_name]);                     $t = array_flip($t);
                     $this->t_ignore         = array_merge($this->t_ignore,$t);
                 }
@@ -275,7 +296,7 @@ class Scrambler
     function __destruct()
     {
         //print_r($this->t_scramble);
-        if (!$this->silent) fprintf(STDERR,"Info:\t[%-9s] scrambled \t: %8d%s",$this->scramble_type,count($this->t_scramble),PHP_EOL);
+        if (!$this->silent) fprintf(STDERR,"Info:\t[%-14s] scrambled \t: %8d%s",$this->scramble_type,count($this->t_scramble),PHP_EOL);
         if (isset($this->context_directory))                            // the destructor will save the current context
         {
             $t      = array();
