@@ -85,14 +85,20 @@ class Config
 
     function __construct()
     {
-        $this->comment .= "/*   ________________________________________________".PHP_EOL;
-        $this->comment .= "    |    Obfuscated by YAK Pro - Php Obfuscator      |".PHP_EOL;
-        $this->comment .= "    |  GitHub: https://github.com/pk-fr/yakpro-po    |".PHP_EOL;
-        $this->comment .= "    |________________________________________________|".PHP_EOL;
+        $this->comment .= "/*   __________________________________________________".PHP_EOL;
+        $this->comment .= "    |      Obfuscated by YAK Pro - Php Obfuscator      |".PHP_EOL;
+        $this->comment .= "    |              on %s              |".PHP_EOL;
+        $this->comment .= "    |    GitHub: https://github.com/pk-fr/yakpro-po    |".PHP_EOL;
+        $this->comment .= "    |__________________________________________________|".PHP_EOL;
         $this->comment .= "*/".PHP_EOL;
     }
 
-    public function get_comment() { return $this->comment; }
+    public function get_comment()
+    {
+        $now = strftime("%F %T");
+
+        return sprintf($this->comment,$now);
+    }
 
     public function validate()
     {
