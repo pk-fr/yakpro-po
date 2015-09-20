@@ -13,7 +13,9 @@
 
 class MyNodeVisitor extends PhpParser\NodeVisitorAbstract       // all parsing and replacement of scrambled names is done here!
 {                                                               // see PHP-Parser for documentation!
-    private $t_loop_stack = array();
+    private $t_loop_stack                   = array();
+    private $current_class_name             = null;
+    private $is_in_class_const_definition   = false;
 
     private function shuffle_stmts(PhpParser\Node &$node)
     {
@@ -55,6 +57,18 @@ class MyNodeVisitor extends PhpParser\NodeVisitorAbstract       // all parsing a
                 $this->t_loop_stack[] = array($label_loop_break_name,$label_loop_continue_name);
            }
         }
+        if ($node instanceof PhpParser\Node\Stmt\Class_)
+        {
+            $name = $node->name;
+            if ( is_string($name) && (strlen($name) !== 0) )
+            {
+                $this->current_class_name = $name;
+            }
+        }
+        if ($node instanceof PhpParser\Node\Stmt\ClassConst)
+        {
+            $this->is_in_class_const_definition = true;
+        }
     }
 
     public function leaveNode(PhpParser\Node $node)
@@ -64,6 +78,9 @@ class MyNodeVisitor extends PhpParser\NodeVisitorAbstract       // all parsing a
         global $debug_mode;
 
         $node_modified = false;
+
+        if ($node instanceof PhpParser\Node\Stmt\Class_)             $this->current_class_name = null;
+        if ($node instanceof PhpParser\Node\Stmt\ClassConst)         $this->is_in_class_const_definition = false;
 
         if ($conf->obfuscate_variable_name)
         {
@@ -406,7 +423,7 @@ class MyNodeVisitor extends PhpParser\NodeVisitorAbstract       // all parsing a
                     }
                 }
             }
-            if ( ($node instanceof PhpParser\Node\Const_) || ($node instanceof PhpParser\Node\Expr\ClassConstFetch) )
+            if ( ($node instanceof PhpParser\Node\Const_) && !$this->is_in_class_const_definition )
             {
                 $name = $node->name;
                 if ( is_string($name) && (strlen($name) !== 0) )
@@ -420,7 +437,46 @@ class MyNodeVisitor extends PhpParser\NodeVisitorAbstract       // all parsing a
                 }
             }
         }
-
+        
+        if  ($conf->obfuscate_class_constant_name)
+        {
+            $scrambler  = $t_scrambler['class_constant'];
+            if ( ($node instanceof PhpParser\Node\Const_) && $this->is_in_class_const_definition )
+            {
+                $do_scramble = true;
+                if (isset($this->current_class_name))
+                {
+                    if ( $this->current_class_name == $t_scrambler['class']->scramble($this->current_class_name) ) $do_scramble = false;;
+                }
+                if ($do_scramble)                                                           // if class name is not obfuscated then do not obfuscate class constant
+                {
+                    $name = $node->name;
+                    if ( is_string($name) && (strlen($name) !== 0) )
+                    {
+                        $r = $scrambler->scramble($name);
+                        if ($r!==$name)
+                        {
+                            $node->name = $r;
+                            $node_modified = true;
+                        }
+                    }
+                }
+            }
+            if ( ($node instanceof PhpParser\Node\Expr\ClassConstFetch) && $node_modified ) // if class name is not obfuscated then do not obfuscate class constant
+            {
+                $name       = $node->name;
+                if ( is_string($name) && (strlen($name) !== 0) )
+                {
+                    $r = $scrambler->scramble($name);
+                    if ($r!==$name)
+                    {
+                        $node->name = $r;
+                        $node_modified = true;
+                    }
+                }
+            }
+        }
+        
         if ($conf->obfuscate_namespace_name)
         {
             $scrambler = $t_scrambler['namespace'];
