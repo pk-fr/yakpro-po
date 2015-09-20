@@ -15,71 +15,75 @@
 
 class Config
 {
-    public $t_ignore_module_methods     = array('core', 'Exception', 'PDO');    // array where values are internal known module names.
+    public $t_ignore_module_methods         = array('core', 'Exception', 'PDO');    // array where values are internal known module names.
 
-    public $t_ignore_constants          = null;         // array where values are names to ignore.
-    public $t_ignore_variables          = null;         // array where values are names to ignore.
-    public $t_ignore_functions          = null;         // array where values are names to ignore.
-    public $t_ignore_methods            = null;         // array where values are names to ignore.
-    public $t_ignore_properties         = null;         // array where values are names to ignore.
-    public $t_ignore_classes            = null;         // array where values are names to ignore.
-    public $t_ignore_interfaces         = null;         // array where values are names to ignore.
-    public $t_ignore_traits             = null;         // array where values are names to ignore.
-    public $t_ignore_namespaces         = null;         // array where values are names to ignore.
-    public $t_ignore_labels             = null;         // array where values are names to ignore.
+    public $t_ignore_constants              = null;         // array where values are names to ignore.
+    public $t_ignore_variables              = null;         // array where values are names to ignore.
+    public $t_ignore_functions              = null;         // array where values are names to ignore.
+    public $t_ignore_class_constants        = null;         // array where values are names to ignore.
+    public $t_ignore_methods                = null;         // array where values are names to ignore.
+    public $t_ignore_properties             = null;         // array where values are names to ignore.
+    public $t_ignore_classes                = null;         // array where values are names to ignore.
+    public $t_ignore_interfaces             = null;         // array where values are names to ignore.
+    public $t_ignore_traits                 = null;         // array where values are names to ignore.
+    public $t_ignore_namespaces             = null;         // array where values are names to ignore.
+    public $t_ignore_labels                 = null;         // array where values are names to ignore.
 
-    public $t_ignore_constants_prefix   = null;         // array where values are prefix of names to ignore.
-    public $t_ignore_variables_prefix   = null;         // array where values are prefix of names to ignore.
-    public $t_ignore_functions_prefix   = null;         // array where values are prefix of names to ignore.
-    public $t_ignore_methods_prefix     = null;         // array where values are prefix of names to ignore.
-    public $t_ignore_properties_prefix  = null;         // array where values are prefix of names to ignore.
-    public $t_ignore_classes_prefix     = null;         // array where values are prefix of names to ignore.
-    public $t_ignore_interfaces_prefix  = null;         // array where values are names to ignore.
-    public $t_ignore_traits_prefix      = null;         // array where values are names to ignore.
-    public $t_ignore_namespaces_prefix  = null;         // array where values are prefix of names to ignore.
-    public $t_ignore_labels_prefix      = null;         // array where values are prefix of names to ignore.
+    public $t_ignore_constants_prefix       = null;         // array where values are prefix of names to ignore.
+    public $t_ignore_variables_prefix       = null;         // array where values are prefix of names to ignore.
+    public $t_ignore_functions_prefix       = null;         // array where values are prefix of names to ignore.
+    
+    public $t_ignore_class_constants_prefix = null;         // array where values are prefix of names to ignore.
+    public $t_ignore_properties_prefix      = null;         // array where values are prefix of names to ignore.
+    public $t_ignore_methods_prefix         = null;         // array where values are prefix of names to ignore.
+
+    public $t_ignore_classes_prefix         = null;         // array where values are prefix of names to ignore.
+    public $t_ignore_interfaces_prefix      = null;         // array where values are names to ignore.
+    public $t_ignore_traits_prefix          = null;         // array where values are names to ignore.
+    public $t_ignore_namespaces_prefix      = null;         // array where values are prefix of names to ignore.
+    public $t_ignore_labels_prefix          = null;         // array where values are prefix of names to ignore.
 
 
-    public $scramble_mode               = 'identifier'; // allowed modes are identifier, hexa, numeric
-    public $scramble_length             = null;         // min length of scrambled names (max = 16 for identifier, 32 for hexa and numeric)
+    public $scramble_mode                   = 'identifier'; // allowed modes are identifier, hexa, numeric
+    public $scramble_length                 = null;         // min length of scrambled names (max = 16 for identifier, 32 for hexa and numeric)
 
-    public $t_obfuscate_php_extension   = array('php');
+    public $t_obfuscate_php_extension       = array('php');
 
-    public $obfuscate_constant_name     = true;         // self explanatory
-    public $obfuscate_variable_name     = true;         // self explanatory
-    public $obfuscate_function_name     = true;         // self explanatory
-    public $obfuscate_class_name        = true;         // self explanatory
-    public $obfuscate_interface_name    = true;         // self explanatory
-    public $obfuscate_trait_name        = true;         // self explanatory
-    public $obfuscate_property_name     = true;         // self explanatory
-    public $obfuscate_method_name       = true;         // self explanatory
-    public $obfuscate_namespace_name    = true;         // self explanatory
-    public $obfuscate_label_name        = true;         // label: , goto label;  obfuscation
-    public $obfuscate_if_statement      = true;         // obfuscate if else elseif statements
-    public $obfuscate_loop_statement    = true;         // obfuscate for while do while statements
-    public $obfuscate_string_literal    = true;         // pseudo-obfuscate string literals
+    public $obfuscate_constant_name         = true;         // self explanatory
+    public $obfuscate_variable_name         = true;         // self explanatory
+    public $obfuscate_function_name         = true;         // self explanatory
+    public $obfuscate_class_name            = true;         // self explanatory
+    public $obfuscate_interface_name        = true;         // self explanatory
+    public $obfuscate_trait_name            = true;         // self explanatory
+    public $obfuscate_property_name         = true;         // self explanatory
+    public $obfuscate_method_name           = true;         // self explanatory
+    public $obfuscate_namespace_name        = true;         // self explanatory
+    public $obfuscate_label_name            = true;         // label: , goto label;  obfuscation
+    public $obfuscate_if_statement          = true;         // obfuscate if else elseif statements
+    public $obfuscate_loop_statement        = true;         // obfuscate for while do while statements
+    public $obfuscate_string_literal        = true;         // pseudo-obfuscate string literals
 
-    public $shuffle_stmts               = true;         // shuffle chunks of statements!  disable this obfuscation (or minimize the number of chunks) if performance is important for you!
-    public $shuffle_stmts_min_chunk_size=    1;         // minimum number of statements in a chunk! the min value is 1, that gives you the maximum of obfuscation ... and the minimum of performance...
-    public $shuffle_stmts_chunk_mode    = 'fixed';      // 'fixed' or 'ratio' in fixed mode, the chunk_size is always equal to the min chunk size!
-    public $shuffle_stmts_chunk_ratio   =   20;         // ratio > 1  100/ratio is the percentage of chunks in a statements sequence  ratio = 2 means 50%  ratio = 100 mins 1% ...
+    public $shuffle_stmts                   = true;         // shuffle chunks of statements!  disable this obfuscation (or minimize the number of chunks) if performance is important for you!
+    public $shuffle_stmts_min_chunk_size    =    1;         // minimum number of statements in a chunk! the min value is 1, that gives you the maximum of obfuscation ... and the minimum of performance...
+    public $shuffle_stmts_chunk_mode        = 'fixed';      // 'fixed' or 'ratio' in fixed mode, the chunk_size is always equal to the min chunk size!
+    public $shuffle_stmts_chunk_ratio       =   20;         // ratio > 1  100/ratio is the percentage of chunks in a statements sequence  ratio = 2 means 50%  ratio = 100 mins 1% ...
                                                         // if you increase the number of chunks, you increase also the obfuscation level ... and you increase also the performance overhead!
 
-    public $strip_indentation           = true;         // all your obfuscated code will be generated on a single line
-    public $abort_on_error              = true;         // self explanatory
-    public $confirm                     = true;         // rfu : will answer Y on confirmation request (reserved for future use ... or not...)
-    public $silent                      = false;        // display or not Information level messages.
+    public $strip_indentation               = true;         // all your obfuscated code will be generated on a single line
+    public $abort_on_error                  = true;         // self explanatory
+    public $confirm                         = true;         // rfu : will answer Y on confirmation request (reserved for future use ... or not...)
+    public $silent                          = false;        // display or not Information level messages.
 
-    public $t_keep                      = false;        // array of directory or file pathnames to keep 'as is' ...  i.e. not obfuscate.
-    public $t_skip                      = false;        // array of directory or file pathnames to skip when exploring source tree structure ... they will not be on target!
+    public $t_keep                          = false;        // array of directory or file pathnames to keep 'as is' ...  i.e. not obfuscate.
+    public $t_skip                          = false;        // array of directory or file pathnames to skip when exploring source tree structure ... they will not be on target!
 
-    public $source_directory            = null;         // self explanatory
-    public $target_directory            = null;         // self explanatory
+    public $source_directory                = null;         // self explanatory
+    public $target_directory                = null;         // self explanatory
 
-    public $user_comment                = null;         // user comment to insert inside each obfuscated file
+    public $user_comment                    = null;         // user comment to insert inside each obfuscated file
 
-    public $extract_comment_from_line   = null;         // when both 2 are set, each obfuscated file will contain an extract of the corresponding source file,
-    public $extract_comment_to_line     = null;         // starting from extract_comment_from_line number, and endng at extract_comment_to_line line number.
+    public $extract_comment_from_line       = null;         // when both 2 are set, each obfuscated file will contain an extract of the corresponding source file,
+    public $extract_comment_to_line         = null;         // starting from extract_comment_from_line number, and endng at extract_comment_to_line line number.
 
     private $comment                    = '';
 
