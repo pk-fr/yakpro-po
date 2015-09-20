@@ -117,52 +117,55 @@ if (isset($pos) && ($pos!==false) )
     array_splice($t_args,$pos,1);           // remove the arg and reorder
 }
 
-$pos = array_search('-s',$t_args);                              if (isset($pos) && ($pos!==false)) { $conf->strip_indentation           = false; array_splice($t_args,$pos,1); }
-$pos = array_search('--no-strip-indentation',$t_args);          if (isset($pos) && ($pos!==false)) { $conf->strip_indentation           = false; array_splice($t_args,$pos,1); }
-$pos = array_search('--strip-indentation',$t_args);             if (isset($pos) && ($pos!==false)) { $conf->strip_indentation           = true;  array_splice($t_args,$pos,1); }
+$pos = array_search('-s',$t_args);                                  if (isset($pos) && ($pos!==false)) { $conf->strip_indentation               = false; array_splice($t_args,$pos,1); }
+$pos = array_search('--no-strip-indentation',$t_args);              if (isset($pos) && ($pos!==false)) { $conf->strip_indentation               = false; array_splice($t_args,$pos,1); }
+$pos = array_search('--strip-indentation',$t_args);                 if (isset($pos) && ($pos!==false)) { $conf->strip_indentation               = true;  array_splice($t_args,$pos,1); }
 
-$pos = array_search('--no-shuffle-statements',$t_args);         if (isset($pos) && ($pos!==false)) { $conf->shuffle_stmts               = false; array_splice($t_args,$pos,1); }
-$pos = array_search('--shuffle-statements',$t_args);            if (isset($pos) && ($pos!==false)) { $conf->shuffle_stmts               = true;  array_splice($t_args,$pos,1); }
+$pos = array_search('--no-shuffle-statements',$t_args);             if (isset($pos) && ($pos!==false)) { $conf->shuffle_stmts                   = false; array_splice($t_args,$pos,1); }
+$pos = array_search('--shuffle-statements',$t_args);                if (isset($pos) && ($pos!==false)) { $conf->shuffle_stmts                   = true;  array_splice($t_args,$pos,1); }
 
-$pos = array_search('--no-obfuscate-string-literal',$t_args);   if (isset($pos) && ($pos!==false)) { $conf->obfuscate_string_literal    = false; array_splice($t_args,$pos,1); }
-$pos = array_search('--obfuscate-string-literal',$t_args);      if (isset($pos) && ($pos!==false)) { $conf->obfuscate_string_literal    = true;  array_splice($t_args,$pos,1); }
+$pos = array_search('--no-obfuscate-string-literal',$t_args);       if (isset($pos) && ($pos!==false)) { $conf->obfuscate_string_literal        = false; array_splice($t_args,$pos,1); }
+$pos = array_search('--obfuscate-string-literal',$t_args);          if (isset($pos) && ($pos!==false)) { $conf->obfuscate_string_literal        = true;  array_splice($t_args,$pos,1); }
 
-$pos = array_search('--no-obfuscate-loop-statement',$t_args);   if (isset($pos) && ($pos!==false)) { $conf->obfuscate_loop_statement    = false; array_splice($t_args,$pos,1); }
-$pos = array_search('--obfuscate-loop-statement',$t_args);      if (isset($pos) && ($pos!==false)) { $conf->obfuscate_loop_statement    = true;  array_splice($t_args,$pos,1); }
+$pos = array_search('--no-obfuscate-loop-statement',$t_args);       if (isset($pos) && ($pos!==false)) { $conf->obfuscate_loop_statement        = false; array_splice($t_args,$pos,1); }
+$pos = array_search('--obfuscate-loop-statement',$t_args);          if (isset($pos) && ($pos!==false)) { $conf->obfuscate_loop_statement        = true;  array_splice($t_args,$pos,1); }
 
-$pos = array_search('--no-obfuscate-if-statement',$t_args);     if (isset($pos) && ($pos!==false)) { $conf->obfuscate_if_statement      = false; array_splice($t_args,$pos,1); }
-$pos = array_search('--obfuscate-if-statement',$t_args);        if (isset($pos) && ($pos!==false)) { $conf->obfuscate_if_statement      = true;  array_splice($t_args,$pos,1); }
+$pos = array_search('--no-obfuscate-if-statement',$t_args);         if (isset($pos) && ($pos!==false)) { $conf->obfuscate_if_statement          = false; array_splice($t_args,$pos,1); }
+$pos = array_search('--obfuscate-if-statement',$t_args);            if (isset($pos) && ($pos!==false)) { $conf->obfuscate_if_statement          = true;  array_splice($t_args,$pos,1); }
 
 
-$pos = array_search('--no-obfuscate-constant-name',$t_args);    if (isset($pos) && ($pos!==false)) { $conf->obfuscate_constant_name     = false; array_splice($t_args,$pos,1); }
-$pos = array_search('--obfuscate-constant-name',$t_args);       if (isset($pos) && ($pos!==false)) { $conf->obfuscate_constant_name     = true;  array_splice($t_args,$pos,1); }
+$pos = array_search('--no-obfuscate-constant-name',$t_args);        if (isset($pos) && ($pos!==false)) { $conf->obfuscate_constant_name         = false; array_splice($t_args,$pos,1); }
+$pos = array_search('--obfuscate-constant-name',$t_args);           if (isset($pos) && ($pos!==false)) { $conf->obfuscate_constant_name         = true;  array_splice($t_args,$pos,1); }
 
-$pos = array_search('--no-obfuscate-variable-name',$t_args);    if (isset($pos) && ($pos!==false)) { $conf->obfuscate_variable_name     = false; array_splice($t_args,$pos,1); }
-$pos = array_search('--obfuscate-variable-name',$t_args);       if (isset($pos) && ($pos!==false)) { $conf->obfuscate_variable_name     = true;  array_splice($t_args,$pos,1); }
+$pos = array_search('--no-obfuscate-variable-name',$t_args);        if (isset($pos) && ($pos!==false)) { $conf->obfuscate_variable_name         = false; array_splice($t_args,$pos,1); }
+$pos = array_search('--obfuscate-variable-name',$t_args);           if (isset($pos) && ($pos!==false)) { $conf->obfuscate_variable_name         = true;  array_splice($t_args,$pos,1); }
 
-$pos = array_search('--no-obfuscate-function-name',$t_args);    if (isset($pos) && ($pos!==false)) { $conf->obfuscate_function_name     = false; array_splice($t_args,$pos,1); }
-$pos = array_search('--obfuscate-function-name',$t_args);       if (isset($pos) && ($pos!==false)) { $conf->obfuscate_function_name     = true;  array_splice($t_args,$pos,1); }
+$pos = array_search('--no-obfuscate-function-name',$t_args);        if (isset($pos) && ($pos!==false)) { $conf->obfuscate_function_name         = false; array_splice($t_args,$pos,1); }
+$pos = array_search('--obfuscate-function-name',$t_args);           if (isset($pos) && ($pos!==false)) { $conf->obfuscate_function_name         = true;  array_splice($t_args,$pos,1); }
 
-$pos = array_search('--no-obfuscate-class-name',$t_args);       if (isset($pos) && ($pos!==false)) { $conf->obfuscate_class_name        = false; array_splice($t_args,$pos,1); }
-$pos = array_search('--obfuscate-class-name',$t_args);          if (isset($pos) && ($pos!==false)) { $conf->obfuscate_class_name        = true;  array_splice($t_args,$pos,1); }
+$pos = array_search('--no-obfuscate-class-name',$t_args);           if (isset($pos) && ($pos!==false)) { $conf->obfuscate_class_name            = false; array_splice($t_args,$pos,1); }
+$pos = array_search('--obfuscate-class-name',$t_args);              if (isset($pos) && ($pos!==false)) { $conf->obfuscate_class_name            = true;  array_splice($t_args,$pos,1); }
 
-$pos = array_search('--no-obfuscate-interface-name',$t_args);   if (isset($pos) && ($pos!==false)) { $conf->obfuscate_interface_name    = false; array_splice($t_args,$pos,1); }
-$pos = array_search('--obfuscate-interface-name',$t_args);      if (isset($pos) && ($pos!==false)) { $conf->obfuscate_interface_name    = true;  array_splice($t_args,$pos,1); }
+$pos = array_search('--no-obfuscate-class_constant-name',$t_args);  if (isset($pos) && ($pos!==false)) { $conf->obfuscate_class_constant_name   = false; array_splice($t_args,$pos,1); }
+$pos = array_search('--obfuscate-class_constant-name',$t_args);     if (isset($pos) && ($pos!==false)) { $conf->obfuscate_class_constant_name   = true;  array_splice($t_args,$pos,1); }
 
-$pos = array_search('--no-obfuscate-trait-name',$t_args);       if (isset($pos) && ($pos!==false)) { $conf->obfuscate_trait_name        = false; array_splice($t_args,$pos,1); }
-$pos = array_search('--obfuscate-trait-name',$t_args);          if (isset($pos) && ($pos!==false)) { $conf->obfuscate_trait_name        = true;  array_splice($t_args,$pos,1); }
+$pos = array_search('--no-obfuscate-interface-name',$t_args);       if (isset($pos) && ($pos!==false)) { $conf->obfuscate_interface_name        = false; array_splice($t_args,$pos,1); }
+$pos = array_search('--obfuscate-interface-name',$t_args);          if (isset($pos) && ($pos!==false)) { $conf->obfuscate_interface_name        = true;  array_splice($t_args,$pos,1); }
 
-$pos = array_search('--no-obfuscate-property-name',$t_args);    if (isset($pos) && ($pos!==false)) { $conf->obfuscate_property_name     = false; array_splice($t_args,$pos,1); }
-$pos = array_search('--obfuscate-property-name',$t_args);       if (isset($pos) && ($pos!==false)) { $conf->obfuscate_property_name     = true;  array_splice($t_args,$pos,1); }
+$pos = array_search('--no-obfuscate-trait-name',$t_args);           if (isset($pos) && ($pos!==false)) { $conf->obfuscate_trait_name            = false; array_splice($t_args,$pos,1); }
+$pos = array_search('--obfuscate-trait-name',$t_args);              if (isset($pos) && ($pos!==false)) { $conf->obfuscate_trait_name            = true;  array_splice($t_args,$pos,1); }
 
-$pos = array_search('--no-obfuscate-method-name',$t_args);      if (isset($pos) && ($pos!==false)) { $conf->obfuscate_method_name       = false; array_splice($t_args,$pos,1); }
-$pos = array_search('--obfuscate-method-name',$t_args);         if (isset($pos) && ($pos!==false)) { $conf->obfuscate_method_name       = true;  array_splice($t_args,$pos,1); }
+$pos = array_search('--no-obfuscate-property-name',$t_args);        if (isset($pos) && ($pos!==false)) { $conf->obfuscate_property_name         = false; array_splice($t_args,$pos,1); }
+$pos = array_search('--obfuscate-property-name',$t_args);           if (isset($pos) && ($pos!==false)) { $conf->obfuscate_property_name         = true;  array_splice($t_args,$pos,1); }
 
-$pos = array_search('--no-obfuscate-namespace-name',$t_args);   if (isset($pos) && ($pos!==false)) { $conf->obfuscate_namespace_name    = false; array_splice($t_args,$pos,1); }
-$pos = array_search('--obfuscate-namespace-name',$t_args);      if (isset($pos) && ($pos!==false)) { $conf->obfuscate_namespace_name    = true;  array_splice($t_args,$pos,1); }
+$pos = array_search('--no-obfuscate-method-name',$t_args);          if (isset($pos) && ($pos!==false)) { $conf->obfuscate_method_name           = false; array_splice($t_args,$pos,1); }
+$pos = array_search('--obfuscate-method-name',$t_args);             if (isset($pos) && ($pos!==false)) { $conf->obfuscate_method_name           = true;  array_splice($t_args,$pos,1); }
 
-$pos = array_search('--no-obfuscate-label-name',$t_args);       if (isset($pos) && ($pos!==false)) { $conf->obfuscate_label_name        = false; array_splice($t_args,$pos,1); }
-$pos = array_search('--obfuscate-label-name',$t_args);          if (isset($pos) && ($pos!==false)) { $conf->obfuscate_label_name        = true;  array_splice($t_args,$pos,1); }
+$pos = array_search('--no-obfuscate-namespace-name',$t_args);       if (isset($pos) && ($pos!==false)) { $conf->obfuscate_namespace_name        = false; array_splice($t_args,$pos,1); }
+$pos = array_search('--obfuscate-namespace-name',$t_args);          if (isset($pos) && ($pos!==false)) { $conf->obfuscate_namespace_name        = true;  array_splice($t_args,$pos,1); }
+
+$pos = array_search('--no-obfuscate-label-name',$t_args);           if (isset($pos) && ($pos!==false)) { $conf->obfuscate_label_name            = false; array_splice($t_args,$pos,1); }
+$pos = array_search('--obfuscate-label-name',$t_args);              if (isset($pos) && ($pos!==false)) { $conf->obfuscate_label_name            = true;  array_splice($t_args,$pos,1); }
 
 
 
