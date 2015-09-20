@@ -36,7 +36,7 @@ if ($conf->obfuscate_string_literal)    $prettyPrinter      = new myPrettyprinte
 else                                    $prettyPrinter      = new PhpParser\PrettyPrinter\Standard;
 
 $t_scrambler = array();
-foreach(array('variable','function','method','property','class','constant','namespace','label') as $dummy => $scramble_what)
+foreach(array('variable','function','method','property','class','class_constant','constant','namespace','label') as $dummy => $scramble_what)
 {
     $t_scrambler[$scramble_what] = new Scrambler($scramble_what, $conf, ($process_mode=='directory') ? $target_directory : null);
 }
