@@ -216,15 +216,18 @@ class MyNodeVisitor extends PhpParser\NodeVisitorAbstract       // all parsing a
                || ($node instanceof PhpParser\Node\Expr\ClassConstFetch)
                )
             {
-                $parts = $node->{'class'}->parts;
-                $name  = $parts[count($parts)-1];
-                if ( is_string($name) && (strlen($name) !== 0) )
+                if (isset($node->{'class'}->parts))
                 {
-                    $r = $scrambler->scramble($name);
-                    if ($r!==$name)
+                    $parts = $node->{'class'}->parts;
+                    $name  = $parts[count($parts)-1];
+                    if ( is_string($name) && (strlen($name) !== 0) )
                     {
-                        $node->{'class'}->parts[count($parts)-1] = $r;
-                        $node_modified = true;
+                        $r = $scrambler->scramble($name);
+                        if ($r!==$name)
+                        {
+                            $node->{'class'}->parts[count($parts)-1] = $r;
+                            $node_modified = true;
+                        }
                     }
                 }
             }
