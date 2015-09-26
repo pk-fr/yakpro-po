@@ -53,10 +53,7 @@ function obfuscate($filename)                   // takes a file_path as input, r
 
         if (isset($conf->strip_indentation) && $conf->strip_indentation)        // self-explanatory
         {
-            $tmpfilename = tempnam('/tmp','po-');
-            file_put_contents($tmpfilename,$code);
-            $code = php_strip_whitespace($tmpfilename);
-            unlink($tmpfilename);
+            $code = remove_whitespaces($code);
         }
         $endcode = substr($code,6);
 
@@ -320,6 +317,15 @@ function shuffle_statements($stmts)
     }
     $stmts[] = $last_label;
     return $stmts;
+}
+
+function remove_whitespaces($str)
+{
+    $tmpfilename = tempnam('/tmp','po-');
+    file_put_contents($tmpfilename,$str);
+    $str = php_strip_whitespace($tmpfilename);  // can remove more whitespaces
+    unlink($tmpfilename);
+    return $str;
 }
 
 ?>
