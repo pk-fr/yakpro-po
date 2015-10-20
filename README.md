@@ -10,12 +10,21 @@ which is an awesome php parsing library written by [nikic](https://github.com/ni
 You just have to download the zip archive and uncompress it under the PHP-Parser subdirectory,  
 or make a git clone ...
 
+##### Warning:  
+    Currently, yakpro-po only works on 1.x branch of PhpParser.  
+    A new 2.0.0 alpha1 PHP Parser has been released with a different API, and drop support for PHP < 5.5  
+    unfortunately, This new branch is the default one.
+    
+    Please use :
+    git clone --branch=1.x https://github.com/nikic/PHP-Parser.git
+
+
 The yakpro-po.cnf self-documented file contains many configuration options!  
 Take a look at it!  
 
 Demo : [yakpro-po demo](https://www.php-obfuscator.com/?demo).
 
-Prerequisites:  php 5.3 or higher, [PHP-Parser](https://github.com/nikic/PHP-Parser).
+Prerequisites:  php 5.3 or higher, [PHP-Parser 1.x](https://github.com/nikic/PHP-Parser/tree/1.x).
 
 Note: This tool has been written in order to obfuscate pure php sources.  
 it is not intended to be used with html and embeded php inside (you may try to deactivate statements shuffling...).  
