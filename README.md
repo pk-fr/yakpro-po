@@ -4,7 +4,7 @@
 
 Free, Open Source, Published under the MIT License.  
 
-This tool parses php with the best existing php parser [PHP-Parser](https://github.com/nikic/PHP-Parser),  
+This tool parses php with the best existing php parser [PHP-Parser 1.x](https://github.com/nikic/PHP-Parser/tree/1.x),  
 which is an awesome php parsing library written by [nikic](https://github.com/nikic).
 
 You just have to download the zip archive and uncompress it under the PHP-Parser subdirectory,  
@@ -12,8 +12,9 @@ or make a git clone ...
 
 ##### Warning:  
     Currently, yakpro-po only works on 1.x branch of PhpParser.  
-    A new 2.0.0 alpha1 PHP Parser has been released with a different API, and drop support for PHP < 5.5  
-    unfortunately, This new branch is the default one.
+    A new 2.0.0 alpha1 PHP Parser has been released with a different API,  
+    and drop support for PHP < 5.5  
+    Unfortunately, This new branch is the default one.
     
     Please use :
     git clone --branch=1.x https://github.com/nikic/PHP-Parser.git
