@@ -12,6 +12,8 @@
 //          Use and abuse at your own risks.
 //========================================================================
 
+require_once 'include/check_version.php';
+
 require_once 'PHP-Parser/lib/bootstrap.php';
 
 require_once 'include/classes/config.php';
