@@ -4,11 +4,22 @@
 
 Gratuit, Open Source, Publié sous les termes de la licence MIT.  
 
-Ce programme utilise le meilleur parser php [PHP-Parser](https://github.com/nikic/PHP-Parser) pour analyser le php.  
-[PHP-Parser](https://github.com/nikic/PHP-Parser) est une remarquable bibliothèque développée par [nikic](https://github.com/nikic).
+Ce programme utilise [PHP-Parser 1.x](https://github.com/nikic/PHP-Parser/tree/1.x) pour analyser le php.  
+[PHP-Parser 1.x](https://github.com/nikic/PHP-Parser/tree/1.x) est une remarquable bibliothèque développée par [nikic](https://github.com/nikic).
 
 Télécharger l'archive zip et décompressez la dans le sous-répertoire PHP-Parser .
 ou alors utilisez git clone.
+
+##### Attention :  
+    Actuellement, yakpro-po ne fonctionne qu'avec la branche 1.x de PhpParser.  
+    Une nouvelle version 2.0.0 alpha1 de PHP Parser est développée avec une API différente,  
+    et ne fonctionne plus avec les versions de PHP < 5.5  
+    Malheureusement cette nouvelle branche est la branche par défaut.  
+    
+    Veuillez utiliser :  
+    git clone --branch=1.x https://github.com/nikic/PHP-Parser.git  
+
+
 
 Le fichier de configuration yakpro-po.cnf est auto-documenté et contient de
 nombreuses options de configuration !  
@@ -16,7 +27,7 @@ Un petit coup d'oeil vaut le détour.
 
 Démo : [yakpro-po demo](https://www.php-obfuscator.com/?demo).
 
-Pré-requis:  php 5.3 ou supérieur, [PHP-Parser](https://github.com/nikic/PHP-Parser).
+Pré-requis:  php 5.3 ou supérieur, [PHP-Parser 1.x](https://github.com/nikic/PHP-Parser/tree/1.x).
 
 Remarque : Cet outil à été conçu dans le but d'obfusquer des sources en php pur.  
 Il n'a pas été conçu pour être utilisé avec du html avec des bouts de code php à l'intérieur.  
@@ -155,12 +166,12 @@ Supprime récursivement le répertoire répertoire_cible/yakpro-po
 ## Autre options de la ligne de commande :
 ( modifient les options du fichier de configuration )
 
-    --silent                            ommet l'affichage des messages de niveau Information.
-    --debug                             (utilisation interne pour le debug) affichage de l'arbre syntaxique.
+    --silent                            ommettre l'affichage des messages de niveau Information.
+    --debug                             (utilisation interne pour le debug) afficher l'arbre syntaxique.
 
     -s or
-    --no-strip-indentation              génère le code sur plusieurs lignes indentées
-    --strip-indentation                 génère tout sur une seule ligne
+    --no-strip-indentation              génèrer le code sur plusieurs lignes indentées
+    --strip-indentation                 génèrer tout sur une seule ligne
 
     --no-shuffle-statements             ne pas mélanger les instructions
     --shuffle-statements                       mélanger les instructions
@@ -207,12 +218,12 @@ Supprime récursivement le répertoire répertoire_cible/yakpro-po
     --no-obfuscate-label-name           ne pas obfusquer les étiquettes
     --obfuscate-label-name                     obfusquer les étiquettes
 
-    --scramble-mode     identifier|hexa|numeric         force le scramble mode
+    --scramble-mode     identifier|hexa|numeric         forcer le scramble mode
     --scramble-length   longueur ( min=2; max = 16 pour scramble_mode=identifier,
                                           max = 32 pour scramble_mode = hexa ou numeric)
 
     -h ou
-    --help                              affiche l'aide.
+    --help                              afficher l'aide.
 
 ####
 
@@ -237,7 +248,7 @@ Supprime récursivement le répertoire répertoire_cible/yakpro-po
                     $conf->t_ignore_properties,
                     $conf->t_ignore_methods.
 
-    Celà vaut aussi pour PDO::FETCH_OBJ qui récupère les noms d'attributs à partir de
+    Cela vaut aussi pour PDO::FETCH_OBJ qui récupère les noms d'attributs à partir de
     sources externes (i.e. colonnes de bases de données).
 
 ## Conseils pour préparer votre Logiciel à s'exécuter correctement lorsqu'il est obfusqué
