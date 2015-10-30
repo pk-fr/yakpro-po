@@ -10,7 +10,7 @@ Ce programme utilise [PHP-Parser 1.x](https://github.com/nikic/PHP-Parser/tree/1
 Télécharger l'archive zip et décompressez la dans le sous-répertoire PHP-Parser .
 ou alors utilisez git clone.
 
-##### Attention :  
+### Attention :  
     Actuellement, yakpro-po ne fonctionne qu'avec la branche 1.x de PhpParser.  
     Une nouvelle version 2.0.0 alpha1 de PHP Parser est développée avec une API différente,  
     et ne fonctionne plus avec les versions de PHP < 5.5  
