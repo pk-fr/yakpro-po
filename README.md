@@ -2,33 +2,33 @@
 
 **YAK Pro** stands for **Y**et **A**nother **K**iller **Pro**duct.
 
-Free, Open Source, Published under the MIT License.  
+Free, Open Source, Published under the MIT License.
 
-This tool parses php with the best existing php parser [PHP-Parser 1.x](https://github.com/nikic/PHP-Parser/tree/1.x),  
+This tool parses php with the best existing php parser [PHP-Parser 1.x](https://github.com/nikic/PHP-Parser/tree/1.x),
 which is an awesome php parsing library written by [nikic](https://github.com/nikic).
 
-You just have to download the zip archive and uncompress it under the PHP-Parser subdirectory,  
+You just have to download the zip archive and uncompress it under the PHP-Parser subdirectory,
 or make a git clone ...
 
-##### Warning:  
+### Warning:  
     Currently, yakpro-po only works on 1.x branch of PhpParser.  
     A new 2.0.0 alpha1 PHP Parser has been released with a different API,  
     and drop support for PHP < 5.5  
-    Unfortunately, This new branch is the default one.
+    Unfortunately, This new branch is the default one.  
     
-    Please use :
-    git clone --branch=1.x https://github.com/nikic/PHP-Parser.git
+    Please use :  
+    git clone --branch=1.x https://github.com/nikic/PHP-Parser.git  
 
 
-The yakpro-po.cnf self-documented file contains many configuration options!  
-Take a look at it!  
+The yakpro-po.cnf self-documented file contains many configuration options!
+Take a look at it!
 
 Demo : [yakpro-po demo](https://www.php-obfuscator.com/?demo).
 
 Prerequisites:  php 5.3 or higher, [PHP-Parser 1.x](https://github.com/nikic/PHP-Parser/tree/1.x).
 
-Note: This tool has been written in order to obfuscate pure php sources.  
-it is not intended to be used with html and embeded php inside (you may try to deactivate statements shuffling...).  
+Note: This tool has been written in order to obfuscate pure php sources.
+it is not intended to be used with html and embeded php inside (you may try to deactivate statements shuffling...).
 You can still embed html within php using the echo <<<END ... END; syntax!
 
 ## What is Php Obfuscation?
@@ -41,7 +41,7 @@ You may want, for any reason, that other people do not understand, modify, or ad
 As your software must be understandable by the **php runtime**, but needs to be very difficult
 to understand by human people, obfuscation is a very good way to achieve this goal.
 
-### YAK Pro - Php Obfuscator Obfuscation Main Features:  
+### YAK Pro - Php Obfuscator Obfuscation Main Features:
 
 - Removes all comments, indentation, and generates a single line program file.
 - Obfuscates **if, else, elseif, for, while, do while** by replacing them with **if goto** statements.
@@ -61,15 +61,15 @@ to understand by human people, obfuscation is a very good way to achieve this go
 
 ### Why Yet Another Php Obfuscator?
 I began testing some already existing php obfuscation tools, but I did'nt find one that was
-fitting all my needs.  
+fitting all my needs.
 I wanted a **simple** command line tool, based on a **highly customisable** config file, that would be able to:
 - Be fast and re-obfuscate only files that were changed based on timestamps of files.
 - Preserve some files and/or directories from obfuscation.
 - Not include in the obfuscated target, some files/directories that are present on the source project.
 - Accept lists of names and/or name prefixes to not obfuscate.
 
-So I started to write this tool.  
-Version 1.0 has been written within a few days...  
+So I started to write this tool.
+Version 1.0 has been written within a few days...
 
 
 ## Setup:
@@ -91,24 +91,24 @@ Version 1.0 has been written within a few days...
 
 ## Usage:
 
-`yakpro-po`  
-Obfuscates according configuration file!  
+`yakpro-po`
+Obfuscates according configuration file!
 (See configuration file loading algorithm)
 
-`yakpro-po source_filename`  
-Obfuscates code to stdout  
+`yakpro-po source_filename`
+Obfuscates code to stdout
 
-`yakpro-po source_filename -o target_filename`  
-Obfuscates code to target_filename  
+`yakpro-po source_filename -o target_filename`
+Obfuscates code to target_filename
 
-`yakpro-po source_directory -o target_directory`  
+`yakpro-po source_directory -o target_directory`
 Recursivly obfuscates code to target_directory/yakpro-po (creates it if it does not already exist).
 
-`yakpro-po --config-file config_file_path`  
+`yakpro-po --config-file config_file_path`
 According to config_file_path.
 
-`yakpro-po --clean`  
-Requires target_directory to be present in your config file!  
+`yakpro-po --clean`
+Requires target_directory to be present in your config file!
 Recursivly removes target_directory/yakpro-po
 
 
@@ -153,7 +153,7 @@ Recursivly removes target_directory/yakpro-po
 
     --silent                            do not display Information level messages.
     --debug                             (internal debugging use) displays the syntax tree.
-    
+
     -s or
     --no-strip-indentation              multi line output
     --strip-indentation                 single line output
@@ -202,11 +202,11 @@ Recursivly removes target_directory/yakpro-po
 
     --no-obfuscate-label-name           do not obfuscate label names
     --obfuscate-label-name                     obfuscate label names
-   
+
     --scramble-mode     identifier|hexa|numeric         force scramble mode
     --scramble-length   length ( min=2; max = 16 for scramble_mode=identifier,
                                         max = 32 for scramble_mode = hexa or numeric)
-    
+
     -h or
     --help                              displays help.
 
@@ -263,7 +263,7 @@ Recursivly removes target_directory/yakpro-po
 
 ## Performance considerations
 
-    Except for the statements shuffling obfuscation option,  
+    Except for the statements shuffling obfuscation option,
     the obfuscated program speed is almost the same than the original one.
 
     $conf->shuffle_stmts    is set to true by default.
@@ -271,7 +271,7 @@ Recursivly removes target_directory/yakpro-po
     If you encounter performance issues, you can either set the option to false,
     or fine tune the shuffle parameters with the associated options.
 
-    You must know that the lesser the chunk size, the better the obfuscation,  
+    You must know that the lesser the chunk size, the better the obfuscation,
     and the lower your software performance!
 
     (during my own tests, the maximum of obfuscation cost me about 13% of performance)
@@ -279,5 +279,5 @@ Recursivly removes target_directory/yakpro-po
     You can tune it as you wish!
 
 
-    
-   
+
+
