@@ -87,7 +87,7 @@ La version 1.0 a été écrite en quelques jours...
        sous ubuntu : (adaptez selon votre distribution) 
        # apt-get install git 
        # apt-get install php5-cli 
-    2. Placez vous dans le répertoire ou vous voulez installer yakpro-po (par exemple dans /usr/local ) : 
+    2. Placez-vous dans le répertoire ou vous voulez installer yakpro-po (par exemple dans /usr/local ) : 
        # cd /usr/local 
     3. Puis récupérez à partir de GitHub : 
        # git clone https://github.com/pk-fr/yakpro-po.git 
