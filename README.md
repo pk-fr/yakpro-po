@@ -73,8 +73,8 @@ Version 1.0 has been written within a few days...
 
 
 ## Setup:
-    1. Prerequisites : git and php-cli (command line interface) packages. 
-       on ubuntu : (adapt according your linux distribution) 
+    1. Prerequisites: git and php-cli (command line interface) packages. 
+       on ubuntu: (adapt according your linux distribution) 
        # apt-get install git 
        # apt-get install php5-cli 
     2. Navigate to the directory where you want to install yakpro-po (/usr/local is a good idea) : 
