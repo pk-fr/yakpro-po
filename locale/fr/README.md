@@ -83,15 +83,26 @@ La version 1.0 a été écrite en quelques jours...
 
 
 ## Installation :
-    Placez l'arborescence téléchargée (ou faites un git clone ...)  ou vous voulez ...
-
-        chmod a+x yakpro-po.php     vous aidera grandement!
-
-    Créer un lien symbolique yakpro-po dans /usr/local/bin pointant sur le fichier yakpro-po.php
-    serait une bonne idée !
-
-    Placez le répertoire PHP-Parser (obtenu par téléchargement ou git clone)
-    au même niveau que le fichier yakpro-po.php.
+    1. Pré-requis : commande git installée, ainsi que php-cli (command line interface). 
+       sous ubuntu : (adaptez selon votre distribution) 
+       # apt-get install git 
+       # apt-get install php5-cli 
+    2. Placez vous dans le répertoire ou vous voulez installer yakpro-po (par exemple dans /usr/local ) : 
+       # cd /usr/local 
+    3. Puis récupérez à partir de GitHub : 
+       # git clone https://github.com/pk-fr/yakpro-po.git 
+    4. Placez-vous dans le répertoire de yakpro-po : 
+       # cd yakpro-po 
+    5. Puis récupérez à partir de GitHub : 
+       # git clone --branch=1.x https://github.com/nikic/PHP-Parser.git 
+    6. Donnez les droits d'exécution à yakpro-po.php 
+       # chmod a+x yakpro-po.php 
+    7. Créer un lien symbolique dans /usr/local/bin 
+       # cd /usr/local/bin 
+       # ln -s /usr/local/yakpro-po/yakpro-po.php yakpro-po 
+    8. Vous pouvez maintenant exécuter yakpro-po 
+       # yakpro-po --help 
+       # yakpro-po test.php 
 
     Créez une copie du fichier yakpro-po.cnf
     Lire la section "Algorithme de chargement du fichier de configuration"
