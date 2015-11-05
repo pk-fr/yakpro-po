@@ -73,13 +73,26 @@ Version 1.0 has been written within a few days...
 
 
 ## Setup:
-    Put the downloaded files where you want...
-        chmod a+x yakpro-po.php     would be helpfull...
-
-    It would be a good idea to create a symbolic link named yakpro-po in /usr/local/bin,
-    pointing to the yakpro-po.php file.
-
-    Put the PHP-Parser directory at the same level than the yakpro-po.php file.
+    1. Prerequisites : git and php-cli (command line interface) packages. 
+       on ubuntu : (adapt according your linux distribution) 
+       # apt-get install git 
+       # apt-get install php5-cli 
+    2. Navigate to the directory where you want to install yakpro-po (/usr/local is a good idea) : 
+       # cd /usr/local 
+    3. Then retrieve from GitHub: 
+       # git clone https://github.com/pk-fr/yakpro-po.git 
+    4. Go to the yakpro-po directory: 
+       # cd yakpro-po 
+    5. Then retrieve from GitHub: 
+       # git clone --branch=1.x https://github.com/nikic/PHP-Parser.git 
+    6. Give execute rights to yakpro-po.php 
+       # chmod a+x yakpro-po.php 
+    7. Create a symbolic link in the /usr/local/bin directory
+       # cd /usr/local/bin 
+       # ln -s /usr/local/yakpro-po/yakpro-po.php yakpro-po 
+    8. You can now run yakpro-po 
+       # yakpro-po --help 
+       # yakpro-po test.php 
 
     Modify a copy of the yakpro-po.cnf to fit your needs...
     Read the "Configuration file loading algorithm" section of this document
@@ -274,7 +287,7 @@ Recursivly removes target_directory/yakpro-po
     You must know that the lesser the chunk size, the better the obfuscation,
     and the lower your software performance!
 
-    (during my own tests, the maximum of obfuscation cost me about 13% of performance)
+    (during my own tests, the maximum of obfuscation costs me about 13% of performance)
 
     You can tune it as you wish!
 
