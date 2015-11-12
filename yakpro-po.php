@@ -11,6 +11,7 @@
 //          No warranty of any kind.
 //          Use and abuse at your own risks.
 //========================================================================
+if (isset($_SERVER["SERVER_SOFTWARE"]) && ($_SERVER["SERVER_SOFTWARE"]!="") ){ echo "<h1>Comand Line Interface Only!</h1>"; die; }
 
 require_once 'include/check_version.php';
 
