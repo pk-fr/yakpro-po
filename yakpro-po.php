@@ -39,7 +39,7 @@ if ($conf->obfuscate_string_literal)    $prettyPrinter      = new myPrettyprinte
 else                                    $prettyPrinter      = new PhpParser\PrettyPrinter\Standard;
 
 $t_scrambler = array();
-foreach(array('variable','function','method','property','class','class_constant','constant','namespace','label') as $dummy => $scramble_what)
+foreach(array('variable','function','method','property','class','class_constant','constant','namespace','label') as $scramble_what)
 {
     $t_scrambler[$scramble_what] = new Scrambler($scramble_what, $conf, ($process_mode=='directory') ? $target_directory : null);
 }
@@ -51,7 +51,7 @@ switch($process_mode)
     case 'file':
         $obfuscated_str =  obfuscate($source_file);
         if ($obfuscated_str===null) { exit;                               }
-        if ($target_file==='')      { echo $obfuscated_str.PHP_EOL; exit; }
+        if ($target_file   ===''  ) { echo $obfuscated_str.PHP_EOL; exit; }
         file_put_contents($target_file,$obfuscated_str.PHP_EOL);
         exit;
     case 'directory':
