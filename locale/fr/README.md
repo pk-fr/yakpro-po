@@ -12,8 +12,8 @@ ou alors utilisez git clone.
 
 ### Attention :  
     Actuellement, yakpro-po ne fonctionne qu'avec la branche 1.x de PhpParser.  
-    Une nouvelle version 2.0.0 alpha1 de PHP Parser est développée avec une API différente,  
-    et ne fonctionne plus avec les versions de PHP < 5.5  
+    Une nouvelle version 2.0 de PHP Parser est développée avec une API différente,  
+    et ne fonctionne plus avec les versions de PHP < 5.4  
     Malheureusement cette nouvelle branche est la branche par défaut.  
     
     Veuillez utiliser :  
