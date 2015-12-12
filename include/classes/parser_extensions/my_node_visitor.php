@@ -446,26 +446,18 @@ class MyNodeVisitor extends PhpParser\NodeVisitorAbstract       // all parsing a
             $scrambler  = $t_scrambler['class_constant'];
             if ( ($node instanceof PhpParser\Node\Const_) && $this->is_in_class_const_definition )
             {
-                $do_scramble = true;
-                if (isset($this->current_class_name))
+                $name = $node->name;
+                if ( is_string($name) && (strlen($name) !== 0) )
                 {
-                    if ( $this->current_class_name == $t_scrambler['class']->scramble($this->current_class_name) ) $do_scramble = false;;
-                }
-                if ($do_scramble)                                                           // if class name is not obfuscated then do not obfuscate class constant
-                {
-                    $name = $node->name;
-                    if ( is_string($name) && (strlen($name) !== 0) )
+                    $r = $scrambler->scramble($name);
+                    if ($r!==$name)
                     {
-                        $r = $scrambler->scramble($name);
-                        if ($r!==$name)
-                        {
-                            $node->name = $r;
-                            $node_modified = true;
-                        }
+                        $node->name = $r;
+                        $node_modified = true;
                     }
                 }
             }
-            if ( ($node instanceof PhpParser\Node\Expr\ClassConstFetch) && $node_modified ) // if class name is not obfuscated then do not obfuscate class constant
+            if ($node instanceof PhpParser\Node\Expr\ClassConstFetch)
             {
                 $name       = $node->name;
                 if ( is_string($name) && (strlen($name) !== 0) )
@@ -482,7 +474,7 @@ class MyNodeVisitor extends PhpParser\NodeVisitorAbstract       // all parsing a
         
         if ($conf->obfuscate_namespace_name)
         {
-            $scrambler = $t_scrambler['namespace'];
+            $scrambler = $t_scrambler['class'];
             if ( ($node instanceof PhpParser\Node\Stmt\Namespace_) || ($node instanceof PhpParser\Node\Stmt\UseUse) )
             {
                 if (isset($node->name->parts))
@@ -931,6 +923,7 @@ class MyNodeVisitor extends PhpParser\NodeVisitorAbstract       // all parsing a
                  || ($node instanceof PhpParser\Node\Stmt\TryCatch)
                  || ($node instanceof PhpParser\Node\Stmt\Catch_)
                  || ($node instanceof PhpParser\Node\Stmt\Case_)
+                 //|| ($node instanceof PhpParser\Node\Stmt\Namespace_)
               )
             {
                 if ($this->shuffle_stmts($node))  $node_modified  = true;
