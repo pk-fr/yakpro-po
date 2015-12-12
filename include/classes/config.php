@@ -15,7 +15,13 @@
 
 class Config
 {
-    public $t_ignore_module_methods         = array('core', 'Exception', 'PDO');    // array where values are internal known module names.
+    public $t_ignore_pre_defined_classes    = 'all';        // 'all' (default value) , 'none',  or array of pre-defined classes that you use in your software:
+                                                            //      ex: array('Exception', 'PDO', 'PDOStatement', 'PDOException');
+                                                            // As instantiation is done at runtime, it is impossible to statically determinate when a method call is detected, on which class the object belong.
+                                                            // so, all method names that exists in a pre_defined_class to ignore are ignored within every classes.
+                                                            // if you have some method names in your classes that have the same name that a predefine class method, it will not be obfuscated.
+                                                            // you can limit the number of method names to ignore by providing an array of the pre-defined classes you really use in your software!
+                                                            // same behaviour for properties...
 
     public $t_ignore_constants              = null;         // array where values are names to ignore.
     public $t_ignore_variables              = null;         // array where values are names to ignore.
@@ -55,6 +61,7 @@ class Config
     public $obfuscate_class_name            = true;         // self explanatory
     public $obfuscate_interface_name        = true;         // self explanatory
     public $obfuscate_trait_name            = true;         // self explanatory
+    public $obfuscate_class_constant_name   = true;         // self explanatory
     public $obfuscate_property_name         = true;         // self explanatory
     public $obfuscate_method_name           = true;         // self explanatory
     public $obfuscate_namespace_name        = true;         // self explanatory
@@ -67,7 +74,7 @@ class Config
     public $shuffle_stmts_min_chunk_size    =    1;         // minimum number of statements in a chunk! the min value is 1, that gives you the maximum of obfuscation ... and the minimum of performance...
     public $shuffle_stmts_chunk_mode        = 'fixed';      // 'fixed' or 'ratio' in fixed mode, the chunk_size is always equal to the min chunk size!
     public $shuffle_stmts_chunk_ratio       =   20;         // ratio > 1  100/ratio is the percentage of chunks in a statements sequence  ratio = 2 means 50%  ratio = 100 mins 1% ...
-                                                        // if you increase the number of chunks, you increase also the obfuscation level ... and you increase also the performance overhead!
+                                                            // if you increase the number of chunks, you increase also the obfuscation level ... and you increase also the performance overhead!
 
     public $strip_indentation               = true;         // all your obfuscated code will be generated on a single line
     public $abort_on_error                  = true;         // self explanatory
@@ -90,7 +97,7 @@ class Config
     function __construct()
     {
         $this->comment .= "/*   __________________________________________________".PHP_EOL;
-        $this->comment .= "    |      Obfuscated by YAK Pro - Php Obfuscator      |".PHP_EOL;
+        $this->comment .= "    |  Obfuscated by YAK Pro - Php Obfuscator  %-5.5s   |".PHP_EOL;
         $this->comment .= "    |              on %s              |".PHP_EOL;
         $this->comment .= "    |    GitHub: https://github.com/pk-fr/yakpro-po    |".PHP_EOL;
         $this->comment .= "    |__________________________________________________|".PHP_EOL;
@@ -99,9 +106,10 @@ class Config
 
     public function get_comment()
     {
+        global $yakpro_po_version;
         $now = strftime("%F %T");
 
-        return sprintf($this->comment,$now);
+        return sprintf($this->comment,$yakpro_po_version,$now);
     }
 
     public function validate()
@@ -113,6 +121,9 @@ class Config
         if ($this->shuffle_stmts_chunk_ratio<2)     $this->shuffle_stmts_chunk_ratio = 2;
 
         if ($this->shuffle_stmts_chunk_mode!='ratio') $this->shuffle_stmts_chunk_mode = 'fixed';
+        
+        if (!isset( $this->t_ignore_pre_defined_classes))                                                       $this->t_ignore_pre_defined_classes = 'all';
+        if (!is_array($this->t_ignore_pre_defined_classes) && ( $this->t_ignore_pre_defined_classes != 'none')) $this->t_ignore_pre_defined_classes = 'all';
     }
 }
 
