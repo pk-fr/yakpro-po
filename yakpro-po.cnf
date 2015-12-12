@@ -14,8 +14,13 @@
 //========================================================================
 // when we use the word ignore, that means that it is ignored during the obfuscation process (i.e. not obfuscated)
 
-$conf->t_ignore_module_methods          = array('Exception', 'PDO');    //  If you DO NOT USE one of those modules, and want to obfuscate your methods that have the same name of the module ones,
-                                                                        //  you can remove the module name of this array.
+$conf->t_ignore_pre_defined_classes     = 'all';        // 'all' (default value) , 'none',  or array of pre-defined classes that you use in your software:
+                                                        //      ex: array('Exception', 'PDO', 'PDOStatement', 'PDOException');
+                                                        // As instantiation is done at runtime, it is impossible to statically determinate when a method call is detected, on which class the object belong.
+                                                        // so, all method names that exists in a pre_defined_class to ignore are ignored within every classes.
+                                                        // if you have some method names in your classes that have the same name that a predefine class method, it will not be obfuscated.
+                                                        // you can limit the number of method names to ignore by providing an array of the pre-defined classes you really use in your software!
+                                                        // same behaviour for properties...
 
 $conf->t_ignore_constants               = null;         // array where values are names to ignore.
 $conf->t_ignore_variables               = null;         // array where values are names to ignore.
@@ -23,7 +28,7 @@ $conf->t_ignore_functions               = null;         // array where values ar
 $conf->t_ignore_class_constants         = null;         // array where values are names to ignore.
 $conf->t_ignore_methods                 = null;         // array where values are names to ignore.
 $conf->t_ignore_properties              = null;         // array where values are names to ignore.
-$conf->t_ignore_classes                 = null;         // array where values are names to ignore.  // If you ignore a class name, the class constant names are automatically ignored!
+$conf->t_ignore_classes                 = null;         // array where values are names to ignore.
 $conf->t_ignore_interfaces              = null;         // array where values are names to ignore.
 $conf->t_ignore_traits                  = null;         // array where values are names to ignore.
 $conf->t_ignore_namespaces              = null;         // array where values are names to ignore.
@@ -55,9 +60,9 @@ $conf->obfuscate_function_name          = true;         // self explanatory
 $conf->obfuscate_class_name             = true;         // self explanatory
 $conf->obfuscate_interface_name         = true;         // self explanatory
 $conf->obfuscate_trait_name             = true;         // self explanatory
+$conf->obfuscate_class_constant_name    = true;         // self explanatory
 $conf->obfuscate_property_name          = true;         // self explanatory
 $conf->obfuscate_method_name            = true;         // self explanatory
-$conf->obfuscate_class_constant_name    = true;         // self explanatory
 $conf->obfuscate_namespace_name         = true;         // self explanatory
 $conf->obfuscate_label_name             = true;         // label: , goto label;  obfuscation
 $conf->obfuscate_if_statement           = true;         // obfuscation of  if else elseif statements
