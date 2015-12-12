@@ -43,7 +43,16 @@ function obfuscate($filename)                   // takes a file_path as input, r
         if ($conf->shuffle_stmts)
         {
             $last_inst  = array_pop($stmts);
-            $stmts      = shuffle_statements($stmts);
+            $last_use_stmt_pos = -1;
+            foreach($stmts as $i => $stmt)                      // if a use statement exists, do not shuffle before the last use statement
+            {                                                   //TODO: enhancement: keep all use statements at their position, and shuffle all sub-parts
+                if ( $stmt instanceof PhpParser\Node\Stmt\Use_ ) $last_use_stmt_pos = $i;
+            }
+
+            if ($last_use_stmt_pos<0)   { $stmts_to_shuffle = $stmts;                                   $stmts = array();                                       }
+            else                        { $stmts_to_shuffle = array_slice($stmts,$last_use_stmt_pos+1); $stmts = array_slice($stmts,0,$last_use_stmt_pos+1);    }
+            
+            $stmts      = array_merge($stmts,shuffle_statements($stmts_to_shuffle));
             $stmts[]    = $last_inst;
         }
         $code   = $prettyPrinter->prettyPrintFile($stmts);      //  Use PHP-Parser function to output the obfuscated source, taking the modified obfuscated syntax tree as input
