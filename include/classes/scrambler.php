@@ -48,22 +48,28 @@ class Scrambler
                                                 'namespace', 'new', 'null', 'or', 'print', 'private', 'protected', 'public', 'require', 'require_once',
                                                 'return', 'static', 'string', 'switch', 'throw', 'trait', 'true', 'try', 'unset', 'use', 'var', 'while', 'xor','yield',
                                                 'apache_request_headers'                    // seems that it is not included in get_defined_functions ..
-                                            );
+                                              );
 
-    private $t_reserved_class_names = array('parent', 'self', 'static',                    // same reserved names for classes, interfaces  and traits...
-                                            'int', 'float', 'bool', 'string', 'true', 'false', 'null', 'resource', 'object', 'scalar', 'mixed', 'numeric',
-                                            'directory', 'exception', 'closure', 'generator',
-                                            'pdo','pdoexception' );
+    private $t_reserved_class_names     = array('parent', 'self', 'static',                    // same reserved names for classes, interfaces  and traits...
+                                                'int', 'float', 'bool', 'string', 'true', 'false', 'null', 'resource', 'object', 'scalar', 'mixed', 'numeric'
+                                               );
 
+    private $t_reserved_method_names    = array('__construct', '__destruct', '__call', '__callstatic', '__get', '__set', '__isset', '__unset', '__sleep', '__wakeup', '__tostring', '__invoke', '__set_state', '__clone','__debuginfo' );
+
+/*
     private $t_reserved_method_names = array( 'core'      => array('__construct', '__destruct', '__call', '__callstatic', '__get', '__set', '__isset', '__unset', '__sleep', '__wakeup', '__tostring', '__invoke', '__set_state', '__clone','__debuginfo' ),
                                               'Exception' => array('getmessage', 'getprevious', 'getcode', 'getfile', 'getline', 'gettrace', 'gettraceasstring'),
                                               'PDO'       => array('begintransaction', 'commit', 'errorcode', 'errorinfo', 'exec', 'getattribute', 'getavailabledrivers', 'intransaction', 'lastinsertid', 'prepare', 'query', 'quote', 'rollback', 'setattribute',
                                                                    'bindcolumn', 'bindparam', 'bindvalue', 'closecursor', 'columncount', 'debugdumpparams', 'execute', 'fetch', 'fetchall', 'fetchcolumn', 'fetchobject', 'getcolumnmeta', 'nextrowset', 'rowcount', 'setfetchmode'
                                                                   )
                                             );
-
+*/
+                                            
     function __construct($type,$conf,$target_directory)
     {
+        global $t_pre_defined_classes,$t_pre_defined_class_methods,$t_pre_defined_class_properties,$t_pre_defined_class_constants;
+        global $t_pre_defined_class_methods_by_class,$t_pre_defined_class_properties_by_class,$t_pre_defined_class_constants_by_class;
+
         $this->scramble_type        = $type;
         $this->t_first_chars        = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
         $this->t_chars              = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_';
@@ -124,6 +130,15 @@ class Scrambler
                 $this->case_sensitive       = true;
                 $this->t_ignore             = array_flip($this->t_reserved_function_names);
                 $this->t_ignore             = array_merge($this->t_ignore,get_defined_constants(false));
+                if ($conf->t_ignore_pre_defined_classes!='none')
+                {
+                    if ($conf->t_ignore_pre_defined_classes=='all') $this->t_ignore = array_merge($this->t_ignore,$t_pre_defined_class_constants);
+                    if (is_array($conf->t_ignore_pre_defined_classes))
+                    {
+                        $t_classs_names = array_map('strtolower',$conf->t_ignore_pre_defined_classe);
+                        foreach($t_classs_names as $class_name)  if (isset($t_pre_defined_class_constants_by_class[$class_name])) $this->t_ignore = array_merge($this->t_ignore,$t_pre_defined_class_constants_by_class[$class_name]);
+                    }
+                }
                 if (isset($conf->t_ignore_class_constants))
                 {
                     $t                      = $conf->t_ignore_class_constants;          $t = array_flip($t);
@@ -168,6 +183,15 @@ class Scrambler
            case 'property':
                 $this->case_sensitive       = true;
                 $this->t_ignore             = array_flip($this->t_reserved_variable_names);
+                if ($conf->t_ignore_pre_defined_classes!='none')
+                {
+                    if ($conf->t_ignore_pre_defined_classes=='all') $this->t_ignore = array_merge($this->t_ignore,$t_pre_defined_class_properties);
+                    if (is_array($conf->t_ignore_pre_defined_classes))
+                    {
+                        $t_classs_names = array_map('strtolower',$conf->t_ignore_pre_defined_classe);
+                        foreach($t_classs_names as $class_name)  if (isset($t_pre_defined_class_properties_by_class[$class_name])) $this->t_ignore = array_merge($this->t_ignore,$t_pre_defined_class_properties_by_class[$class_name]);
+                    }
+                }
                 if (isset($conf->t_ignore_properties))
                 {
                     $t                      = $conf->t_ignore_properties;               $t = array_flip($t);
@@ -179,13 +203,22 @@ class Scrambler
                     $this->t_ignore_prefix  = $t;
                 }
                 break;
-            case 'class':           // same instance is used for scrambling classes, interfaces, and traits.
+            case 'class':           // same instance is used for scrambling classes, interfaces, and traits.  and namespaces... for aliasing
                 $this->case_sensitive       = false;
                 $this->t_ignore             = array_flip($this->t_reserved_class_names);
                 $this->t_ignore             = array_merge($this->t_ignore, array_flip($this->t_reserved_variable_names));
                 $this->t_ignore             = array_merge($this->t_ignore, array_flip($this->t_reserved_function_names));
                 $t                          = get_defined_functions();                  $t = array_flip($t['internal']);
                 $this->t_ignore             = array_merge($this->t_ignore,$t);
+                if ($conf->t_ignore_pre_defined_classes!='none')
+                {
+                    if ($conf->t_ignore_pre_defined_classes=='all') $this->t_ignore = array_merge($this->t_ignore,$t_pre_defined_classes);
+                    if (is_array($conf->t_ignore_pre_defined_classes))
+                    {
+                        $t_classs_names = array_map('strtolower',$conf->t_ignore_pre_defined_classe);
+                        foreach($t_classs_names as $class_name)  if (isset($t_pre_defined_classes[$class_name])) $this->t_ignore[$class_name] = 1;
+                    }
+                }
                 if (isset($conf->t_ignore_classes))
                 {
                     $t                      = $conf->t_ignore_classes;                  $t = array_map('strtolower',$t);                $t = array_flip($t);
@@ -201,6 +234,11 @@ class Scrambler
                     $t                      = $conf->t_ignore_traits;                   $t = array_map('strtolower',$t);                $t = array_flip($t);
                     $this->t_ignore         = array_merge($this->t_ignore,$t);
                 }
+                if (isset($conf->t_ignore_namespaces))
+                {
+                    $t                      = $conf->t_ignore_namespaces;               $t = array_map('strtolower',$t);                 $t = array_flip($t);
+                    $this->t_ignore         = array_merge($this->t_ignore,$t);
+                }
                 if (isset($conf->t_ignore_classes_prefix))
                 {
                     $t                      = $conf->t_ignore_classes_prefix;           $t = array_map('strtolower',$t);                $t = array_flip($t);
@@ -209,12 +247,17 @@ class Scrambler
                 if (isset($conf->t_ignore_interfaces_prefix))
                 {
                     $t                      = $conf->t_ignore_interfaces_prefix;        $t = array_map('strtolower',$t);                $t = array_flip($t);
-                    $this->t_ignore_prefix  = $t;
+                    $this->t_ignore_prefix  = array_merge($this->t_ignore_prefix,$t);
                 }
                 if (isset($conf->t_ignore_traits_prefix))
                 {
                     $t                      = $conf->t_ignore_traits_prefix;            $t = array_map('strtolower',$t);                $t = array_flip($t);
-                    $this->t_ignore_prefix  = $t;
+                    $this->t_ignore_prefix  = array_merge($this->t_ignore_prefix,$t);
+                }
+                if (isset($conf->t_ignore_namespaces_prefix))
+                {
+                    $t                      = $conf->t_ignore_namespaces_prefix;        $t = array_map('strtolower',$t);                 $t = array_flip($t);
+                    $this->t_ignore_prefix  = array_merge($this->t_ignore_prefix,$t);
                 }
                 break;
             case 'method':
@@ -233,6 +276,15 @@ class Scrambler
                 }
                 $t                          = get_defined_functions();                  $t = array_map('strtolower',$t['internal']);    $t = array_flip($t);
                 $this->t_ignore             = array_merge($this->t_ignore,$t);
+                if ($conf->t_ignore_pre_defined_classes!='none')
+                {
+                    if ($conf->t_ignore_pre_defined_classes=='all') $this->t_ignore = array_merge($this->t_ignore,$t_pre_defined_class_methods);
+                    if (is_array($conf->t_ignore_pre_defined_classes))
+                    {
+                        $t_classs_names = array_map('strtolower',$conf->t_ignore_pre_defined_classe);
+                        foreach($t_classs_names as $class_name)  if (isset($t_pre_defined_class_methods_by_class[$class_name])) $this->t_ignore = array_merge($this->t_ignore,$t_pre_defined_class_methods_by_class[$class_name]);
+                    }
+                }
                 if (isset($conf->t_ignore_methods))
                 {
                     $t                      = $conf->t_ignore_methods;                  $t = array_map('strtolower',$t);                $t = array_flip($t);
@@ -241,20 +293,6 @@ class Scrambler
                 if (isset($conf->t_ignore_methods_prefix))
                 {
                     $t                      = $conf->t_ignore_methods_prefix;           $t = array_map('strtolower',$t);                $t = array_flip($t);
-                    $this->t_ignore_prefix  = $t;
-                }
-                break;
-            case 'namespace':
-                $this->case_sensitive       = false;
-                $this->t_ignore             = array_flip($this->t_reserved_function_names);
-                if (isset($conf->t_ignore_namespaces))
-                {
-                    $t                      = $conf->t_ignore_namespaces;                $t = array_flip($t);
-                    $this->t_ignore         = array_merge($this->t_ignore,$t);
-                }
-                if (isset($conf->t_ignore_namespaces_prefix))
-                {
-                    $t                      = $conf->t_ignore_namespaces_prefix;         $t = array_flip($t);
                     $this->t_ignore_prefix  = $t;
                 }
                 break;
