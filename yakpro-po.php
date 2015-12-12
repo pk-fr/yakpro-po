@@ -13,7 +13,12 @@
 //========================================================================
 if (isset($_SERVER["SERVER_SOFTWARE"]) && ($_SERVER["SERVER_SOFTWARE"]!="") ){ echo "<h1>Comand Line Interface Only!</h1>"; die; }
 
+
+
 require_once 'include/check_version.php';
+
+require_once 'include/get_default_defined_objects.php';     // include this file before defining something....
+
 
 require_once 'PHP-Parser/lib/bootstrap.php';
 
@@ -24,6 +29,9 @@ require_once 'include/classes/parser_extensions/my_node_visitor.php';
 require_once 'include/functions.php';
 
 include      'include/retrieve_config_and_arguments.php';
+
+require_once 'version.php';
+
 
 if ($clean_mode && file_exists("$target_directory/yakpro-po/.yakpro-po-directory") )
 {
@@ -39,7 +47,7 @@ if ($conf->obfuscate_string_literal)    $prettyPrinter      = new myPrettyprinte
 else                                    $prettyPrinter      = new PhpParser\PrettyPrinter\Standard;
 
 $t_scrambler = array();
-foreach(array('variable','function','method','property','class','class_constant','constant','namespace','label') as $scramble_what)
+foreach(array('variable','function','method','property','class','class_constant','constant','label') as $scramble_what)
 {
     $t_scrambler[$scramble_what] = new Scrambler($scramble_what, $conf, ($process_mode=='directory') ? $target_directory : null);
 }
