@@ -135,8 +135,8 @@ class Scrambler
                     if ($conf->t_ignore_pre_defined_classes=='all') $this->t_ignore = array_merge($this->t_ignore,$t_pre_defined_class_constants);
                     if (is_array($conf->t_ignore_pre_defined_classes))
                     {
-                        $t_classs_names = array_map('strtolower',$conf->t_ignore_pre_defined_classe);
-                        foreach($t_classs_names as $class_name)  if (isset($t_pre_defined_class_constants_by_class[$class_name])) $this->t_ignore = array_merge($this->t_ignore,$t_pre_defined_class_constants_by_class[$class_name]);
+                        $t_class_names = array_map('strtolower',$conf->t_ignore_pre_defined_classes);
+                        foreach($t_class_names as $class_name)  if (isset($t_pre_defined_class_constants_by_class[$class_name])) $this->t_ignore = array_merge($this->t_ignore,$t_pre_defined_class_constants_by_class[$class_name]);
                     }
                 }
                 if (isset($conf->t_ignore_class_constants))
@@ -188,8 +188,8 @@ class Scrambler
                     if ($conf->t_ignore_pre_defined_classes=='all') $this->t_ignore = array_merge($this->t_ignore,$t_pre_defined_class_properties);
                     if (is_array($conf->t_ignore_pre_defined_classes))
                     {
-                        $t_classs_names = array_map('strtolower',$conf->t_ignore_pre_defined_classe);
-                        foreach($t_classs_names as $class_name)  if (isset($t_pre_defined_class_properties_by_class[$class_name])) $this->t_ignore = array_merge($this->t_ignore,$t_pre_defined_class_properties_by_class[$class_name]);
+                        $t_class_names = array_map('strtolower',$conf->t_ignore_pre_defined_classes);
+                        foreach($t_class_names as $class_name)  if (isset($t_pre_defined_class_properties_by_class[$class_name])) $this->t_ignore = array_merge($this->t_ignore,$t_pre_defined_class_properties_by_class[$class_name]);
                     }
                 }
                 if (isset($conf->t_ignore_properties))
@@ -215,8 +215,8 @@ class Scrambler
                     if ($conf->t_ignore_pre_defined_classes=='all') $this->t_ignore = array_merge($this->t_ignore,$t_pre_defined_classes);
                     if (is_array($conf->t_ignore_pre_defined_classes))
                     {
-                        $t_classs_names = array_map('strtolower',$conf->t_ignore_pre_defined_classe);
-                        foreach($t_classs_names as $class_name)  if (isset($t_pre_defined_classes[$class_name])) $this->t_ignore[$class_name] = 1;
+                        $t_class_names = array_map('strtolower',$conf->t_ignore_pre_defined_classes);
+                        foreach($t_class_names as $class_name)  if (isset($t_pre_defined_classes[$class_name])) $this->t_ignore[$class_name] = 1;
                     }
                 }
                 if (isset($conf->t_ignore_classes))
@@ -281,8 +281,8 @@ class Scrambler
                     if ($conf->t_ignore_pre_defined_classes=='all') $this->t_ignore = array_merge($this->t_ignore,$t_pre_defined_class_methods);
                     if (is_array($conf->t_ignore_pre_defined_classes))
                     {
-                        $t_classs_names = array_map('strtolower',$conf->t_ignore_pre_defined_classe);
-                        foreach($t_classs_names as $class_name)  if (isset($t_pre_defined_class_methods_by_class[$class_name])) $this->t_ignore = array_merge($this->t_ignore,$t_pre_defined_class_methods_by_class[$class_name]);
+                        $t_class_names = array_map('strtolower',$conf->t_ignore_pre_defined_classes);
+                        foreach($t_class_names as $class_name)  if (isset($t_pre_defined_class_methods_by_class[$class_name])) $this->t_ignore = array_merge($this->t_ignore,$t_pre_defined_class_methods_by_class[$class_name]);
                     }
                 }
                 if (isset($conf->t_ignore_methods))
