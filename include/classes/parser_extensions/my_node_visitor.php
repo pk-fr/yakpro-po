@@ -98,7 +98,7 @@ class MyNodeVisitor extends PhpParser\NodeVisitorAbstract       // all parsing a
                     }
                 }
             }
-            if ($node instanceof PhpParser\Node\Stmt\Catch_)
+            if ( ($node instanceof PhpParser\Node\Stmt\Catch_) || ($node instanceof PhpParser\Node\Expr\ClosureUse))
             {
                 $name = $node->{'var'};                             // equivalent to $node->var, that works also on my php version!
                 if ( is_string($name) && (strlen($name) !== 0) )    // but 'var' is a reserved function name, so there is no warranty
