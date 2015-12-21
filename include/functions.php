@@ -55,10 +55,18 @@ function obfuscate($filename)                   // takes a file_path as input, r
             $stmts      = array_merge($stmts,shuffle_statements($stmts_to_shuffle));
             $stmts[]    = $last_inst;
         }
-        $code   = $prettyPrinter->prettyPrintFile($stmts);      //  Use PHP-Parser function to output the obfuscated source, taking the modified obfuscated syntax tree as input
-        $code   = trim($code);
+        //var_dump($stmts);
+        
+        if ( (count($stmts)==0) || (  (count($stmts)==1) && ($stmts[0]===null) ) )
+        {
+            $code   = '<?php'.PHP_EOL.'?>';
+        }
+        else
+        {
+            $code   = $prettyPrinter->prettyPrintFile($stmts);      //  Use PHP-Parser function to output the obfuscated source, taking the modified obfuscated syntax tree as input
+            $code   = trim($code);
+        }
 
-        //  var_dump($stmts);
 
         if (isset($conf->strip_indentation) && $conf->strip_indentation)        // self-explanatory
         {
