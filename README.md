@@ -85,8 +85,8 @@ Version 1.0 has been written within a few days...
        # cd yakpro-po 
     5. Then retrieve from GitHub: 
        # git clone --branch=1.x https://github.com/nikic/PHP-Parser.git 
-    6. Give execute rights to yakpro-po.php 
-       # chmod a+x yakpro-po.php 
+    6. Check that yakpro-po.php has execute rights, otherwise:
+                                            # chmod a+x yakpro-po.php 
     7. Create a symbolic link in the /usr/local/bin directory
        # cd /usr/local/bin 
        # ln -s /usr/local/yakpro-po/yakpro-po.php yakpro-po 
