@@ -248,6 +248,23 @@ class MyNodeVisitor extends PhpParser\NodeVisitorAbstract       // all parsing a
                     }
                 }
             }
+            if ($node instanceof PhpParser\Node\Stmt\Catch_)
+            {
+                if (isset($node->type) && isset($node->type->parts))
+                {
+                    $parts = $node->type->parts;
+                    $name  = $parts[count($parts)-1];
+                    if ( is_string($name) && (strlen($name) !== 0) )
+                    {
+                        $r = $scrambler->scramble($name);
+                        if ($r!==$name)
+                        {
+                            $node->type->parts[count($parts)-1] = $r;
+                            $node_modified = true;
+                        }
+                    }
+                }
+            }
         }
 
         if ($conf->obfuscate_interface_name)
