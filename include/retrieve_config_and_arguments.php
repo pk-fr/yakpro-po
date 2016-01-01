@@ -219,7 +219,7 @@ switch(count($t_args))
                         $fp = fopen($target_file,"r");
                         $y = fgets($fp);
                         $y = fgets($fp).fgets($fp).fgets($fp).fgets($fp).fgets($fp);
-                        if ($y!=$conf->get_comment())       // comment is a magic string, used to not overwrite wrong files!!!
+                        if (strpos($y,'    |  Obfuscated by YAK Pro - Php Obfuscator ')===false)       // comment is a magic string, used to not overwrite wrong files!!!
                         {
                             $x = realpath($target_file);
                             fprintf(STDERR,"Error:\tTarget file [%s] exists and is not an obfuscated file!%s", ($x!==false) ? $x : $target_file,PHP_EOL);
