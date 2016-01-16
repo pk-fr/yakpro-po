@@ -40,7 +40,7 @@ function obfuscate($filename)                   // takes a file_path as input, r
         if ($debug_mode) var_dump($stmts);
 
         $stmts  = $traverser->traverse($stmts);                 //  Use PHP-Parser function to traverse the syntax tree and obfuscate names
-        if ($conf->shuffle_stmts)
+        if ($conf->shuffle_stmts && (count($stmts)>2) )
         {
             $last_inst  = array_pop($stmts);
             $last_use_stmt_pos = -1;
@@ -57,18 +57,9 @@ function obfuscate($filename)                   // takes a file_path as input, r
         }
         //var_dump($stmts);
         
-        if ( (count($stmts)==0) || (  (count($stmts)==1) && ($stmts[0]===null) ) )
-        {
-            $code   = '<?php'.PHP_EOL.'?>';
-        }
-        else
-        {
-            $code   = $prettyPrinter->prettyPrintFile($stmts);      //  Use PHP-Parser function to output the obfuscated source, taking the modified obfuscated syntax tree as input
-            $code   = trim($code);
-        }
+        $code   = trim($prettyPrinter->prettyPrintFile($stmts));            //  Use PHP-Parser function to output the obfuscated source, taking the modified obfuscated syntax tree as input
 
-
-        if (isset($conf->strip_indentation) && $conf->strip_indentation)        // self-explanatory
+        if (isset($conf->strip_indentation) && $conf->strip_indentation)    // self-explanatory
         {
             $code = remove_whitespaces($code);
         }
@@ -278,7 +269,7 @@ function shuffle_get_chunk_size(&$stmts)
             $chunk_size = $conf->shuffle_stmts_min_chunk_size;
             break;
         default:
-            $chunk_size =  -1;       // should never occur!
+            $chunk_size =  1;       // should never occur!
     }
     return $chunk_size;
 }
