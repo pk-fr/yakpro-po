@@ -62,6 +62,14 @@ if (isset($pos) && ($pos!==false) )
     array_splice($t_args,$pos,1);           // remove the arg and reorder
 } else $force_conf_silent = false;;
 
+$pos = array_search('--whatis',$t_args);
+if ( isset($pos) && ($pos!==false) && isset($t_args[$pos+1]) )
+{
+    $whatis = $t_args[$pos+1];
+    array_splice($t_args,$pos,2);           // remove the 2 args and reorder
+    $force_conf_silent = true;
+} else $whatis = '';
+
 $pos = array_search('--debug',$t_args);
 if (isset($pos) && ($pos!==false) )
 {

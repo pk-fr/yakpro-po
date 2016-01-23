@@ -233,6 +233,12 @@ Supprime récursivement le répertoire répertoire_cible/yakpro-po
     --scramble-length   longueur ( min=2; max = 16 pour scramble_mode=identifier,
                                           max = 32 pour scramble_mode = hexa ou numeric)
 
+    --whatis scrambled_name             retrouve le nom d'origine à partir du contexte d'obfuscation.
+                                        (utile pour debugger votre code lorsque vous délivrez du code
+                                        obfusqué, et que vous avez gardé le même contexte d'obfuscation).
+                                        Conseil : n'utilisez pas le symbole $, ou faites le précéder du 
+                                        caractère \ car $ est interprété par le shell.
+
     -h ou
     --help                              afficher l'aide.
 

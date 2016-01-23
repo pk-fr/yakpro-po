@@ -394,6 +394,11 @@ class Scrambler
         return $this->case_sensitive ? $this->t_scramble[$r] : $this->case_shuffle($this->t_scramble[$r]);
     }
 
+    public function unscramble($s)
+    {
+        return isset($this->t_rscramble[$s]) ? $this->t_rscramble[$s] : '';
+    }
+    
     public function generate_label_name($prefix = "!label")
     {
         return $prefix.($this->label_counter++);

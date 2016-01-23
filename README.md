@@ -220,6 +220,12 @@ Recursivly removes target_directory/yakpro-po
     --scramble-length   length ( min=2; max = 16 for scramble_mode=identifier,
                                         max = 32 for scramble_mode = hexa or numeric)
 
+    --whatis scrambled_name             retrieves original symbol from obfuscation context.
+                                        (usefull for debugging your code when you give away
+                                        obfuscated code, and keep the same obfuscation context).
+                                        Tip: do not include the $ symbol, or use \$ because
+                                        $ has special meaning in shell.
+
     -h or
     --help                              displays help.
 
