@@ -3,7 +3,7 @@
 // Author:  Pascal KISSIAN
 // Resume:  http://pascal.kissian.net
 //
-// Copyright (c) 2015 Pascal KISSIAN
+// Copyright (c) 2015-2016 Pascal KISSIAN
 //
 // Published under the MIT License
 //          Consider it as a proof of concept!
@@ -214,6 +214,7 @@ class MyNodeVisitor extends PhpParser\NodeVisitorAbstract       // all parsing a
                || ($node instanceof PhpParser\Node\Expr\StaticCall)
                || ($node instanceof PhpParser\Node\Expr\StaticPropertyFetch)
                || ($node instanceof PhpParser\Node\Expr\ClassConstFetch)
+               || ($node instanceof PhpParser\Node\Expr\Instanceof_)
                )
             {
                 if (isset($node->{'class'}->parts))
@@ -545,7 +546,9 @@ class MyNodeVisitor extends PhpParser\NodeVisitorAbstract       // all parsing a
                     }
                 }
             }
-            if ($node instanceof PhpParser\Node\Expr\New_)
+            if (  ($node instanceof PhpParser\Node\Expr\New_)
+               || ($node instanceof PhpParser\Node\Expr\Instanceof_)
+               )
             {
                 if (isset($node->{'class'}->parts))              // not set when indirect call (i.e.function name is a variable value!)
                 {
