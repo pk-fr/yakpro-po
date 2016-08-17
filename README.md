@@ -78,7 +78,7 @@ Version 1.0 has been written within a few days...
        on ubuntu: (adapt according your linux distribution) 
        # apt-get install git 
        # apt-get install php5-cli
-       do not forget to install all other php modules taht you use in your software:
+       do not forget to install all other php modules that you are using within your software:
             for example: apt-get install php5-mysql if you are using mysql... 
     2. Navigate to the directory where you want to install yakpro-po (/usr/local is a good idea): 
        # cd /usr/local 
