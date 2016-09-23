@@ -396,6 +396,7 @@ class Scrambler
 
     public function unscramble($s)
     {
+        if (!$this->case_sensitive) $s = strtolower($s);
         return isset($this->t_rscramble[$s]) ? $this->t_rscramble[$s] : '';
     }
     
