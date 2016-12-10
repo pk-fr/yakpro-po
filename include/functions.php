@@ -86,6 +86,27 @@ function obfuscate($filename)                   // takes a file_path as input, r
     }
 }
 
+function check_preload_file($filename)                       // self-explanatory
+{
+    for($ok=false;;)
+    {
+        if (!file_exists($filename)) return false;
+        if (!is_readable($filename))
+        {
+            fprintf(STDERR,"Warning:[%s] is not readable!%s",$filename,PHP_EOL);
+            return false;
+        }
+        $fp     = fopen($filename,"r"); if($fp===false) break;
+        $line   = trim(fgets($fp));     if ($line!='<?php')                                     { fclose($fp); break; }
+        $line   = trim(fgets($fp));     if ($line!='// YAK Pro - Php Obfuscator: Preload File') { fclose($fp); break; }
+        fclose($fp);
+        $ok     = true;
+        break;
+    }
+    if (!$ok) fprintf(STDERR,"Warning:[%s] is not a valid yakpro-po preload file!%s\tCheck if file is php, and if magic line is present!%s",$filename,PHP_EOL,PHP_EOL);
+    return $ok;
+}
+
 function check_config_file($filename)                       // self-explanatory
 {
     for($ok=false;;)
@@ -246,8 +267,10 @@ function obfuscate_directory($source_dir,$target_dir,$keep_mode=false)   // self
                 }
                 file_put_contents($target_path,$obfuscated_str.PHP_EOL);
             }
-            if ($keep) file_put_contents($target_path,file_get_contents($source_path));
             touch($target_path,$source_stat['mtime']);
+            chmod($target_path,$source_stat['mode']);
+            chgrp($target_path,$source_stat['gid']);
+            chown($target_path,$source_stat['uid']);
             continue;
         }
     }
