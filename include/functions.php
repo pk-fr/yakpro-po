@@ -207,7 +207,7 @@ function obfuscate_directory($source_dir,$target_dir,$keep_mode=false)   // self
             if ( ($target_stat!==false) && is_link($target_path) && ($source_stat['mtime']<=$target_stat['mtime']) )    continue;
             if (  $target_stat!==false  )
             {
-                if (is_dir($target_path))   directory_remove($target_path);
+                if (is_dir($target_path))   remove_directory($target_path);
                 else
                 {
                     if (unlink($target_path)===false)
@@ -241,7 +241,7 @@ function obfuscate_directory($source_dir,$target_dir,$keep_mode=false)   // self
         }
         if(is_file($source_path))
         {
-            if ( ($target_stat!==false) && is_dir($target_path) )                               directory_remove($target_path);
+            if ( ($target_stat!==false) && is_dir($target_path) )                               remove_directory($target_path);
             if ( ($target_stat!==false) && ($source_stat['mtime']<=$target_stat['mtime']) )     continue;                       // do not process if source timestamp is not greater than target
 
             $extension  = pathinfo($source_path,PATHINFO_EXTENSION);
