@@ -1,0 +1,4 @@
+[submodule "PHP-Parser"]
+	path = PHP-Parser
+	url = git@github.com:nikic/PHP-Parser.git
+	branch = 1.x
