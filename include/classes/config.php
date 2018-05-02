@@ -83,6 +83,7 @@ class Config
 
     public $t_keep                          = false;        // array of directory or file pathnames to keep 'as is' ...  i.e. not obfuscate.
     public $t_skip                          = false;        // array of directory or file pathnames to skip when exploring source tree structure ... they will not be on target!
+    public $allow_and_overwrite_empty_files = false;        // allow empty files to be kept as is
 
     public $source_directory                = null;         // self explanatory
     public $target_directory                = null;         // self explanatory
@@ -92,7 +93,7 @@ class Config
     public $extract_comment_from_line       = null;         // when both 2 are set, each obfuscated file will contain an extract of the corresponding source file,
     public $extract_comment_to_line         = null;         // starting from extract_comment_from_line number, and endng at extract_comment_to_line line number.
 
-    private $comment                    = '';
+    private $comment                        = '';
 
     function __construct()
     {

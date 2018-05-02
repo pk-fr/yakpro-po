@@ -3,7 +3,7 @@
 // Author:  Pascal KISSIAN
 // Resume:  http://pascal.kissian.net
 //
-// Copyright (c) 2015 Pascal KISSIAN
+// Copyright (c) 2015-2018 Pascal KISSIAN
 //
 // Published under the MIT License
 //          Consider it as a proof of concept!
@@ -22,7 +22,11 @@ function obfuscate($filename)                   // takes a file_path as input, r
         $source = php_strip_whitespace($filename);
         fprintf(STDERR,"Obfuscating %s%s",$filename,PHP_EOL);
         //var_dump( token_get_all($source));    exit;
-        if ($source==='') throw new Exception("Error obfuscating [$filename]: php_strip_whitespace returned an empty string!");
+        if ($source==='')
+        {
+            if ($conf->allow_and_overwrite_empty_files) return $source;
+            throw new Exception("Error obfuscating [$filename]: php_strip_whitespace returned an empty string!");
+        }
         try
         {
             $stmts  = $parser->parse($source.PHP_EOL.PHP_EOL);  // PHP-Parser returns the syntax tree

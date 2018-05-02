@@ -11,6 +11,11 @@ Télécharger l'archive zip et décompressez la dans le sous-répertoire PHP-Par
 ou alors utilisez git clone.
 
 ### Attention :  
+    Cette version est la dernière version 1.x de yakpro-po qui peut s'ecécuter sur php 5.3
+    La prochaine version 2.x de yakpro-po utilisera PhpParser 4.x
+    du coup, elle ne s'éxecutera que sur php >= 7.0, elle pourra obfusquer le code pour php 5.2 à php 7.2
+    
+    
     Actuellement, yakpro-po ne fonctionne qu'avec la branche 1.x de PhpParser.  
     Une nouvelle version 2.0 de PHP Parser est développée avec une API différente,  
     et ne fonctionne plus avec les versions de PHP < 5.4  

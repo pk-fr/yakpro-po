@@ -86,6 +86,7 @@ $conf->target_directory                 = null;         // self explanatory
 
 $conf->t_keep                           = null;         // array of directory or file pathnames, to keep 'as is' (i.e. not obfuscate.)
 $conf->t_skip                           = null;         // array of directory or file pathnames, to skip when exploring source tree structure ... they will not be on target!
+$conf->allow_and_overwrite_empty_files  = true;         // allow empty files to be kept as is
 
 $conf->user_comment                     = null;         // user comment to insert inside each obfuscated file
 

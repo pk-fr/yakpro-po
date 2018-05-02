@@ -4,7 +4,7 @@
 // Author:  Pascal KISSIAN
 // Resume:  http://pascal.kissian.net
 //
-// Copyright (c) 2015 Pascal KISSIAN
+// Copyright (c) 2015-2018 Pascal KISSIAN
 //
 // Published under the MIT License
 //          Consider it as a proof of concept!
@@ -81,7 +81,7 @@ switch($process_mode)
         $obfuscated_str =  obfuscate($source_file);
         if ($obfuscated_str===null) { exit;                               }
         if ($target_file   ===''  ) { echo $obfuscated_str.PHP_EOL; exit; }
-        file_put_contents($target_file,$obfuscated_str.PHP_EOL);
+        file_put_contents($target_file,($obfuscated_str==='') ? '' : ($obfuscated_str.PHP_EOL));
         exit;
     case 'directory':
         if (isset($conf->t_skip) && is_array($conf->t_skip)) foreach($conf->t_skip as $key=>$val) $conf->t_skip[$key] = "$source_directory/$val";

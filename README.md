@@ -11,6 +11,11 @@ You just have to download the zip archive and uncompress it under the PHP-Parser
 or make a git clone ...
 
 ### Warning:  
+    This is the last 1.x yakpro-po  version running on php 5.3
+    The upcomming 2.x yakpro-po version will work on PhpParser 4.x
+    so, it wil run on php >= 7.0, obfuscating code for php 5.2 to php 7.2
+    
+    
     Currently, yakpro-po only works on 1.x branch of PhpParser.  
     A new 2.0 PHP Parser has been released with a different API,  
     and drop support for PHP < 5.4  

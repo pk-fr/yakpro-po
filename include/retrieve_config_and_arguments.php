@@ -222,7 +222,7 @@ switch(count($t_args))
                         fprintf(STDERR,"Error:\tTarget file [%s] is a directory!%s", ($x!==false) ? $x : $target_file,PHP_EOL);
                         exit(-1);
                     }
-                    if ( is_readable($x) && is_writable($x) && is_file($x) )
+                    if ( is_readable($x) && is_writable($x) && is_file($x) && (file_get_contents($x)!=='') )
                     {
                         $fp = fopen($target_file,"r");
                         $y = fgets($fp);
