@@ -254,7 +254,8 @@ class Scrambler
                 break;
             case 'method':
                 $this->case_sensitive       = false;
-                $this->t_ignore             = array_flip($this->t_reserved_function_names);
+                if ($conf->parser_mode=='ONLY_PHP7')    $this->t_ignore = array();      // in php7 method names can be keywords
+                else                                    $this->t_ignore = array_flip($this->t_reserved_function_names);
                 
                 $t                          = array_flip($this->t_reserved_method_names);
                 $this->t_ignore             = array_merge($this->t_ignore,$t);

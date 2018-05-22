@@ -3,7 +3,7 @@
 // Author:  Pascal KISSIAN
 // Resume:  http://pascal.kissian.net
 //
-// Copyright (c) 2015 Pascal KISSIAN
+// Copyright (c) 2015-2017 Pascal KISSIAN
 //
 // Published under the MIT License
 //          Consider it as a proof of concept!
@@ -31,14 +31,34 @@ class myPrettyprinter extends PhpParser\PrettyPrinter\Standard
         return  '"'.$this->obfuscate_string($node->value).'"';
     }
 
-    public function pScalar_Encapsed(PhpParser\Node\Scalar\Encapsed $node)
+
+    //TODO: pseudo-obfuscate HEREDOC string
+    protected function pScalar_Encapsed(PhpParser\Node\Scalar\Encapsed $node)
     {
+        if ($node->getAttribute('kind') === PhpParser\Node\Scalar\String_::KIND_HEREDOC) 
+        {
+            $label = $node->getAttribute('docLabel');
+            if ($label && !$this->encapsedContainsEndLabel($node->parts, $label)) 
+            {
+                if (count($node->parts) === 1
+                    && $node->parts[0] instanceof PhpParser\Node\Scalar\EncapsedStringPart
+                    && $node->parts[0]->value === ''
+                )
+                {
+                    return "<<<$label\n$label" . $this->docStringEndToken;
+                }
+
+                return "<<<$label\n" . $this->pEncapsList($node->parts, null) . "\n$label"
+                     . $this->docStringEndToken;
+            }
+        }
+        
         $result = '';
         foreach ($node->parts as $element)
         {
-            if (is_string($element))
+            if ($element instanceof PhpParser\Node\Scalar\EncapsedStringPart)
             {
-                $result .=  $this->obfuscate_string($element);
+                $result .=  $this->obfuscate_string($element->value);
             }
             else
             {

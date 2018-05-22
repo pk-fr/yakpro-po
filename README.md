@@ -4,25 +4,20 @@
 
 Free, Open Source, Published under the MIT License.
 
-This tool parses php with the best existing php parser [PHP-Parser 1.x](https://github.com/nikic/PHP-Parser/tree/1.x),
+This tool parses php with the best existing php parser [PHP-Parser 4.x](https://github.com/nikic/PHP-Parser),
 which is an awesome php parsing library written by [nikic](https://github.com/nikic).
 
 You just have to download the zip archive and uncompress it under the PHP-Parser subdirectory,
 or make a git clone ...
 
 ### Warning:  
-    This is the last 1.x yakpro-po  version running on php 5.3
-    The upcomming 2.x yakpro-po version will work on PhpParser 4.x
-    so, it wil run on php >= 7.0, obfuscating code for php 5.2 to php 7.2
+    yakpro-po 2.x is currently in alpha version.
+    yakpro-po 2.x works on PhpParser 4.x   
+    it will run on php >= 7.0, obfuscating code for php 5.2 to php 7.2   
     
+    If you are running php 5.3 or higher,  
+    Please use [yakpro-po 1.x](https://github.com/pk-fr/yakpro-po/tree/1.x) which works on 1.x branch of PhpParser.   
     
-    Currently, yakpro-po only works on 1.x branch of PhpParser.  
-    A new 2.0 PHP Parser has been released with a different API,  
-    and drop support for PHP < 5.4  
-    Unfortunately, This new branch is the default one.  
-    
-    Please use :  
-    git clone --branch=1.x https://github.com/nikic/PHP-Parser.git  
 
 
 The yakpro-po.cnf self-documented file contains many configuration options!
@@ -30,7 +25,7 @@ Take a look at it!
 
 Demo : [yakpro-po demo](https://www.php-obfuscator.com/?demo).
 
-Prerequisites:  php 5.3 or higher, [PHP-Parser 1.x](https://github.com/nikic/PHP-Parser/tree/1.x).
+Prerequisites:  php 7.0 or higher, [PHP-Parser 4.x](https://github.com/nikic/PHP-Parser).
 
 Note: This tool has been written in order to obfuscate pure php sources.
 it is not intended to be used with html and embeded php inside (you may try to deactivate statements shuffling...).
@@ -81,10 +76,10 @@ Version 1.0 has been written within a few days...
     Note: This setup is also valid for Windows 10 Anniversary with bash installed...  
     1. Prerequisites: git and php-cli (command line interface) packages. 
        on ubuntu: (adapt according your linux distribution) 
-       # apt-get install git 
-       # apt-get install php5-cli
+       # apt install git 
+       # apt install php-cli
        do not forget to install all other php modules that you are using within your software:
-            for example: apt-get install php5-mysql if you are using mysql... 
+            for example: apt install php-mysql if you are using mysql... 
     2. Navigate to the directory where you want to install yakpro-po (/usr/local is a good idea): 
        # cd /usr/local 
     3. Then retrieve from GitHub: 
@@ -92,7 +87,7 @@ Version 1.0 has been written within a few days...
     4. Go to the yakpro-po directory: 
        # cd yakpro-po 
     5. Then retrieve from GitHub: 
-       # git clone --branch=1.x https://github.com/nikic/PHP-Parser.git 
+       # git clone https://github.com/nikic/PHP-Parser.git 
     6. Check that yakpro-po.php has execute rights, otherwise:
                                             # chmod a+x yakpro-po.php 
     7. Create a symbolic link in the /usr/local/bin directory

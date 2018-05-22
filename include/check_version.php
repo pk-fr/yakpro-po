@@ -3,7 +3,7 @@
 // Author:  Pascal KISSIAN
 // Resume:  http://pascal.kissian.net
 //
-// Copyright (c) 2015 Pascal KISSIAN
+// Copyright (c) 2015-2017 Pascal KISSIAN
 //
 // Published under the MIT License
 //          Consider it as a proof of concept!
@@ -12,7 +12,8 @@
 //========================================================================
 
 $yakpro_po_base_directory   = dirname(realpath($argv[0]));
-$php_parser_git_commandline = 'git clone --branch=1.x https://github.com/nikic/PHP-Parser.git';
+//$php_parser_git_commandline = 'git clone --branch=4.x https://github.com/nikic/PHP-Parser.git';
+$php_parser_git_commandline = 'git clone https://github.com/nikic/PHP-Parser.git';
 
 if(!file_exists("$yakpro_po_base_directory/PHP-Parser/composer.json"))
 {
@@ -26,9 +27,9 @@ $required_php_version   = $t_composer->{'require'}->{'php'};
 
 $operator = '';for($i=0;!ctype_digit($c=$required_php_version{$i});++$i) $operator.=$c; $required_php_version = substr($required_php_version,$i);
 
-if ($php_parser_branch>=2)
+if ($php_parser_branch!=4)
 {
-    fprintf(STDERR,"Error:\tWrong version of PHP-Parser detected!%sCurrently, only 1.x branch of PHP-Parser is supported!%s\tYou can try to use the following command:%s\t# %s%s",PHP_EOL,PHP_EOL,PHP_EOL,$php_parser_git_commandline,PHP_EOL);
+    fprintf(STDERR,"Error:\tWrong version of PHP-Parser detected!%sCurrently, only 4.x branch of PHP-Parser is supported!%s\tYou can try to use the following command:%s\t# %s%s",PHP_EOL,PHP_EOL,PHP_EOL,$php_parser_git_commandline,PHP_EOL);
     exit(-1);
 }
 

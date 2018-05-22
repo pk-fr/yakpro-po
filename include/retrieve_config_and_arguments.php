@@ -3,7 +3,7 @@
 // Author:  Pascal KISSIAN
 // Resume:  http://pascal.kissian.net
 //
-// Copyright (c) 2015 Pascal KISSIAN
+// Copyright (c) 2015-2018 Pascal KISSIAN
 //
 // Published under the MIT License
 //          Consider it as a proof of concept!
@@ -21,6 +21,7 @@ $process_mode           = '';   // can be: 'file' or 'directory'
 $pos = array_search('-h',$t_args); if (!isset($pos) || ($pos===false)) $pos = array_search('--help',$t_args);
 if (isset($pos) && ($pos!==false) )
 {
+    fprintf(STDERR,"Info:\tyakpro-po version = %s%s",$yakpro_po_version,PHP_EOL.PHP_EOL);
     $lang = '';
     if (($x = getenv('LANG'))!==false) $s = strtolower($x); $x = explode('_',$x); $x = $x[0];
          if (file_exists("$yakpro_po_dirname/locale/$x/README.md"))  $help = file_get_contents("$yakpro_po_dirname/locale/$x/README.md");
@@ -117,6 +118,9 @@ else
     if ($force_conf_silent) $conf->silent = true;
 }
 //var_dump($conf);
+
+if (!$conf->silent) fprintf(STDERR,"Info:\tyakpro-po version = %s%s",$yakpro_po_version,PHP_EOL);
+
 
 $pos = array_search('-y',$t_args);
 if (isset($pos) && ($pos!==false) )

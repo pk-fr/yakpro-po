@@ -4,25 +4,20 @@
 
 Gratuit, Open Source, Publié sous les termes de la licence MIT.  
 
-Ce programme utilise [PHP-Parser 1.x](https://github.com/nikic/PHP-Parser/tree/1.x) pour analyser le php.  
-[PHP-Parser 1.x](https://github.com/nikic/PHP-Parser/tree/1.x) est une remarquable bibliothèque développée par [nikic](https://github.com/nikic).
+Ce programme utilise [PHP-Parser 4.x](https://github.com/nikic/PHP-Parser) pour analyser le php.  
+[PHP-Parser 4.x](https://github.com/nikic/PHP-Parser) est une remarquable bibliothèque développée par [nikic](https://github.com/nikic).
 
 Télécharger l'archive zip et décompressez la dans le sous-répertoire PHP-Parser .
 ou alors utilisez git clone.
 
 ### Attention :  
-    Cette version est la dernière version 1.x de yakpro-po qui peut s'ecécuter sur php 5.3
-    La prochaine version 2.x de yakpro-po utilisera PhpParser 4.x
-    du coup, elle ne s'éxecutera que sur php >= 7.0, elle pourra obfusquer le code pour php 5.2 à php 7.2
+    yakpro-po 2.x est actuellement en phase alpha.
+    yakpro-po 2.x utilise PhpParser 4.x   
+    il fonctionne avec php >= 7.0, et obfusque le code pour php 5.2 à php 7.2   
     
-    
-    Actuellement, yakpro-po ne fonctionne qu'avec la branche 1.x de PhpParser.  
-    Une nouvelle version 2.0 de PHP Parser est développée avec une API différente,  
-    et ne fonctionne plus avec les versions de PHP < 5.4  
-    Malheureusement cette nouvelle branche est la branche par défaut.  
-    
-    Veuillez utiliser :  
-    git clone --branch=1.x https://github.com/nikic/PHP-Parser.git  
+    Si vous utilisez php 5.3 ou supérieur,  
+    Veuillez utiliser [yakpro-po 1.x](https://github.com/pk-fr/yakpro-po/tree/1.x) qui fonctionne avec la branche 1.x de PhpParser.   
+
 
 
 
@@ -32,7 +27,7 @@ Un petit coup d'oeil vaut le détour.
 
 Démo : [yakpro-po demo](https://www.php-obfuscator.com/?demo).
 
-Pré-requis:  php 5.3 ou supérieur, [PHP-Parser 1.x](https://github.com/nikic/PHP-Parser/tree/1.x).
+Pré-requis:  php 7.0 ou supérieur, [PHP-Parser 4.x](https://github.com/nikic/PHP-Parser).
 
 Remarque : Cet outil à été conçu dans le but d'obfusquer des sources en php pur.  
 Il n'a pas été conçu pour être utilisé avec du html avec des bouts de code php à l'intérieur.  
@@ -91,10 +86,10 @@ La version 1.0 a été écrite en quelques jours...
     Note: cette procédure est aussi valide pour Windows 10 Anniversary avec bash installé...  
     1. Pré-requis : commande git installée, ainsi que php-cli (command line interface). 
        sous ubuntu : (adaptez selon votre distribution) 
-       # apt-get install git 
-       # apt-get install php5-cli
+       # apt install git 
+       # apt install php-cli
        N'oubliez pas d'installer tous les modules php dont vous vous servez dans votre logiciel :
-       par exemple: apt-get install php5-mysql  si vous utilisez mysql... 
+       par exemple: apt install php-mysql  si vous utilisez mysql... 
 
     2. Placez-vous dans le répertoire ou vous voulez installer yakpro-po (par exemple dans /usr/local ) : 
        # cd /usr/local 
@@ -103,7 +98,7 @@ La version 1.0 a été écrite en quelques jours...
     4. Placez-vous dans le répertoire de yakpro-po : 
        # cd yakpro-po 
     5. Puis récupérez à partir de GitHub : 
-       # git clone --branch=1.x https://github.com/nikic/PHP-Parser.git 
+       # git clone https://github.com/nikic/PHP-Parser.git 
     6. Verifiez que yakpro-po.php possède bien les droits d'exécution, sinon :
                                                     # chmod a+x yakpro-po.php 
     7. Créer un lien symbolique dans /usr/local/bin 

@@ -29,17 +29,17 @@ function obfuscate($filename)                   // takes a file_path as input, r
         }
         try
         {
-            $stmts  = $parser->parse($source.PHP_EOL.PHP_EOL);  // PHP-Parser returns the syntax tree
+            $stmts  = $parser->parse($source);  // PHP-Parser returns the syntax tree
         }
         catch (PhpParser\Error $e)                              // if an error occurs, then redo it without php_strip_whitespace, in order to display the right line number with error!
         {
             $source = file_get_contents($filename);
-            $stmts  = $parser->parse($source.PHP_EOL.PHP_EOL);
+            $stmts  = $parser->parse($source);
         }
         if ($debug_mode===2)                                    //  == 2 is true when debug_mode is true!
         {
             $source = file_get_contents($filename);
-            $stmts  = $parser->parse($source.PHP_EOL.PHP_EOL);
+            $stmts  = $parser->parse($source);
         }
         if ($debug_mode) var_dump($stmts);
 
@@ -59,7 +59,8 @@ function obfuscate($filename)                   // takes a file_path as input, r
             $stmts      = array_merge($stmts,shuffle_statements($stmts_to_shuffle));
             $stmts[]    = $last_inst;
         }
-        //var_dump($stmts);
+        // if ($debug_mode) var_dump($stmts);
+
         
         $code   = trim($prettyPrinter->prettyPrintFile($stmts));            //  Use PHP-Parser function to output the obfuscated source, taking the modified obfuscated syntax tree as input
 
@@ -81,7 +82,7 @@ function obfuscate($filename)                   // takes a file_path as input, r
             $code .= '/*'.PHP_EOL.$conf->user_comment.PHP_EOL.'*/'.PHP_EOL;
         }
         $code .= $endcode;
-        return $code;
+        return trim($code);
     }
     catch (Exception $e)
     {

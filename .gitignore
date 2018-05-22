@@ -4,3 +4,7 @@
 PHP-Parser/*
 tests/*
 old/*
+#-----------------------
+# files
+#-----------------------
+run_tests.php
