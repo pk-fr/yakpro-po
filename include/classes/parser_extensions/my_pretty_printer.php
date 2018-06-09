@@ -35,6 +35,7 @@ class myPrettyprinter extends PhpParser\PrettyPrinter\Standard
     //TODO: pseudo-obfuscate HEREDOC string
     protected function pScalar_Encapsed(PhpParser\Node\Scalar\Encapsed $node)
     {
+        /*
         if ($node->getAttribute('kind') === PhpParser\Node\Scalar\String_::KIND_HEREDOC) 
         {
             $label = $node->getAttribute('docLabel');
@@ -52,7 +53,7 @@ class myPrettyprinter extends PhpParser\PrettyPrinter\Standard
                      . $this->docStringEndToken;
             }
         }
-        
+        */
         $result = '';
         foreach ($node->parts as $element)
         {
