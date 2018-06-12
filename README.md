@@ -74,20 +74,18 @@ Version 1.0 has been written within a few days...
 
 ## Setup:
     Note: This setup is also valid for Windows 10 Anniversary with bash installed...  
-    1. Prerequisites: git and php-cli (command line interface) packages. 
-       on ubuntu: (adapt according your linux distribution) 
-       # apt install git 
-       # apt install php-cli
-       do not forget to install all other php modules that you are using within your software:
-            for example: apt install php-mysql if you are using mysql... 
+    1. Prerequisites: 
+      * git
+      * composer
+      * php (cli)
     2. Navigate to the directory where you want to install yakpro-po (/usr/local is a good idea): 
-       # cd /usr/local 
+       * cd /usr/local 
     3. Then retrieve from GitHub: 
-       # git clone https://github.com/pk-fr/yakpro-po.git 
+       * git clone https://github.com/pk-fr/yakpro-po.git 
     4. Go to the yakpro-po directory: 
-       # cd yakpro-po 
-    5. Then retrieve from GitHub: 
-       # git clone https://github.com/nikic/PHP-Parser.git 
+       * cd yakpro-po 
+    5. Install dependencies: 
+       * composer install
     6. Check that yakpro-po.php has execute rights, otherwise:
                                             # chmod a+x yakpro-po.php 
     7. Create a symbolic link in the /usr/local/bin directory

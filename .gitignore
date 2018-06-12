@@ -8,3 +8,5 @@ old/*
 # files
 #-----------------------
 run_tests.php
+
+/vendor/
