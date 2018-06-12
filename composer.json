@@ -1,0 +1,13 @@
+{
+    "name": "pk-fr/yakpro-po",
+    "type": "project",
+    "authors": [
+        {
+            "name": "Pascal Kissian",
+            "email": "unknown@noreply.com"
+        }
+    ],
+    "require": {
+        "nikic/php-parser": "^4.0"
+    }
+}
