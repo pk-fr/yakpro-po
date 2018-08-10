@@ -986,6 +986,7 @@ class MyNodeVisitor extends PhpParser\NodeVisitorAbstract       // all parsing a
         if ($conf->shuffle_stmts)
         {
             if (    ($node instanceof PhpParser\Node\Stmt\Function_)
+                 || ($node instanceof PhpParser\Node\Expr\Closure)
                  || ($node instanceof PhpParser\Node\Stmt\ClassMethod)
                  || ($node instanceof PhpParser\Node\Stmt\Foreach_)     // occurs when $conf->obfuscate_loop_statement is set to false
                  || ($node instanceof PhpParser\Node\Stmt\If_)          // occurs when $conf->obfuscate_loop_statement is set to false
