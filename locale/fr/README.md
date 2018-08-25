@@ -11,7 +11,6 @@ Télécharger l'archive zip et décompressez la dans le sous-répertoire PHP-Par
 ou alors utilisez git clone.
 
 ### Attention :  
-    yakpro-po 2.x est actuellement en phase alpha.
     yakpro-po 2.x utilise PhpParser 4.x   
     il fonctionne avec php >= 7.0, et obfusque le code pour php 5.2 à php 7.2   
     
@@ -31,6 +30,7 @@ Pré-requis:  php 7.0 ou supérieur, [PHP-Parser 4.x](https://github.com/nikic/P
 
 Remarque : Cet outil à été conçu dans le but d'obfusquer des sources en php pur.  
 Il n'a pas été conçu pour être utilisé avec du html avec des bouts de code php à l'intérieur.  
+(utilisation à vos risques et périls)  
 Par contre, vous pouvez intégrer du html dans votre php en utilisant la syntaxe echo <<<END ... END;
 
 
