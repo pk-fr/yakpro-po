@@ -11,7 +11,6 @@ You just have to download the zip archive and uncompress it under the PHP-Parser
 or make a git clone ...
 
 ### Warning:  
-    yakpro-po 2.x is currently in alpha version.
     yakpro-po 2.x works on PhpParser 4.x   
     it will run on php >= 7.0, obfuscating code for php 5.2 to php 7.2   
     
@@ -28,7 +27,8 @@ Demo : [yakpro-po demo](https://www.php-obfuscator.com/?demo).
 Prerequisites:  php 7.0 or higher, [PHP-Parser 4.x](https://github.com/nikic/PHP-Parser).
 
 Note: This tool has been written in order to obfuscate pure php sources.
-it is not intended to be used with html and embeded php inside (you may try to deactivate statements shuffling...).
+it is not intended to be used with html and embeded php inside 
+(use at your own risks...you may try to deactivate statements shuffling...).
 You can still embed html within php using the echo <<<END ... END; syntax!
 
 ## What is Php Obfuscation?

@@ -96,6 +96,15 @@ class MyNodeVisitor extends PhpParser\NodeVisitorAbstract       // all parsing a
         if ($node instanceof PhpParser\Node\Stmt\Class_)             $this->current_class_name = null;
         if ($node instanceof PhpParser\Node\Stmt\ClassConst)         $this->is_in_class_const_definition = false;
 
+        if ($conf->obfuscate_string_literal)
+        {
+            if ($node instanceof PhpParser\Node\Stmt\InlineHTML)
+            {
+                $node = new PhpParser\Node\Stmt\Echo_([new PhpParser\Node\Scalar\String_($node->value)]);
+                $node_modified = true;
+            }
+        }
+        
         if ($conf->obfuscate_variable_name)
         {
             $scrambler = $t_scrambler['variable'];
@@ -986,6 +995,7 @@ class MyNodeVisitor extends PhpParser\NodeVisitorAbstract       // all parsing a
         if ($conf->shuffle_stmts)
         {
             if (    ($node instanceof PhpParser\Node\Stmt\Function_)
+                 || ($node instanceof PhpParser\Node\Expr\Closure)
                  || ($node instanceof PhpParser\Node\Stmt\ClassMethod)
                  || ($node instanceof PhpParser\Node\Stmt\Foreach_)     // occurs when $conf->obfuscate_loop_statement is set to false
                  || ($node instanceof PhpParser\Node\Stmt\If_)          // occurs when $conf->obfuscate_loop_statement is set to false
