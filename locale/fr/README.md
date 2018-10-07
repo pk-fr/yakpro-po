@@ -12,7 +12,7 @@ ou alors utilisez git clone.
 
 ### Attention :  
     yakpro-po 2.x utilise PhpParser 4.x   
-    il fonctionne avec php >= 7.0, et obfusque le code pour php 5.2 à php 7.2   
+    il fonctionne avec php >= 7.0, et obfusque le code pour php 5.2 à php 7.3   
     
     Si vous utilisez php 5.3 ou supérieur,  
     Veuillez utiliser [yakpro-po 1.x](https://github.com/pk-fr/yakpro-po/tree/1.x) qui fonctionne avec la branche 1.x de PhpParser.   
