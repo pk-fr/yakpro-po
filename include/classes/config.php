@@ -95,17 +95,12 @@ class Config
     public $extract_comment_from_line       = null;         // when both 2 are set, each obfuscated file will contain an extract of the corresponding source file,
     public $extract_comment_to_line         = null;         // starting from extract_comment_from_line number, and endng at extract_comment_to_line line number.
 
-    private $comment                        = '';
-
-    function __construct()
-    {
-        $this->comment .= "/*   __________________________________________________".PHP_EOL;
-        $this->comment .= "    |  Obfuscated by YAK Pro - Php Obfuscator  %-5.5s   |".PHP_EOL;
-        $this->comment .= "    |              on %s              |".PHP_EOL;
-        $this->comment .= "    |    GitHub: https://github.com/pk-fr/yakpro-po    |".PHP_EOL;
-        $this->comment .= "    |__________________________________________________|".PHP_EOL;
-        $this->comment .= "*/".PHP_EOL;
-    }
+    public $comment                        = "/*   __________________________________________________".PHP_EOL
+                                           . "    |  Obfuscated by YAK Pro - Php Obfuscator  %-5.5s   |".PHP_EOL
+                                           . "    |              on %s              |".PHP_EOL
+                                           . "    |    GitHub: https://github.com/pk-fr/yakpro-po    |".PHP_EOL
+                                           . "    |__________________________________________________|".PHP_EOL
+                                           . "*/".PHP_EOL;
 
     public function get_comment()
     {

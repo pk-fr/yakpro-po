@@ -95,4 +95,5 @@ $conf->user_comment                     = null;         // user comment to inser
 $conf->extract_comment_from_line        = null;         // when both 2 are set, each obfuscated file will contain an extract of the corresponding source file,
 $conf->extract_comment_to_line          = null;         // starting from extract_comment_from_line number, and ending at extract_comment_to_line line number.
 
+//$conf->comment                          = '/* */';           // custom comment to appear at the top of the file. Default is a notice for YAK Pro, with date & time
 ?>
