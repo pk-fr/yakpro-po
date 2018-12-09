@@ -39,7 +39,9 @@ class Scrambler
     private $silent                 = null;     // display or not Information level messages.
     private $label_counter          =    0;     // internal label counter.
 
-    private $t_reserved_variable_names = array('this','GLOBALS','_SERVER', '_GET', '_POST', '_FILES', '_COOKIE','_SESSION', '_ENV', '_REQUEST');
+    private $t_reserved_variable_names = array( 'this','GLOBALS','_SERVER', '_GET', '_POST', '_FILES', '_COOKIE','_SESSION', '_ENV', '_REQUEST',
+                                                'php_errormsg','HTTP_RAW_POST_DATA','http_response_header','argc','argv'
+                                              );
     private $t_reserved_function_names = array( '__halt_compiler','__autoload', 'abstract', 'and', 'array', 'as', 'bool', 'break', 'callable', 'case', 'catch',
                                                 'class', 'clone', 'const', 'continue', 'declare', 'default', 'die', 'do', 'echo', 'else',
                                                 'elseif', 'empty', 'enddeclare', 'endfor', 'endforeach', 'endif', 'endswitch', 'endwhile',
