@@ -1,3 +1,5 @@
+[Cette page en Français](https://github.com/pk-fr/yakpro-po/blob/master/locale/fr/README.md)
+
 # YAK Pro - Php Obfuscator
 
 **YAK Pro** stands for **Y**et **A**nother **K**iller **Pro**duct.

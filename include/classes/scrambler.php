@@ -3,7 +3,7 @@
 // Author:  Pascal KISSIAN
 // Resume:  http://pascal.kissian.net
 //
-// Copyright (c) 2015 Pascal KISSIAN
+// Copyright (c) 2015-2019 Pascal KISSIAN
 //
 // Published under the MIT License
 //          Consider it as a proof of concept!
@@ -53,7 +53,7 @@ class Scrambler
                                               );
 
     private $t_reserved_class_names     = array('parent', 'self', 'static',                    // same reserved names for classes, interfaces  and traits...
-                                                'int', 'float', 'bool', 'string', 'true', 'false', 'null', 'resource', 'object', 'scalar', 'mixed', 'numeric'
+                                                'int', 'float', 'bool', 'string', 'true', 'false', 'null', 'void', 'iterable', 'object',  'resource', 'scalar', 'mixed', 'numeric'
                                                );
 
     private $t_reserved_method_names    = array('__construct', '__destruct', '__call', '__callstatic', '__get', '__set', '__isset', '__unset', '__sleep', '__wakeup', '__tostring', '__invoke', '__set_state', '__clone','__debuginfo' );
@@ -375,11 +375,12 @@ class Scrambler
 
         if (!isset($this->t_scramble[$r]))      // if not already scrambled:
         {
-            for($i=0;$i<20;++$i)                // try at max 20 times if the random generated scrambled string has already beeen generated!
+            for($i=0;$i<50;++$i)                // try at max 20 times if the random generated scrambled string has already beeen generated!
             {
                 $x = $this->str_scramble($s);
-                $y = $this->case_sensitive ? $x : strtolower($x);
-                if (isset($this->t_rscramble[$y]) || isset($this->t_ignore[$y]) )           // this random value is either already used or a reserved name
+                $z = strtolower($x);
+                $y = $this->case_sensitive ? $x : $z;
+                if (isset($this->t_rscramble[$y]) || isset($this->t_ignore[$z]) )           // this random value is either already used or a reserved name
                 {
                     if (($i==5) && ($this->scramble_length < $this->scramble_length_max))  ++$this->scramble_length;    // if not found after 5 attempts, increase the length...
                     continue;                                                                                           // the next attempt will always be successfull, unless we already are maxlength
@@ -390,7 +391,7 @@ class Scrambler
             }
             if (!isset($this->t_scramble[$r]))
             {
-                fprintf(STDERR,"Scramble Error: Identifier not found after 20 iterations!%sAborting...%s",PHP_EOL,PHP_EOL); // should statistically never occur!
+                fprintf(STDERR,"Scramble Error: Identifier not found after 50 iterations!%sAborting...%s",PHP_EOL,PHP_EOL); // should statistically never occur!
                 exit;
             }
         }
