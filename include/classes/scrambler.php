@@ -375,7 +375,7 @@ class Scrambler
 
         if (!isset($this->t_scramble[$r]))      // if not already scrambled:
         {
-            for($i=0;$i<50;++$i)                // try at max 20 times if the random generated scrambled string has already beeen generated!
+            for($i=0;$i<50;++$i)                // try at max 50 times if the random generated scrambled string has already beeen generated!
             {
                 $x = $this->str_scramble($s);
                 $z = strtolower($x);
