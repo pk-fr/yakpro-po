@@ -3,7 +3,7 @@
 // Author:  Pascal KISSIAN
 // Resume:  http://pascal.kissian.net
 //
-// Copyright (c) 2015-2018 Pascal KISSIAN
+// Copyright (c) 2015-2019 Pascal KISSIAN
 //
 // Published under the MIT License
 //          Consider it as a proof of concept!
@@ -357,7 +357,7 @@ function shuffle_statements($stmts)
 
 function remove_whitespaces($str)
 {
-    $tmpfilename = tempnam('/tmp','po-');
+    $tmpfilename = @tempnam('/tmp','po-');
     file_put_contents($tmpfilename,$str);
     $str = php_strip_whitespace($tmpfilename);  // can remove more whitespaces
     unlink($tmpfilename);

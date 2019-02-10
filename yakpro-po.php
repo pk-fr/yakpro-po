@@ -4,7 +4,7 @@
 // Author:  Pascal KISSIAN
 // Resume:  http://pascal.kissian.net
 //
-// Copyright (c) 2015-2018 Pascal KISSIAN
+// Copyright (c) 2015-2019 Pascal KISSIAN
 //
 // Published under the MIT License
 //          Consider it as a proof of concept!
@@ -41,7 +41,6 @@ if ($clean_mode && file_exists("$target_directory/yakpro-po/.yakpro-po-directory
     exit;
 }
 
-//$parser             = new PhpParser\Parser(new PhpParser\Lexer\Emulative);      // $parser = new PhpParser\Parser(new PhpParser\Lexer);
 use PhpParser\Error;
 use PhpParser\ParserFactory;
 use PhpParser\NodeTraverser;
@@ -59,11 +58,9 @@ switch($conf->parser_mode)
 $parser = (new ParserFactory)->create($parser_mode);
 
 
-//$traverser          = new PhpParser\NodeTraverser;
 $traverser          = new NodeTraverser;
 
 if ($conf->obfuscate_string_literal)    $prettyPrinter      = new myPrettyprinter;
-//else                                    $prettyPrinter      = new PhpParser\PrettyPrinter\Standard;
 else                                    $prettyPrinter      = new PrettyPrinter\Standard;
 
 $t_scrambler = array();
