@@ -16,16 +16,27 @@ function obfuscate($filename)                   // takes a file_path as input, r
     global $conf;
     global $parser,$traverser,$prettyPrinter;
     global $debug_mode;
-
+    
+    $src_filename = $filename;
+    $tmp_filename = $first_line = '';
+    $t_source = file($filename);
+    if (substr($t_source[0],0,2)=='#!')
+    {
+        $first_line = array_shift($t_source);
+        $tmp_filename = tempnam(sys_get_temp_dir(), 'po-');
+        file_put_contents($tmp_filename,implode(PHP_EOL,$t_source));
+        $filename = $tmp_filename; // override 
+    }
+    
     try
     {
         $source = php_strip_whitespace($filename);
-        fprintf(STDERR,"Obfuscating %s%s",$filename,PHP_EOL);
+        fprintf(STDERR,"Obfuscating %s%s",$src_filename,PHP_EOL);
         //var_dump( token_get_all($source));    exit;
         if ($source==='')
         {
             if ($conf->allow_and_overwrite_empty_files) return $source;
-            throw new Exception("Error obfuscating [$filename]: php_strip_whitespace returned an empty string!");
+            throw new Exception("Error obfuscating [$src_filename]: php_strip_whitespace returned an empty string!");
         }
         try
         {
@@ -82,6 +93,13 @@ function obfuscate($filename)                   // takes a file_path as input, r
             $code .= '/*'.PHP_EOL.$conf->user_comment.PHP_EOL.'*/'.PHP_EOL;
         }
         $code .= $endcode;
+        
+        if (($tmp_filename!='') && ($first_line!=''))
+        {
+            $code = $first_line.$code;
+            unlink($tmp_filename);
+        }
+        
         return trim($code);
     }
     catch (Exception $e)
@@ -357,10 +375,10 @@ function shuffle_statements($stmts)
 
 function remove_whitespaces($str)
 {
-    $tmpfilename = @tempnam('/tmp','po-');
-    file_put_contents($tmpfilename,$str);
-    $str = php_strip_whitespace($tmpfilename);  // can remove more whitespaces
-    unlink($tmpfilename);
+    $tmp_filename = @tempnam(sys_get_temp_dir(),'po-');
+    file_put_contents($tmp_filename,$str);
+    $str = php_strip_whitespace($tmp_filename);  // can remove more whitespaces
+    unlink($tmp_filename);
     return $str;
 }
 
