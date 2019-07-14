@@ -13,9 +13,13 @@
 
 class MyNodeVisitor extends PhpParser\NodeVisitorAbstract       // all parsing and replacement of scrambled names is done here!
 {                                                               // see PHP-Parser for documentation!
-    private $t_loop_stack                   = array();
-    private $current_class_name             = null;
-    private $is_in_class_const_definition   = false;
+    private $t_loop_stack                  = array();
+    private $current_class_name            = null;
+    private $is_in_class_const_definition  = false;
+    private $current_class_name_obfuscated = null;
+    private $current_namespace_name        = null;
+    private $private_properties            = null;
+    private $private_methods               = null;
 
     private function shuffle_stmts(PhpParser\Node &$node)
     {
@@ -46,13 +50,69 @@ class MyNodeVisitor extends PhpParser\NodeVisitorAbstract       // all parsing a
         if ($node instanceof PhpParser\Node\Identifier || $node instanceof PhpParser\Node\VarLikeIdentifier) return $node->name;
         return '';
     }
-    
+
     private function set_identifier_name(PhpParser\Node &$node,$name)
     {
         if ($node instanceof PhpParser\Node\Identifier || $node instanceof PhpParser\Node\VarLikeIdentifier)
         {
             $node->name = $name;
         }
+    }
+
+    private function is_private_property(PhpParser\Node\Stmt\PropertyProperty $node) {
+        return !empty($this->private_properties[$this->get_identifier_name($node->name)]);
+    }
+
+    private function is_private_method(PhpParser\Node\Stmt\ClassMethod $node) {
+        return !empty($this->private_methods[$this->get_identifier_name($node->name)]);
+    }
+
+    private function extract_private_nodes(PhpParser\Node\Stmt\Class_ $node) {
+        $this->private_properties = array();
+        $this->private_methods = array();
+
+        foreach ($node->stmts as $child) {
+            if (($child instanceof PhpParser\Node\Stmt\Property) && ($child->flags & 4) === 4)
+            {
+                foreach ($child->props as $prop)
+                {
+                    $this->private_properties[$this->get_identifier_name($prop->name)] = true;
+                }
+            }
+            else if (($child instanceof PhpParser\Node\Stmt\ClassMethod) && ($child->flags & 4) === 4)
+            {
+                $this->private_methods[$this->get_identifier_name($child->name)] = true;
+            }
+        }
+    }
+
+    private function is_access_to_private_node(PhpParser\Node $node) {
+        $nodes = &$this->private_methods;
+        if (($node instanceof PhpParser\Node\Expr\PropertyFetch) || ($node instanceof PhpParser\Node\Expr\StaticPropertyFetch))
+        {
+            $nodes = &$this->private_properties;
+        }
+        if (isset($node->var->name) && $node->var->name === 'this')
+        {
+            return !empty($nodes[$this->get_identifier_name($node->name)]);
+        }
+        if (!empty($node->class->parts))
+        {
+            $class = strtolower(implode('\\', $node->class->parts));
+            if ($class === 'static')
+            {
+                $private = !empty($nodes[$this->get_identifier_name($node->name)]);
+                if ($private) fprintf(STDERR, "Warning: your use of static:: can result in shadowing...".PHP_EOL);
+                return $private;
+            }
+            if ($class === 'self' || (!$node->class->isFullyQualified() && $class === $this->current_class_name_obfuscated) ||
+               ($node->class->isFullyQualified() && $class === $this->current_namespace_name . '\\' . $this->current_class_name_obfuscated))
+            {
+                return !empty($nodes[$this->get_identifier_name($node->name)]);
+            }
+
+        }
+        return false;
     }
 
     public function enterNode(PhpParser\Node $node)
@@ -77,11 +137,22 @@ class MyNodeVisitor extends PhpParser\NodeVisitorAbstract       // all parsing a
             if ( is_string($name) && (strlen($name) !== 0) )
             {
                 $this->current_class_name = $name;
+
+                $scrambler = $t_scrambler['class'];
+                $this->current_class_name_obfuscated = strtolower($scrambler->scramble($name));
+            }
+            if ($conf->obfuscate_property_name === 'only_private' || $conf->obfuscate_method_name === 'only_private')
+            {
+                $this->extract_private_nodes($node);
             }
         }
         if ($node instanceof PhpParser\Node\Stmt\ClassConst)
         {
             $this->is_in_class_const_definition = true;
+        }
+        if (($node instanceof PhpParser\Node\Stmt\Namespace_) && !empty($node->name->parts))
+        {
+            $this->current_namespace_name = strtolower(implode('\\', $node->name->parts));
         }
     }
 
@@ -93,8 +164,15 @@ class MyNodeVisitor extends PhpParser\NodeVisitorAbstract       // all parsing a
 
         $node_modified = false;
 
-        if ($node instanceof PhpParser\Node\Stmt\Class_)             $this->current_class_name = null;
+        if ($node instanceof PhpParser\Node\Stmt\Namespace_)         $this->current_namespace_name = null;
         if ($node instanceof PhpParser\Node\Stmt\ClassConst)         $this->is_in_class_const_definition = false;
+        if ($node instanceof PhpParser\Node\Stmt\Class_)
+        {
+            $this->current_class_name = null;
+            $this->current_class_name_obfuscated = null;
+            $this->private_properties = null;
+            $this->private_methods = null;
+        }
 
         if ($conf->obfuscate_string_literal)
         {
@@ -348,7 +426,7 @@ class MyNodeVisitor extends PhpParser\NodeVisitorAbstract       // all parsing a
                     }
                 }
             }
-       }
+        }
 
         if ($conf->obfuscate_trait_name)
         {
@@ -393,14 +471,22 @@ class MyNodeVisitor extends PhpParser\NodeVisitorAbstract       // all parsing a
             $scrambler = $t_scrambler['property'];
             if ( ($node instanceof PhpParser\Node\Expr\PropertyFetch) || ($node instanceof PhpParser\Node\Stmt\PropertyProperty) || ($node instanceof PhpParser\Node\Expr\StaticPropertyFetch) )
             {
-                $name = $this->get_identifier_name($node->name);
-                if ( is_string($name) && (strlen($name) !== 0) )
+                $modify = true;
+                if ($conf->obfuscate_property_name === 'only_private')
                 {
-                    $r = $scrambler->scramble($name);
-                    if ($r!==$name)
+                    $modify = (($node instanceof PhpParser\Node\Stmt\PropertyProperty) && $this->is_private_property($node)) || $this->is_access_to_private_node($node);
+                }
+                if ($modify)
+                {
+                    $name = $this->get_identifier_name($node->name);
+                    if ( is_string($name) && (strlen($name) !== 0) )
                     {
-                        $this->set_identifier_name($node->name,$r);
-                        $node_modified = true;
+                        $r = $scrambler->scramble($name);
+                        if ($r!==$name)
+                        {
+                            $this->set_identifier_name($node->name,$r);
+                            $node_modified = true;
+                        }
                     }
                 }
             }
@@ -411,14 +497,22 @@ class MyNodeVisitor extends PhpParser\NodeVisitorAbstract       // all parsing a
             $scrambler = $t_scrambler['method'];
             if ( ($node instanceof PhpParser\Node\Stmt\ClassMethod) || ($node instanceof PhpParser\Node\Expr\MethodCall) || ($node instanceof PhpParser\Node\Expr\StaticCall) )
             {
-                $name = $this->get_identifier_name($node->name);
-                if ( is_string($name) && (strlen($name) !== 0) )
+                $modify = true;
+                if ($conf->obfuscate_method_name === 'only_private')
                 {
-                    $r = $scrambler->scramble($name);
-                    if ($r!==$name)
+                    $modify = (($node instanceof PhpParser\Node\Stmt\ClassMethod) && $this->is_private_method($node)) || $this->is_access_to_private_node($node);
+                }
+                if ($modify)
+                {
+                    $name = $this->get_identifier_name($node->name);
+                    if ( is_string($name) && (strlen($name) !== 0) )
                     {
-                        $this->set_identifier_name($node->name,$r);
-                        $node_modified = true;
+                        $r = $scrambler->scramble($name);
+                        if ($r!==$name)
+                        {
+                            $this->set_identifier_name($node->name,$r);
+                            $node_modified = true;
+                        }
                     }
                 }
             }
@@ -575,6 +669,9 @@ class MyNodeVisitor extends PhpParser\NodeVisitorAbstract       // all parsing a
                 }
             }
             if (  ($node instanceof PhpParser\Node\Expr\New_)
+               || ($node instanceof PhpParser\Node\Expr\StaticCall)
+               || ($node instanceof PhpParser\Node\Expr\StaticPropertyFetch)
+               || ($node instanceof PhpParser\Node\Expr\ClassConstFetch)
                || ($node instanceof PhpParser\Node\Expr\Instanceof_)
                )
             {
@@ -695,6 +792,30 @@ class MyNodeVisitor extends PhpParser\NodeVisitorAbstract       // all parsing a
                                 if ($r!==$name)
                                 {
                                     $node->{'traits'}[$j]->parts[$i] = $r;
+                                    $node_modified = true;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            if ($node instanceof PhpParser\Node\Stmt\Catch_)
+            {
+                if (isset($node->types))
+                {
+                    $types = $node->types;
+                    foreach($types as &$type)
+                    {
+                        $parts = $type->parts;
+                        for($i=0;$i<count($parts)-1;++$i)
+                        {
+                            $name  = $parts[$i];
+                            if ( is_string($name) && (strlen($name) !== 0) )
+                            {
+                                $r = $scrambler->scramble($name);
+                                if ($r!==$name)
+                                {
+                                    $type->parts[$i] = $r;
                                     $node_modified = true;
                                 }
                             }

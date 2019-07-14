@@ -56,43 +56,43 @@ $conf->scramble_length                  = 5;            // min length of scrambl
 
 $conf->t_obfuscate_php_extension        = array('php'); // array where values are extensions of php files to be obfuscated.
 
-$conf->obfuscate_constant_name          = true;         // self explanatory
-$conf->obfuscate_variable_name          = true;         // self explanatory
-$conf->obfuscate_function_name          = true;         // self explanatory
-$conf->obfuscate_class_name             = true;         // self explanatory
-$conf->obfuscate_interface_name         = true;         // self explanatory
-$conf->obfuscate_trait_name             = true;         // self explanatory
-$conf->obfuscate_class_constant_name    = true;         // self explanatory
-$conf->obfuscate_property_name          = true;         // self explanatory
-$conf->obfuscate_method_name            = true;         // self explanatory
-$conf->obfuscate_namespace_name         = true;         // self explanatory
-$conf->obfuscate_label_name             = true;         // label: , goto label;  obfuscation
-$conf->obfuscate_if_statement           = true;         // obfuscation of  if else elseif statements
-$conf->obfuscate_loop_statement         = true;         // obfuscation of  for while do while statements
-$conf->obfuscate_string_literal         = true;         // pseudo-obfuscation of  string literals
+$conf->obfuscate_constant_name          = true;           // self explanatory
+$conf->obfuscate_variable_name          = true;           // self explanatory
+$conf->obfuscate_function_name          = true;           // self explanatory
+$conf->obfuscate_class_name             = true;           // self explanatory
+$conf->obfuscate_interface_name         = true;           // self explanatory
+$conf->obfuscate_trait_name             = true;           // self explanatory
+$conf->obfuscate_class_constant_name    = true;           // self explanatory
+$conf->obfuscate_property_name          = 'only_private'; // The value can be: false, true or 'only_private'
+$conf->obfuscate_method_name            = true;           // The value can be: false, true or 'only_private'
+$conf->obfuscate_namespace_name         = true;           // self explanatory
+$conf->obfuscate_label_name             = true;           // label: , goto label;  obfuscation
+$conf->obfuscate_if_statement           = true;           // obfuscation of  if else elseif statements
+$conf->obfuscate_loop_statement         = true;           // obfuscation of  for while do while statements
+$conf->obfuscate_string_literal         = true;           // pseudo-obfuscation of  string literals
 
-$conf->shuffle_stmts                    = true;         // shuffle chunks of statements!  disable this obfuscation (or minimize the number of chunks) if performance is important for you!
-$conf->shuffle_stmts_min_chunk_size     =    1;         // minimum number of statements in a chunk! the min value is 1, that gives you the maximum of obfuscation ... and the minimum of performance...
-$conf->shuffle_stmts_chunk_mode         = 'fixed';      // 'fixed' or 'ratio' in fixed mode, the chunk_size is always equal to the min chunk size!
-$conf->shuffle_stmts_chunk_ratio        =   20;         // ratio > 1  100/ratio is the percentage of chunks in a statements sequence  ratio = 2 means 50%  ratio = 100 mins 1% ...
-                                                        // if you increase the number of chunks, you increase also the obfuscation level ... and you increase also the performance overhead!
+$conf->shuffle_stmts                    = true;           // shuffle chunks of statements!  disable this obfuscation (or minimize the number of chunks) if performance is important for you!
+$conf->shuffle_stmts_min_chunk_size     =    1;           // minimum number of statements in a chunk! the min value is 1, that gives you the maximum of obfuscation ... and the minimum of performance...
+$conf->shuffle_stmts_chunk_mode         = 'fixed';        // 'fixed' or 'ratio' in fixed mode, the chunk_size is always equal to the min chunk size!
+$conf->shuffle_stmts_chunk_ratio        =   20;           // ratio > 1  100/ratio is the percentage of chunks in a statements sequence  ratio = 2 means 50%  ratio = 100 mins 1% ...
+                                                          // if you increase the number of chunks, you increase also the obfuscation level ... and you increase also the performance overhead!
 
-$conf->strip_indentation                = true;         // all your obfuscated code will be generated on a single line
-$conf->abort_on_error                   = true;         // self explanatory
-$conf->confirm                          = true;         // rfu : will answer Y on confirmation request (reserved for future use ... or not...)
-$conf->silent                           = false;        // display or not Information level messages.
+$conf->strip_indentation                = true;           // all your obfuscated code will be generated on a single line
+$conf->abort_on_error                   = true;           // self explanatory
+$conf->confirm                          = true;           // rfu : will answer Y on confirmation request (reserved for future use ... or not...)
+$conf->silent                           = false;          // display or not Information level messages.
 
 
-$conf->source_directory                 = null;         // self explanatory
-$conf->target_directory                 = null;         // self explanatory
+$conf->source_directory                 = null;           // self explanatory
+$conf->target_directory                 = null;           // self explanatory
 
-$conf->t_keep                           = null;         // array of directory or file pathnames, to keep 'as is' (i.e. not obfuscate.)
-$conf->t_skip                           = null;         // array of directory or file pathnames, to skip when exploring source tree structure ... they will not be on target!
-$conf->allow_and_overwrite_empty_files  = true;         // allow empty files to be kept as is
+$conf->t_keep                           = null;           // array of directory or file pathnames, to keep 'as is' (i.e. not obfuscate.)
+$conf->t_skip                           = null;           // array of directory or file pathnames, to skip when exploring source tree structure ... they will not be on target!
+$conf->allow_and_overwrite_empty_files  = true;           // allow empty files to be kept as is
 
-$conf->user_comment                     = null;         // user comment to insert inside each obfuscated file
+$conf->user_comment                     = null;           // user comment to insert inside each obfuscated file
 
-$conf->extract_comment_from_line        = null;         // when both 2 are set, each obfuscated file will contain an extract of the corresponding source file,
-$conf->extract_comment_to_line          = null;         // starting from extract_comment_from_line number, and ending at extract_comment_to_line line number.
+$conf->extract_comment_from_line        = null;           // when both 2 are set, each obfuscated file will contain an extract of the corresponding source file,
+$conf->extract_comment_to_line          = null;           // starting from extract_comment_from_line number, and ending at extract_comment_to_line line number.
 
 ?>
