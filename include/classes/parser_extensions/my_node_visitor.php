@@ -99,13 +99,8 @@ class MyNodeVisitor extends PhpParser\NodeVisitorAbstract       // all parsing a
         if (!empty($node->class->parts))
         {
             $class = strtolower(implode('\\', $node->class->parts));
-            if ($class === 'static')
-            {
-                $private = !empty($nodes[$this->get_identifier_name($node->name)]);
-                if ($private) fprintf(STDERR, "Warning: your use of static:: can result in shadowing...".PHP_EOL);
-                return $private;
-            }
-            if ($class === 'self' || (!$node->class->isFullyQualified() && $class === $this->current_class_name_obfuscated) ||
+            if ($class === 'self' || $class === 'static' ||
+               (!$node->class->isFullyQualified() && $class === $this->current_class_name_obfuscated) ||
                ($node->class->isFullyQualified() && $class === $this->current_namespace_name . '\\' . $this->current_class_name_obfuscated))
             {
                 return !empty($nodes[$this->get_identifier_name($node->name)]);
