@@ -544,6 +544,22 @@ class MyNodeVisitor extends PhpParser\NodeVisitorAbstract       // all parsing a
                             throw new Exception("Error: your use of define() function is not compatible with yakpro-po!".PHP_EOL."\tOnly 2 parameters, when first is a literal string is allowed...");
                         }
                     }
+                    else if ($name === 'defined')
+                    {
+                        if (!isset($node->args[0]->value) || !($node->args[0]->value instanceof PhpParser\Node\Scalar\String_))
+                        {
+                            fprintf(STDERR, "Warning: your use of defined() function is not compatible with yakpro-po!".PHP_EOL."\tOnly a literal string is allowed...");   
+                        }
+                        $arg = $node->args[0]->value;
+                        $name = $arg->value;
+
+                        $r = $scrambler->scramble($name);
+                        if ($r !== $name)
+                        {
+                            $arg->value = $r;
+                            $node_modified = true;
+                        }
+                    }
                 }
             }
             if ($node instanceof PhpParser\Node\Expr\ConstFetch)
