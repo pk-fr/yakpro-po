@@ -90,6 +90,11 @@ class Config
     public $source_directory                = null;         // self explanatory
     public $target_directory                = null;         // self explanatory
 
+
+    public $max_nested_directory             =   99;
+    public $follow_symlinks                  = false;       // WARNING: setting it to true will copy the directory instead of replicating the link...
+                                                            // WARNING: if there is a loop of links,  $conf->max_nested_directory can be created...
+
     public $user_comment                    = null;         // user comment to insert inside each obfuscated file
 
     public $extract_comment_from_line       = null;         // when both 2 are set, each obfuscated file will contain an extract of the corresponding source file,

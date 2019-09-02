@@ -5,7 +5,7 @@
 // Author:  Pascal KISSIAN
 // Resume:  http://pascal.kissian.net
 //
-// CopyRight (c) 2015-2018 Pascal KISSIAN
+// CopyRight (c) 2015-2019 Pascal KISSIAN
 //
 // Published under the MIT License
 //          Consider it as a proof of concept!
@@ -89,6 +89,10 @@ $conf->target_directory                 = null;         // self explanatory
 $conf->t_keep                           = null;         // array of directory or file pathnames, to keep 'as is' (i.e. not obfuscate.)
 $conf->t_skip                           = null;         // array of directory or file pathnames, to skip when exploring source tree structure ... they will not be on target!
 $conf->allow_and_overwrite_empty_files  = true;         // allow empty files to be kept as is
+
+$conf->max_nested_directory             =   99;
+$conf->follow_symlinks                  = false;        // WARNING: setting it to true will copy the directory instead of replicating the link...
+                                                        // WARNING: if there is a loop of links,  $conf->max_nested_directory can be created...
 
 $conf->user_comment                     = null;         // user comment to insert inside each obfuscated file
 

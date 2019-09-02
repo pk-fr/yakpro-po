@@ -576,6 +576,9 @@ class MyNodeVisitor extends PhpParser\NodeVisitorAbstract       // all parsing a
             }
             if (  ($node instanceof PhpParser\Node\Expr\New_)
                || ($node instanceof PhpParser\Node\Expr\Instanceof_)
+               || ($node instanceof PhpParser\Node\Expr\StaticCall)
+               || ($node instanceof PhpParser\Node\Expr\StaticPropertyFetch)
+               || ($node instanceof PhpParser\Node\Expr\ClassConstFetch)
                )
             {
                 if (isset($node->{'class'}->parts))              // not set when indirect call (i.e.function name is a variable value!)
@@ -695,6 +698,30 @@ class MyNodeVisitor extends PhpParser\NodeVisitorAbstract       // all parsing a
                                 if ($r!==$name)
                                 {
                                     $node->{'traits'}[$j]->parts[$i] = $r;
+                                    $node_modified = true;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            if ($node instanceof PhpParser\Node\Stmt\Catch_)
+            {
+                if (isset($node->types))
+                {
+                    $types = $node->types;
+                    foreach($types as &$type)
+                    {
+                        $parts = $type->parts;
+                        for($i=0;$i<count($parts)-1;++$i)
+                        {
+                            $name  = $parts[$i];
+                            if ( is_string($name) && (strlen($name) !== 0) )
+                            {
+                                $r = $scrambler->scramble($name);
+                                if ($r!==$name)
+                                {
+                                    $type->parts[$i] = $r;
                                     $node_modified = true;
                                 }
                             }

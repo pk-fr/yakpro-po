@@ -202,6 +202,16 @@ function obfuscate_directory($source_dir,$target_dir,$keep_mode=false)   // self
 {
     global $conf;
 
+    static $recursion_level = 0;
+
+    if (++$recursion_level > $conf->max_nested_directory)
+    {
+        if ($conf->follow_symlinks)
+        {
+            fprintf(STDERR,"Error:\t [%s] nested directories have been created!\nloop detected when follow_symlinks option is set to true!%s",$conf->max_nested_directory,PHP_EOL);
+            exit(-1);
+        }
+    }
     if (!$dp = opendir($source_dir))
     {
         fprintf(STDERR,"Error:\t [%s] directory does not exists!%s",$source_dir,PHP_EOL);
@@ -225,7 +235,7 @@ function obfuscate_directory($source_dir,$target_dir,$keep_mode=false)   // self
 
         if (isset($conf->t_skip) && is_array($conf->t_skip) && in_array($source_path,$conf->t_skip))    continue;
 
-        if (is_link($source_path))
+        if (!$conf->follow_symlinks && is_link($source_path))
         {
             if ( ($target_stat!==false) && is_link($target_path) && ($source_stat['mtime']<=$target_stat['mtime']) )    continue;
             if (  $target_stat!==false  )
@@ -298,6 +308,7 @@ function obfuscate_directory($source_dir,$target_dir,$keep_mode=false)   // self
         }
     }
     closedir($dp);
+    --$recursion_level;
 }
 
 function shuffle_get_chunk_size(&$stmts)
