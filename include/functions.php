@@ -159,7 +159,7 @@ function create_context_directories($target_directory)      // self-explanatory
         if (!file_exists($dir))
         {
             fprintf(STDERR,"Error:\tCannot create directory [%s]%s",$dir,PHP_EOL);
-            exit(-1);
+            exit(1);
         }
     }
     $target_directory = realpath($target_directory);
@@ -209,13 +209,13 @@ function obfuscate_directory($source_dir,$target_dir,$keep_mode=false)   // self
         if ($conf->follow_symlinks)
         {
             fprintf(STDERR,"Error:\t [%s] nested directories have been created!\nloop detected when follow_symlinks option is set to true!%s",$conf->max_nested_directory,PHP_EOL);
-            exit(-1);
+            exit(1);
         }
     }
     if (!$dp = opendir($source_dir))
     {
         fprintf(STDERR,"Error:\t [%s] directory does not exists!%s",$source_dir,PHP_EOL);
-        exit(-1);
+        exit(1);
     }
     $t_dir  = array();
     $t_file = array();
@@ -230,7 +230,7 @@ function obfuscate_directory($source_dir,$target_dir,$keep_mode=false)   // self
         if ($source_stat===false)
         {
             fprintf(STDERR,"Error:\t cannot stat [%s] !%s",$source_path,PHP_EOL);
-            exit(-1);
+            exit(1);
         }
 
         if (isset($conf->t_skip) && is_array($conf->t_skip) && in_array($source_path,$conf->t_skip))    continue;
@@ -246,7 +246,7 @@ function obfuscate_directory($source_dir,$target_dir,$keep_mode=false)   // self
                     if (unlink($target_path)===false)
                     {
                         fprintf(STDERR,"Error:\t cannot unlink [%s] !%s",$target_path,PHP_EOL);
-                        exit(-1);
+                        exit(1);
                     }
                 }
             }
@@ -263,7 +263,7 @@ function obfuscate_directory($source_dir,$target_dir,$keep_mode=false)   // self
                     if (unlink($target_path)===false)
                     {
                         fprintf(STDERR,"Error:\t cannot unlink [%s] !%s",$target_path,PHP_EOL);
-                        exit(-1);
+                        exit(1);
                     }
                 }
             }
@@ -295,7 +295,7 @@ function obfuscate_directory($source_dir,$target_dir,$keep_mode=false)   // self
                     if (isset($conf->abort_on_error))
                     {
                         fprintf(STDERR, "Aborting...%s",PHP_EOL);
-                        exit;
+                        exit(1);
                     }
                 }
                 file_put_contents($target_path,$obfuscated_str.PHP_EOL);
