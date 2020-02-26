@@ -306,7 +306,7 @@ class Scrambler
                 {
                     fprintf(STDERR,"Error:\tContext format has changed! run with --clean option!".PHP_EOL);
                     $this->context_directory = null;        // do not overwrite incoherent values when exiting
-                    exit(-1);
+                    exit(1);
                 }
                 $this->t_scramble       = $t[1];
                 $this->t_rscramble      = $t[2];
@@ -388,7 +388,7 @@ class Scrambler
             if (!isset($this->t_scramble[$r]))
             {
                 fprintf(STDERR,"Scramble Error: Identifier not found after 20 iterations!%sAborting...%s",PHP_EOL,PHP_EOL); // should statistically never occur!
-                exit;
+                exit(1);
             }
         }
         return $this->case_sensitive ? $this->t_scramble[$r] : $this->case_shuffle($this->t_scramble[$r]);

@@ -79,7 +79,7 @@ switch($process_mode)
 {
     case 'file':
         $obfuscated_str =  obfuscate($source_file);
-        if ($obfuscated_str===null) { exit;                               }
+        if ($obfuscated_str===null) { exit(1);                            }
         if ($target_file   ===''  ) { echo $obfuscated_str.PHP_EOL; exit; }
         file_put_contents($target_file,($obfuscated_str==='') ? '' : ($obfuscated_str.PHP_EOL));
         exit;
