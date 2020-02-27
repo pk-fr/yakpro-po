@@ -18,7 +18,7 @@
 
 class Scrambler
 {
-    const SCRAMBLER_CONTEXT_VERSION = '1.0';
+    const SCRAMBLER_CONTEXT_VERSION = '1.1';
 
     private $t_first_chars          = null;     // allowed first char of a generated identifier
     private $t_chars                = null;     // allowed all except first char of a generated identifier
