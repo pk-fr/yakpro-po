@@ -3,7 +3,7 @@
 // Author:  Pascal KISSIAN
 // Resume:  http://pascal.kissian.net
 //
-// Copyright (c) 2015-2018 Pascal KISSIAN
+// Copyright (c) 2015-2020 Pascal KISSIAN
 //
 // Published under the MIT License
 //          Consider it as a proof of concept!
@@ -32,7 +32,7 @@ if (isset($pos) && ($pos!==false) )
     $pos    = stripos($help,'####');    if ($pos!==false) $help = substr($help,0,$pos);
     $help   = trim(str_replace(array('## ','`'),array('',''),$help));
     echo "$help".PHP_EOL;
-    exit;
+    exit(11);
 }
 
 $pos = array_search('--config-file',$t_args);
@@ -209,7 +209,7 @@ switch(count($t_args))
             break;
         }
         fprintf(STDERR,"Error:\tsource_directory and target_directory not specified!%s\tneither within command line parameter,%s\tnor in config file!%s",PHP_EOL,PHP_EOL,PHP_EOL);
-        exit(-1);
+        exit(12);
     case 1:
         $source_file = realpath($t_args[0]);
         if (($source_file!==false) && file_exists($source_file))
@@ -224,7 +224,7 @@ switch(count($t_args))
                     if (is_dir($x))
                     {
                         fprintf(STDERR,"Error:\tTarget file [%s] is a directory!%s", ($x!==false) ? $x : $target_file,PHP_EOL);
-                        exit(-1);
+                        exit(13);
                     }
                     if ( is_readable($x) && is_writable($x) && is_file($x) && (file_get_contents($x)!=='') )
                     {
@@ -235,7 +235,7 @@ switch(count($t_args))
                         {
                             $x = realpath($target_file);
                             fprintf(STDERR,"Error:\tTarget file [%s] exists and is not an obfuscated file!%s", ($x!==false) ? $x : $target_file,PHP_EOL);
-                            exit(-1);
+                            exit(14);
                         }
                         fclose($fp);
                     }
@@ -251,17 +251,17 @@ switch(count($t_args))
                 if ( $target_directory=='')
                 {
                     fprintf(STDERR,"Error:\tTarget directory is not specified!%s",PHP_EOL);
-                    exit(-1);
+                    exit(15);
                 }
                 create_context_directories($target_directory);
                 break;
             }
         }
         fprintf(STDERR,"Error:\tSource file [%s] is not readable!%s",($source_file!==false) ? $source_file : $t_args[0],PHP_EOL);
-        exit(-1);
+        exit(16);
     default:
         fprintf(STDERR,"Error:\tToo much parameters are specified, I do not know how to deal with that!!!%s",PHP_EOL);
-        exit(-1);
+        exit(17);
 }
 //print_r($t_args);
 

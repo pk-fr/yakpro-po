@@ -3,7 +3,7 @@
 // Author:  Pascal KISSIAN
 // Resume:  http://pascal.kissian.net
 //
-// Copyright (c) 2015-2019 Pascal KISSIAN
+// Copyright (c) 2015-2020 Pascal KISSIAN
 //
 // Published under the MIT License
 //          Consider it as a proof of concept!
@@ -158,6 +158,7 @@ class Scrambler
                     $this->t_ignore_prefix  = $t;
                 }
                 break;
+                /*
              case 'function':
                 $this->case_sensitive       = false;
                 $this->t_ignore             = array_flip($this->t_reserved_function_names);
@@ -174,6 +175,7 @@ class Scrambler
                     $this->t_ignore_prefix  = $t;
                 }
                 break;
+                */
            case 'property':
                 $this->case_sensitive       = true;
                 $this->t_ignore             = array_flip($this->t_reserved_variable_names);
@@ -197,11 +199,25 @@ class Scrambler
                     $this->t_ignore_prefix  = $t;
                 }
                 break;
-            case 'class':           // same instance is used for scrambling classes, interfaces, and traits.  and namespaces... for aliasing
+            case 'function_or_class':           // same instance is used for scrambling classes, interfaces, and traits.  and namespaces... and functions ...for aliasing
                 $this->case_sensitive       = false;
-                $this->t_ignore             = array_flip($this->t_reserved_class_names);
+                $this->t_ignore             = array_flip($this->t_reserved_function_names);
+                $t                          = get_defined_functions();                  $t = array_map('strtolower',$t['internal']);    $t = array_flip($t);
+                $this->t_ignore             = array_merge($this->t_ignore,$t);
+                if (isset($conf->t_ignore_functions))
+                {
+                    $t                      = $conf->t_ignore_functions;                $t = array_map('strtolower',$t);                $t = array_flip($t);
+                    $this->t_ignore         = array_merge($this->t_ignore,$t);
+                }
+                if (isset($conf->t_ignore_functions_prefix))
+                {
+                    $t                      = $conf->t_ignore_functions_prefix;         $t = array_map('strtolower',$t);                $t = array_flip($t);
+                    $this->t_ignore_prefix  = $t;
+                }
+
+                $this->t_ignore             = array_merge($this->t_ignore, array_flip($this->t_reserved_class_names));
                 $this->t_ignore             = array_merge($this->t_ignore, array_flip($this->t_reserved_variable_names));
-                $this->t_ignore             = array_merge($this->t_ignore, array_flip($this->t_reserved_function_names));
+//                $this->t_ignore             = array_merge($this->t_ignore, array_flip($this->t_reserved_function_names));
                 $t                          = get_defined_functions();                  $t = array_flip($t['internal']);
                 $this->t_ignore             = array_merge($this->t_ignore,$t);
                 if ($conf->t_ignore_pre_defined_classes!='none')
@@ -236,7 +252,7 @@ class Scrambler
                 if (isset($conf->t_ignore_classes_prefix))
                 {
                     $t                      = $conf->t_ignore_classes_prefix;           $t = array_map('strtolower',$t);                $t = array_flip($t);
-                    $this->t_ignore_prefix  = $t;
+                    $this->t_ignore_prefix  = array_merge($this->t_ignore_prefix,$t);
                 }
                 if (isset($conf->t_ignore_interfaces_prefix))
                 {
@@ -309,7 +325,7 @@ class Scrambler
                 {
                     fprintf(STDERR,"Error:\tContext format has changed! run with --clean option!".PHP_EOL);
                     $this->context_directory = null;        // do not overwrite incoherent values when exiting
-                    exit(-1);
+                    exit(1);
                 }
                 $this->t_scramble       = $t[1];
                 $this->t_rscramble      = $t[2];
@@ -322,7 +338,7 @@ class Scrambler
     function __destruct()
     {
         //print_r($this->t_scramble);
-        if (!$this->silent) fprintf(STDERR,"Info:\t[%-14s] scrambled \t: %8d%s",$this->scramble_type,count($this->t_scramble),PHP_EOL);
+        if (!$this->silent) fprintf(STDERR,"Info:\t[%-17s] scrambled \t: %8d%s",$this->scramble_type,count($this->t_scramble),PHP_EOL);
         if (isset($this->context_directory))                            // the destructor will save the current context
         {
             $t      = array();
@@ -392,7 +408,7 @@ class Scrambler
             if (!isset($this->t_scramble[$r]))
             {
                 fprintf(STDERR,"Scramble Error: Identifier not found after 50 iterations!%sAborting...%s",PHP_EOL,PHP_EOL); // should statistically never occur!
-                exit;
+                exit(2);
             }
         }
         return $this->case_sensitive ? $this->t_scramble[$r] : $this->case_shuffle($this->t_scramble[$r]);
