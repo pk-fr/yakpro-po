@@ -80,7 +80,7 @@ class MyNodeVisitor extends PhpParser\NodeVisitorAbstract       // all parsing a
         }
         if ($node instanceof PhpParser\Node\Stmt\Class_)
         {
-            $name = $this->get_identifier_name($node->name);
+            $name = $this->get_identifier_name($node);
             if ( is_string($name) && (strlen($name) !== 0) )
             {
                 $this->current_class_name = $name;
@@ -215,7 +215,7 @@ class MyNodeVisitor extends PhpParser\NodeVisitorAbstract       // all parsing a
             $scrambler = $t_scrambler['function_or_class'];
             if ($node instanceof PhpParser\Node\Stmt\Class_)
             {
-                $name = $this->get_identifier_name($node->name);
+                $name = $this->get_identifier_name($node);
                 if ( is_string($name) && (strlen($name) !== 0) )
                 {
                     $r = $scrambler->scramble($name);
@@ -307,7 +307,7 @@ class MyNodeVisitor extends PhpParser\NodeVisitorAbstract       // all parsing a
             $scrambler = $t_scrambler['function_or_class'];
             if ($node instanceof PhpParser\Node\Stmt\Interface_)
             {
-                $name = $this->get_identifier_name($node->name);
+                $name = $this->get_identifier_name($node);
                 if ( is_string($name) && (strlen($name) !== 0) )
                 {
                     $r = $scrambler->scramble($name);
@@ -362,7 +362,7 @@ class MyNodeVisitor extends PhpParser\NodeVisitorAbstract       // all parsing a
             $scrambler = $t_scrambler['function_or_class'];
             if ($node instanceof PhpParser\Node\Stmt\Trait_)
             {
-                $name = $this->get_identifier_name($node->name);
+                $name = $this->get_identifier_name($node);
                 if ( is_string($name) && (strlen($name) !== 0) )
                 {
                     $r = $scrambler->scramble($name);
@@ -400,7 +400,7 @@ class MyNodeVisitor extends PhpParser\NodeVisitorAbstract       // all parsing a
             $scrambler = $t_scrambler['property'];
             if ( ($node instanceof PhpParser\Node\Expr\PropertyFetch) || ($node instanceof PhpParser\Node\Stmt\PropertyProperty) || ($node instanceof PhpParser\Node\Expr\StaticPropertyFetch) )
             {
-                $name = $this->get_identifier_name($node->name);
+                $name = $this->get_identifier_name($node);
                 if ( is_string($name) && (strlen($name) !== 0) )
                 {
                     $r = $scrambler->scramble($name);
@@ -418,7 +418,7 @@ class MyNodeVisitor extends PhpParser\NodeVisitorAbstract       // all parsing a
             $scrambler = $t_scrambler['method'];
             if ( ($node instanceof PhpParser\Node\Stmt\ClassMethod) || ($node instanceof PhpParser\Node\Expr\MethodCall) || ($node instanceof PhpParser\Node\Expr\StaticCall) )
             {
-                $name = $this->get_identifier_name($node->name);
+                $name = $this->get_identifier_name($node);
                 if ( is_string($name) && (strlen($name) !== 0) )
                 {
                     $r = $scrambler->scramble($name);
@@ -480,7 +480,7 @@ class MyNodeVisitor extends PhpParser\NodeVisitorAbstract       // all parsing a
             }
             if ( ($node instanceof PhpParser\Node\Const_) && !$this->is_in_class_const_definition )
             {
-                $name = $this->get_identifier_name($node->name);
+                $name = $this->get_identifier_name($node);
                 if ( is_string($name) && (strlen($name) !== 0) )
                 {
                     $r = $scrambler->scramble($name);
@@ -498,7 +498,7 @@ class MyNodeVisitor extends PhpParser\NodeVisitorAbstract       // all parsing a
             $scrambler  = $t_scrambler['class_constant'];
             if ( ($node instanceof PhpParser\Node\Const_) && $this->is_in_class_const_definition )
             {
-                $name = $this->get_identifier_name($node->name);
+                $name = $this->get_identifier_name($node);
                 if ( is_string($name) && (strlen($name) !== 0) )
                 {
                     $r = $scrambler->scramble($name);
@@ -512,7 +512,7 @@ class MyNodeVisitor extends PhpParser\NodeVisitorAbstract       // all parsing a
             if ($node instanceof PhpParser\Node\Expr\ClassConstFetch)
             {
                 $name       = $node->name;
-                $name = $this->get_identifier_name($node->name);
+                $name = $this->get_identifier_name($node);
                 if ( is_string($name) && (strlen($name) !== 0) )
                 {
                     $r = $scrambler->scramble($name);
