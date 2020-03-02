@@ -529,20 +529,23 @@ class MyNodeVisitor extends PhpParser\NodeVisitorAbstract       // all parsing a
         {
             if ($conf->obfuscate_function_name || $conf->obfuscate_class_name)
             {
-                if (!$conf->obfuscate_function_name || !$conf->obfuscate_class_name)
+                if (isset($node->alias))
                 {
-                    fprintf(STDERR, "Warning:[use alias] cannot determine at compile time if it is a function or a class alias".PHP_EOL."\tyou must obfuscate both functions and classes or none...".PHP_EOL."\tObfuscated code may not work!".PHP_EOL);
-                }
-                $scrambler = $t_scrambler['function_or_class'];
-                $name = $this->get_identifier_name($node->alias);
-                if ( is_string($name) && (strlen($name) !== 0) )
-                {
-                    $r = $scrambler->scramble($name);
-                    if ($r!==$name)
+                    if (!$conf->obfuscate_function_name || !$conf->obfuscate_class_name)
                     {
-                        //$node->alias = $r;
-                        $this->set_identifier_name($node->alias,$r);
-                        $node_modified = true;
+                        fprintf(STDERR, "Warning:[use alias] cannot determine at compile time if it is a function or a class alias".PHP_EOL."\tyou must obfuscate both functions and classes or none...".PHP_EOL."\tObfuscated code may not work!".PHP_EOL);
+                    }
+                    $scrambler = $t_scrambler['function_or_class'];
+                    $name = $this->get_identifier_name($node->alias);
+                    if ( is_string($name) && (strlen($name) !== 0) )
+                    {
+                        $r = $scrambler->scramble($name);
+                        if ($r!==$name)
+                        {
+                            //$node->alias = $r;
+                            $this->set_identifier_name($node->alias,$r);
+                            $node_modified = true;
+                        }
                     }
                 }
             }
