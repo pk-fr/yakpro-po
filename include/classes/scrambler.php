@@ -375,7 +375,7 @@ class Scrambler
 
     private function case_shuffle($s)   // this function is used to even more obfuscate insensitive names: on each acces to the name, a different randomized case of each letter is used.
     {
-        for($i=0;$i<strlen($s);++$i) $s{$i} = mt_rand(0,1) ? strtoupper($s{$i}) : strtolower($s{$i});
+        for($i=0;$i<strlen($s);++$i) $s[$i] = mt_rand(0,1) ? strtoupper($s[$i]) : strtolower($s[$i]);
         return $s;
     }
 

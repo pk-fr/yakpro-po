@@ -25,7 +25,7 @@ $t_composer             = json_decode(file_get_contents("$yakpro_po_base_directo
 $php_parser_branch      = $t_composer->{'extra'}->{'branch-alias'}->{'dev-master'};
 $required_php_version   = $t_composer->{'require'}->{'php'};
 
-$operator = '';for($i=0;!ctype_digit($c=$required_php_version{$i});++$i) $operator.=$c; $required_php_version = substr($required_php_version,$i);
+$operator = '';for($i=0;!ctype_digit($c=$required_php_version[$i]);++$i) $operator.=$c; $required_php_version = substr($required_php_version,$i);
 
 if (substr($php_parser_branch,0,2)!='4.')
 {

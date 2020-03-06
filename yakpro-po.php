@@ -71,7 +71,7 @@ foreach(array('variable','function_or_class','method','property','class_constant
 }
 if ($whatis!=='')
 {
-    if ($whatis{0} == '$') $whatis = substr($whatis,1);
+    if ($whatis[0] == '$') $whatis = substr($whatis,1);
 //    foreach(array('variable','function','method','property','class','class_constant','constant','label') as $scramble_what)
     foreach(array('variable','function_or_class','method','property','class_constant','constant','label') as $scramble_what)
     {
