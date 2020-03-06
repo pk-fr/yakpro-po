@@ -3,7 +3,7 @@
 // Author:  Pascal KISSIAN
 // Resume:  http://pascal.kissian.net
 //
-// Copyright (c) 2015-2017 Pascal KISSIAN
+// Copyright (c) 2015-2020 Pascal KISSIAN
 //
 // Published under the MIT License
 //          Consider it as a proof of concept!
@@ -19,7 +19,7 @@ class myPrettyprinter extends PhpParser\PrettyPrinter\Standard
         $result = '';
         for($i=0;$i<$l;++$i)
         {
-            $result .= mt_rand(0,1) ? "\x".dechex(ord($str{$i})) : "\\".decoct(ord($str{$i}));
+            $result .= mt_rand(0,1) ? "\x".dechex(ord($str[$i])) : "\\".decoct(ord($str[$i]));
         }
         return $result;
     }
