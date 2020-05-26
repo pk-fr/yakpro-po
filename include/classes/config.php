@@ -3,7 +3,7 @@
 // Author:  Pascal KISSIAN
 // Resume:  http://pascal.kissian.net
 //
-// Copyright (c) 2015-2018 Pascal KISSIAN
+// Copyright (c) 2015-2020 Pascal KISSIAN
 //
 // Published under the MIT License
 //          Consider it as a proof of concept!
@@ -105,7 +105,7 @@ class Config
     function __construct()
     {
         $this->comment .= "/*   __________________________________________________".PHP_EOL;
-        $this->comment .= "    |  Obfuscated by YAK Pro - Php Obfuscator  %-5.5s   |".PHP_EOL;
+        $this->comment .= "    |  Obfuscated by YAK Pro - Php Obfuscator  %-6.6s  |".PHP_EOL;
         $this->comment .= "    |              on %s              |".PHP_EOL;
         $this->comment .= "    |    GitHub: https://github.com/pk-fr/yakpro-po    |".PHP_EOL;
         $this->comment .= "    |__________________________________________________|".PHP_EOL;

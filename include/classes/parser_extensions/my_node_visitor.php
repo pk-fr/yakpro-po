@@ -438,14 +438,14 @@ class MyNodeVisitor extends PhpParser\NodeVisitorAbstract       // all parsing a
             {
                 if (isset($node->name->parts))                      // not set when indirect call (i.e.function name is a variable value!)
                 {
-                    $parts = $node->name->parts;
-                    $name  = $parts[count($parts)-1];
-                    if ( is_string($name) && ($name=='define') )
+                    $parts      = $node->name->parts;
+                    $fn_name    = $parts[count($parts)-1];
+                    if ( is_string($fn_name) && ( ($fn_name=='define') || ($fn_name=='defined') ) )
                     {
                         for($ok=false;;)
                         {
                             if (!isset($node->args[0]->value))      break;
-                            if (count($node->args)!=2)              break;
+                            if ( ($fn_name=='define') && (count($node->args)!=2) )  break;
                             $arg = $node->args[0]->value;           if (! ($arg instanceof PhpParser\Node\Scalar\String_) ) break;
                             $name = $arg->value;                    if (! is_string($name) || (strlen($name) == 0) )        break;
                             $ok     = true;
@@ -459,7 +459,8 @@ class MyNodeVisitor extends PhpParser\NodeVisitorAbstract       // all parsing a
                         }
                         if (!$ok)
                         {
-                            throw new Exception("Error: your use of define() function is not compatible with yakpro-po!".PHP_EOL."\tOnly 2 parameters, when first is a literal string is allowed...");
+                            if ($fn_name=='define') throw new Exception("Error: your use of $fn_name() function is not compatible with yakpro-po!".PHP_EOL."\tOnly 2 parameters, when first is a literal string is allowed...");
+                            else                    throw new Exception("Error: your use of $fn_name() function is not compatible with yakpro-po!".PHP_EOL."\tOnly 1 literal string parameter is allowed...");
                         }
                     }
                 }
