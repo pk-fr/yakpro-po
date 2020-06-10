@@ -78,7 +78,7 @@ class MyNodeVisitor extends PhpParser\NodeVisitorAbstract       // all parsing a
                 $this->t_loop_stack[] = array($label_loop_break_name,$label_loop_continue_name);
            }
         }
-        if ($node instanceof PhpParser\Node\Stmt\Class_)
+        if ($node instanceof PhpParser\Node\Stmt\Class_ && $node->name !== null)
         {
             $name = $this->get_identifier_name($node->name);
             if ( is_string($name) && (strlen($name) !== 0) )
