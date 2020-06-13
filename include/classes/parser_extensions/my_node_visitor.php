@@ -78,7 +78,7 @@ class MyNodeVisitor extends PhpParser\NodeVisitorAbstract       // all parsing a
                 $this->t_loop_stack[] = array($label_loop_break_name,$label_loop_continue_name);
            }
         }
-        if ($node instanceof PhpParser\Node\Stmt\Class_)
+        if ( ($node instanceof PhpParser\Node\Stmt\Class_) && ($node->name != null) )
         {
             $name = $this->get_identifier_name($node->name);
             if ( is_string($name) && (strlen($name) !== 0) )
@@ -215,14 +215,17 @@ class MyNodeVisitor extends PhpParser\NodeVisitorAbstract       // all parsing a
             $scrambler = $t_scrambler['function_or_class'];
             if ($node instanceof PhpParser\Node\Stmt\Class_)
             {
-                $name = $this->get_identifier_name($node->name);
-                if ( is_string($name) && (strlen($name) !== 0) )
+                if ($node->name != null)
                 {
-                    $r = $scrambler->scramble($name);
-                    if ($r!==$name)
+                    $name = $this->get_identifier_name($node->name);
+                    if ( is_string($name) && (strlen($name) !== 0) )
                     {
-                        $this->set_identifier_name($node->name,$r);
-                        $node_modified = true;
+                        $r = $scrambler->scramble($name);
+                        if ($r!==$name)
+                        {
+                            $this->set_identifier_name($node->name,$r);
+                            $node_modified = true;
+                        }
                     }
                 }
                 if (isset($node->{'extends'}))
@@ -275,6 +278,31 @@ class MyNodeVisitor extends PhpParser\NodeVisitorAbstract       // all parsing a
                         {
                             $node->type->parts[count($parts)-1] = $r;
                             $node_modified = true;
+                        }
+                    }
+                }
+            }
+            if ($node instanceof PhpParser\Node\Stmt\ClassMethod || $node instanceof PhpParser\Node\Stmt\Function_)
+            {
+                if (isset($node->returnType))
+                {
+                    $node_tmp   = $node->returnType;
+                    if ($node_tmp instanceof PhpParser\Node\NullableType && isset($node_tmp->type) )
+                    {
+                        $node_tmp = $node_tmp->type;
+                    }
+                    if ($node_tmp instanceof PhpParser\Node\Name && isset($node_tmp->parts))
+                    {
+                        $parts = $node_tmp->parts;
+                        $name  = $parts[count($parts)-1];
+                        if ( is_string($name) && (strlen($name) !== 0) )
+                        {
+                            $r = $scrambler->scramble($name);
+                            if ($r!==$name)
+                            {
+                                $node_tmp->parts[count($parts)-1] = $r;
+                                $node_modified = true;
+                            }
                         }
                     }
                 }
