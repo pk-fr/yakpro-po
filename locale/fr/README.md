@@ -328,7 +328,7 @@ Supprime récursivement le répertoire répertoire_cible/yakpro-po
 
 ## Problèmes connus
 
-[sedimentation-fault](https://github.com/sedimentation-fault) a raporté sur le problème [#75](https://github.com/pk-fr/yakpro-po/issues/75) que un segmentation fault pouvait survenir dans le 'garbage collector' de php lors de l'obfuscation de beaucoup de gros fichiers dans un projet :
+[sedimentation-fault](https://github.com/sedimentation-fault) a rapporté sur le problème [#75](https://github.com/pk-fr/yakpro-po/issues/75) que un segmentation fault pouvait survenir dans le 'garbage collector' de php lors de l'obfuscation de beaucoup de gros fichiers dans un projet :
 
     Trying to obfuscate ~5000 PHP files of ~1000 lines each, yakpro-po stopped after processing ~1600 files 
     with a simple (and frustrating) Segmentation fault
