@@ -318,7 +318,8 @@ Recursivly removes target_directory/yakpro-po
 
     ulimit -s
 
-    I had 8192 - for a task of this size obviously totally undersized...Change this to something more appropriate, say
+    I had 8192 - for a task of this size obviously totally undersized...
+    Change this to something more appropriate, say
 
     ulimit -s 102400
 
