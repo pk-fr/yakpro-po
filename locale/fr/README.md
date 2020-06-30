@@ -324,3 +324,27 @@ Supprime récursivement le répertoire répertoire_cible/yakpro-po
     
     Vous avez tous les paramètres nécessaires à votre disposition pour parvenir à votre meilleur compromis.
 
+
+
+## Problèmes connus
+
+[sedimentation-fault](https://github.com/sedimentation-fault) a raporté sur le problème [#75](https://github.com/pk-fr/yakpro-po/issues/75) que un segmentation fault pouvait survenir dans le 'garbage collector' de php lors de l'obfuscation de beaucoup de gros fichiers dans un projet :
+
+    Trying to obfuscate ~5000 PHP files of ~1000 lines each, yakpro-po stopped after processing ~1600 files 
+    with a simple (and frustrating) Segmentation fault
+
+    Workaround:
+    
+    There is a stack overflow in garbage collector. The solution is to increase limit for stack.
+    To see your current limit, type
+
+    ulimit -s
+
+    I had 8192 - for a task of this size obviously totally undersized...
+    Change this to something more appropriate, say
+
+    ulimit -s 102400
+
+    and retry - the segmentation fault is gone! :-)
+    
+    
