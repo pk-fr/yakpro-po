@@ -12,13 +12,13 @@ which is an awesome php parsing library written by [nikic](https://github.com/ni
 You just have to download the zip archive and uncompress it under the PHP-Parser subdirectory,
 or make a git clone ...
 
-### Warning:  
-    yakpro-po 2.x works on PhpParser 4.x   
-    it will run on php >= 7.0, obfuscating code for php 5.2 to php 7.3   
-    
-    If you are running php 5.3 or higher,  
-    Please use unsupported [yakpro-po 1.x](https://github.com/pk-fr/yakpro-po/tree/1.x) which works on 1.x branch of PhpParser.   
-    
+### Warning:
+    yakpro-po 2.x works on PhpParser 4.x
+    it will run on php >= 7.0, obfuscating code for php 5.2 to php 7.3
+
+    If you are running php 5.3 or higher,
+    Please use unsupported [yakpro-po 1.x](https://github.com/pk-fr/yakpro-po/tree/1.x) which works on 1.x branch of PhpParser.
+
 
 
 The yakpro-po.cnf self-documented file contains many configuration options!
@@ -29,7 +29,7 @@ Demo : [yakpro-po demo](https://www.php-obfuscator.com/?demo).
 Prerequisites:  php 7.0 or higher, [PHP-Parser 4.x](https://github.com/nikic/PHP-Parser).
 
 Note: This tool has been written in order to obfuscate pure php sources.
-it is not intended to be used with html and embeded php inside 
+it is not intended to be used with html and embeded php inside
 (use at your own risks...you may try to deactivate statements shuffling...).
 You can still embed html within php using the echo <<<END ... END; syntax!
 
@@ -75,29 +75,25 @@ Version 1.0 has been written within a few days...
 
 
 ## Setup:
-    Note: This setup is also valid for Windows 10 Anniversary with bash installed...  
-    1. Prerequisites: git and php-cli (command line interface) packages. 
-       on ubuntu: (adapt according your linux distribution) 
-       # apt install git 
+    Note: This setup is also valid for Windows 10 Anniversary with bash installed...
+    1. Prerequisites: git and php-cli (command line interface) packages.
+       on ubuntu: (adapt according your linux distribution)
+       # apt install git
        # apt install php-cli
        do not forget to install all other php modules that you are using within your software:
-            for example: apt install php-mysql if you are using mysql... 
-    2. Navigate to the directory where you want to install yakpro-po (/usr/local is a good idea): 
-       # cd /usr/local 
-    3. Then retrieve from GitHub: 
-       # git clone https://github.com/pk-fr/yakpro-po.git 
-    4. Go to the yakpro-po directory: 
-       # cd yakpro-po 
-    5. Then retrieve from GitHub: 
-       # git clone https://github.com/nikic/PHP-Parser.git 
-    6. Check that yakpro-po.php has execute rights, otherwise:
-                                            # chmod a+x yakpro-po.php 
-    7. Create a symbolic link in the /usr/local/bin directory
-       # cd /usr/local/bin 
-       # ln -s /usr/local/yakpro-po/yakpro-po.php yakpro-po 
-    8. You can now run yakpro-po 
-       # yakpro-po --help 
-       # yakpro-po test.php 
+            for example: apt install php-mysql if you are using mysql...
+    2. Navigate to the directory where you want to install yakpro-po (/usr/local is a good idea):
+       # cd /usr/local
+    3. Then retrieve from GitHub with dependencies:
+       # git clone --recursive https://github.com/pk-fr/yakpro-po.git
+    4. Check that yakpro-po.php has execute rights, otherwise:
+                                            # chmod a+x yakpro-po.php
+    5. Create a symbolic link in the /usr/local/bin directory
+       # cd /usr/local/bin
+       # ln -s /usr/local/yakpro-po/yakpro-po.php yakpro-po
+    6. You can now run yakpro-po
+       # yakpro-po --help
+       # yakpro-po test.php
 
     Modify a copy of the yakpro-po.cnf to fit your needs...
     Read the "Configuration file loading algorithm" section of this document
@@ -308,11 +304,11 @@ Recursivly removes target_directory/yakpro-po
 
 [sedimentation-fault](https://github.com/sedimentation-fault) reported on issue [#75](https://github.com/pk-fr/yakpro-po/issues/75) that a segmentation fault could occure in php's garbage collector when obfuscating many big files in a project:
 
-    Trying to obfuscate ~5000 PHP files of ~1000 lines each, yakpro-po stopped after processing ~1600 files 
+    Trying to obfuscate ~5000 PHP files of ~1000 lines each, yakpro-po stopped after processing ~1600 files
     with a simple (and frustrating) Segmentation fault
 
     Workaround:
-    
+
     There is a stack overflow in garbage collector. The solution is to increase limit for stack.
     To see your current limit, type
 
@@ -324,7 +320,6 @@ Recursivly removes target_directory/yakpro-po
     ulimit -s 102400
 
     and retry - the segmentation fault is gone! :-)
-    
-    
-    
-    
+
+
+
