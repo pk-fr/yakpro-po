@@ -3,7 +3,7 @@
 // Author:  Pascal KISSIAN
 // Resume:  http://pascal.kissian.net
 //
-// Copyright (c) 2015-2020 Pascal KISSIAN
+// Copyright (c) 2015-2021 Pascal KISSIAN
 //
 // Published under the MIT License
 //          Consider it as a proof of concept!
@@ -803,7 +803,7 @@ class MyNodeVisitor extends PhpParser\NodeVisitorAbstract       // all parsing a
             $scrambler = $t_scrambler['label'];
             if ( ($node instanceof PhpParser\Node\Stmt\Label) || ($node instanceof PhpParser\Node\Stmt\Goto_) )
             {
-                $name = $node->name;
+                $name = $this->get_identifier_name($node->name);
                 if ( is_string($name) && (strlen($name) !== 0) )
                 {
                     $r = $scrambler->scramble($name);
