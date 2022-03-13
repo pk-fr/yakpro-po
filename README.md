@@ -306,6 +306,14 @@ Recursivly removes target_directory/yakpro-po
 
 ## Known Issues
 
+[segmentation fault](https://github.com/php/php-src/issues/8193)
+
+    opcache crashes on Ubuntu 21.10 - php 8.0.8 (segfault) both within apache2 and cli when
+    shuffle-statements is turned on for big files
+    
+    works perfectly with newer versions of php (8.0.16 8.1 )
+    
+
 [sedimentation-fault](https://github.com/sedimentation-fault) reported on issue [#75](https://github.com/pk-fr/yakpro-po/issues/75) that a segmentation fault could occure in php's garbage collector when obfuscating many big files in a project:
 
     Trying to obfuscate ~5000 PHP files of ~1000 lines each, yakpro-po stopped after processing ~1600 files 
