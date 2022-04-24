@@ -3,7 +3,7 @@
 // Author:  Pascal KISSIAN
 // Resume:  http://pascal.kissian.net
 //
-// Copyright (c) 2015-2020 Pascal KISSIAN
+// Copyright (c) 2015-2022 Pascal KISSIAN
 //
 // Published under the MIT License
 //          Consider it as a proof of concept!
@@ -115,7 +115,7 @@ class Config
     public function get_comment()
     {
         global $yakpro_po_version;
-        $now = strftime("%F %T");
+        $now = date('Y-m-d H:i:s');
 
         return sprintf($this->comment,$yakpro_po_version,$now);
     }

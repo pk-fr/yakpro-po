@@ -1,9 +1,9 @@
 <?php
 //========================================================================
 // Author:  Pascal KISSIAN
-// Resume:  http://pascal.kissian.net
+// Resume:  https://pascal.kissian.net
 //
-// Copyright (c) 2015-2020 Pascal KISSIAN
+// Copyright (c) 2015-2021 Pascal KISSIAN
 //
 // Published under the MIT License
 //          Consider it as a proof of concept!
@@ -11,6 +11,6 @@
 //          Use and abuse at your own risks.
 //========================================================================
 
-$yakpro_po_version = "2.0.13";
+$yakpro_po_version = "2.0.14";
 
 ?>
