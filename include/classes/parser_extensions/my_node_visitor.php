@@ -11,12 +11,17 @@
 //          Use and abuse at your own risks.
 //========================================================================
 
+use PhpParser\Node\Stmt\Class_;
+
 class MyNodeVisitor extends PhpParser\NodeVisitorAbstract       // all parsing and replacement of scrambled names is done here!
 {                                                               // see PHP-Parser for documentation!
     private $t_loop_stack                   = array();
     private $t_node_stack                   = array();
+    private $t_node_name_originals          = array();
     private $current_class_name             = null;
     private $is_in_class_const_definition   = false;
+
+    private $cnt = 0;
 
     private function shuffle_stmts(PhpParser\Node &$node)
     {
@@ -41,7 +46,26 @@ class MyNodeVisitor extends PhpParser\NodeVisitorAbstract       // all parsing a
         }
         return false;
     }
-    
+
+    private function do_avoid_nonprivates(?PhpParser\Node $node) : bool {
+
+        global $conf;
+        if (!$conf->obfuscate_property_name_private_only) {
+            return true;
+        }
+
+        if ($node->getAttribute("parent")?->getAttribute("parent") != null && method_exists($node->getAttribute("parent")?->getAttribute("parent"), "isPrivate")) {
+            $result = $node->getAttribute("parent")?->getAttribute("parent")?->isPrivate() ?? false;
+            if (!$result && !isset($this->t_node_name_originals[$node->name])) {
+                $this->t_node_name_originals[$node->name] = $node->name;
+            }
+            return $result;
+        }
+
+        return true;
+    }
+
+
     private function get_identifier_name(PhpParser\Node $node)
     {
         if ($node instanceof PhpParser\Node\Identifier || $node instanceof PhpParser\Node\VarLikeIdentifier) return $node->name;
@@ -51,9 +75,19 @@ class MyNodeVisitor extends PhpParser\NodeVisitorAbstract       // all parsing a
     private function set_identifier_name(PhpParser\Node &$node,$name)
     {
         if ($node instanceof PhpParser\Node\Identifier || $node instanceof PhpParser\Node\VarLikeIdentifier)
-        {
-            $node->name = $name;
+        {   
+            if ($this->do_avoid_nonprivates($node)) {
+                $node->name = $name;
+            } 
         }
+    }
+
+    private function lookup(?string $name) : ?string {
+        if ($name === null) return null;
+        if (isset($this->t_node_name_originals[$name])) {
+            return $this->t_node_name_originals[$name];
+        }
+        return null;
     }
 
     public function enterNode(PhpParser\Node $node)
@@ -73,8 +107,8 @@ class MyNodeVisitor extends PhpParser\NodeVisitorAbstract       // all parsing a
             if (   ($node instanceof PhpParser\Node\Stmt\For_)   || ($node instanceof PhpParser\Node\Stmt\Foreach_) || ($node instanceof PhpParser\Node\Stmt\Switch_)
                 || ($node instanceof PhpParser\Node\Stmt\While_) || ($node instanceof PhpParser\Node\Stmt\Do_) )
             {
-                $label_loop_break_name      = $scrambler->scramble($scrambler->generate_label_name());
-                $label_loop_continue_name   = $scrambler->scramble($scrambler->generate_label_name());
+                $label_loop_break_name      = $this->lookup($scrambler->generate_label_name()) ?? $scrambler->scramble($scrambler->generate_label_name());
+                $label_loop_continue_name   = $this->lookup($scrambler->generate_label_name()) ??  $scrambler->scramble($scrambler->generate_label_name());
                 $this->t_loop_stack[] = array($label_loop_break_name,$label_loop_continue_name);
            }
         }
@@ -120,7 +154,7 @@ class MyNodeVisitor extends PhpParser\NodeVisitorAbstract       // all parsing a
                 $name = $node->name;
                 if ( is_string($name) && (strlen($name) !== 0) )
                 {
-                    $r = $scrambler->scramble($name);
+                    $r = $this->lookup($name) ?? $scrambler->scramble($name);
                     if ($r!==$name)
                     {
                         $node->name = $r;
@@ -133,7 +167,7 @@ class MyNodeVisitor extends PhpParser\NodeVisitorAbstract       // all parsing a
                 $name = $node->{'var'};                             // equivalent to $node->var, that works also on my php version!
                 if ( is_string($name) && (strlen($name) !== 0) )    // but 'var' is a reserved function name, so there is no warranty
                 {                                                   // that it will work in the future, so the $node->{'var'} form
-                    $r = $scrambler->scramble($name);               // has been used!
+                    $r = $this->lookup($name) ?? $scrambler->scramble($name);               // has been used!
                     if ($r!==$name)
                     {
                         $node->{'var'} = $r;
@@ -151,7 +185,7 @@ class MyNodeVisitor extends PhpParser\NodeVisitorAbstract       // all parsing a
                 $name = $node->name->name;
                 if ( is_string($name) && (strlen($name) !== 0) )
                 {
-                    $r = $scrambler->scramble($name);
+                    $r = $this->lookup($name) ?? $scrambler->scramble($name);
                     if ($r!==$name)
                     {
                         $node->name = $r;
@@ -167,7 +201,7 @@ class MyNodeVisitor extends PhpParser\NodeVisitorAbstract       // all parsing a
                     $name  = $parts[count($parts)-1];
                     if ( is_string($name) && (strlen($name) !== 0) )
                     {
-                        $r = $scrambler->scramble($name);
+                        $r = $this->lookup($name) ?? $scrambler->scramble($name);
                         if ($r!==$name)
                         {
                             $node->name->parts[count($parts)-1] = $r;
@@ -192,7 +226,7 @@ class MyNodeVisitor extends PhpParser\NodeVisitorAbstract       // all parsing a
                             $name = $arg->value;                    if (! is_string($name) || (strlen($name) == 0) )        break;
                             $ok     = true;
                             $warning= false;
-                            $r = $scrambler->scramble($name);
+                            $r = $this->lookup($name) ?? $scrambler->scramble($name);
                             if ($r!==$name)
                             {
                                 $arg->value = $r;
@@ -220,7 +254,7 @@ class MyNodeVisitor extends PhpParser\NodeVisitorAbstract       // all parsing a
                     $name = $this->get_identifier_name($node->name);
                     if ( is_string($name) && (strlen($name) !== 0) )
                     {
-                        $r = $scrambler->scramble($name);
+                        $r = $this->lookup($name) ?? $scrambler->scramble($name);
                         if ($r!==$name)
                         {
                             $this->set_identifier_name($node->name,$r);
@@ -234,7 +268,7 @@ class MyNodeVisitor extends PhpParser\NodeVisitorAbstract       // all parsing a
                     $name  = $parts[count($parts)-1];
                     if ( is_string($name) && (strlen($name) !== 0) )
                     {
-                        $r = $scrambler->scramble($name);
+                        $r = $this->lookup($name) ?? $scrambler->scramble($name);
                         if ($r!==$name)
                         {
                             $node->{'extends'}->parts[count($parts)-1] = $r;
@@ -256,7 +290,7 @@ class MyNodeVisitor extends PhpParser\NodeVisitorAbstract       // all parsing a
                     $name  = $parts[count($parts)-1];
                     if ( is_string($name) && (strlen($name) !== 0) )
                     {
-                        $r = $scrambler->scramble($name);
+                        $r = $this->lookup($name) ?? $scrambler->scramble($name);
                         if ($r!==$name)
                         {
                             $node->{'class'}->parts[count($parts)-1] = $r;
@@ -273,7 +307,7 @@ class MyNodeVisitor extends PhpParser\NodeVisitorAbstract       // all parsing a
                     $name  = $parts[count($parts)-1];
                     if ( is_string($name) && (strlen($name) !== 0) )
                     {
-                        $r = $scrambler->scramble($name);
+                        $r = $this->lookup($name) ?? $scrambler->scramble($name);
                         if ($r!==$name)
                         {
                             $node->type->parts[count($parts)-1] = $r;
@@ -297,7 +331,7 @@ class MyNodeVisitor extends PhpParser\NodeVisitorAbstract       // all parsing a
                         $name  = $parts[count($parts)-1];
                         if ( is_string($name) && (strlen($name) !== 0) )
                         {
-                            $r = $scrambler->scramble($name);
+                            $r = $this->lookup($name) ?? $scrambler->scramble($name);
                             if ($r!==$name)
                             {
                                 $node_tmp->parts[count($parts)-1] = $r;
@@ -318,7 +352,7 @@ class MyNodeVisitor extends PhpParser\NodeVisitorAbstract       // all parsing a
                         $name  = $parts[count($parts)-1];
                         if ( is_string($name) && (strlen($name) !== 0) )
                         {
-                            $r = $scrambler->scramble($name);
+                            $r = $this->lookup($name) ?? $scrambler->scramble($name);
                             if ($r!==$name)
                             {
                                 $type->parts[count($parts)-1] = $r;
@@ -338,7 +372,7 @@ class MyNodeVisitor extends PhpParser\NodeVisitorAbstract       // all parsing a
                 $name = $this->get_identifier_name($node->name);
                 if ( is_string($name) && (strlen($name) !== 0) )
                 {
-                    $r = $scrambler->scramble($name);
+                    $r = $this->lookup($name) ?? $scrambler->scramble($name);
                     if ($r!==$name)
                     {
                         $this->set_identifier_name($node->name,$r);
@@ -353,7 +387,7 @@ class MyNodeVisitor extends PhpParser\NodeVisitorAbstract       // all parsing a
                         $name  = $parts[count($parts)-1];
                         if ( is_string($name) && (strlen($name) !== 0) )
                         {
-                            $r = $scrambler->scramble($name);
+                            $r = $this->lookup($name) ?? $scrambler->scramble($name);
                             if ($r!==$name)
                             {
                                 $node->{'extends'}[$j]->parts[count($parts)-1] = $r;
@@ -373,7 +407,7 @@ class MyNodeVisitor extends PhpParser\NodeVisitorAbstract       // all parsing a
                         $name  = $parts[count($parts)-1];
                         if ( is_string($name) && (strlen($name) !== 0) )
                         {
-                            $r = $scrambler->scramble($name);
+                            $r = $this->lookup($name) ?? $scrambler->scramble($name);
                             if ($r!==$name)
                             {
                                 $node->{'implements'}[$j]->parts[count($parts)-1] = $r;
@@ -393,7 +427,7 @@ class MyNodeVisitor extends PhpParser\NodeVisitorAbstract       // all parsing a
                 $name = $this->get_identifier_name($node->name);
                 if ( is_string($name) && (strlen($name) !== 0) )
                 {
-                    $r = $scrambler->scramble($name);
+                    $r = $this->lookup($name) ?? $scrambler->scramble($name);
                     if ($r!==$name)
                     {
                         $this->set_identifier_name($node->name,$r);
@@ -411,7 +445,7 @@ class MyNodeVisitor extends PhpParser\NodeVisitorAbstract       // all parsing a
                         $name  = $parts[count($parts)-1];
                         if ( is_string($name) && (strlen($name) !== 0) )
                         {
-                            $r = $scrambler->scramble($name);
+                            $r = $this->lookup($name) ?? $scrambler->scramble($name);
                             if ($r!==$name)
                             {
                                 $node->{'traits'}[$j]->parts[count($parts)-1] = $r;
@@ -426,19 +460,21 @@ class MyNodeVisitor extends PhpParser\NodeVisitorAbstract       // all parsing a
         if ($conf->obfuscate_property_name)
         {
             $scrambler = $t_scrambler['property'];
-            if ( ($node instanceof PhpParser\Node\Expr\PropertyFetch) || ($node instanceof PhpParser\Node\Stmt\PropertyProperty) || ($node instanceof PhpParser\Node\Expr\StaticPropertyFetch) )
+            if ( ($node instanceof PhpParser\Node\Expr\PropertyFetch) 
+                || ($node instanceof PhpParser\Node\Stmt\PropertyProperty) 
+                || ($node instanceof PhpParser\Node\Expr\StaticPropertyFetch) )
             {
                 $name = $this->get_identifier_name($node->name);
                 if ( is_string($name) && (strlen($name) !== 0) )
                 {
-                    $r = $scrambler->scramble($name);
+                    $r = $this->lookup($name) ?? $scrambler->scramble($name);
                     if ($r!==$name)
                     {
                         $this->set_identifier_name($node->name,$r);
                         $node_modified = true;
                     }
-                }
-            }
+                }   
+            }  
         }
 
         if ($conf->obfuscate_method_name)
@@ -449,7 +485,7 @@ class MyNodeVisitor extends PhpParser\NodeVisitorAbstract       // all parsing a
                 $name = $this->get_identifier_name($node->name);
                 if ( is_string($name) && (strlen($name) !== 0) )
                 {
-                    $r = $scrambler->scramble($name);
+                    $r = $this->lookup($name) ?? $scrambler->scramble($name);
                     if ($r!==$name)
                     {
                         $this->set_identifier_name($node->name,$r);
@@ -477,7 +513,7 @@ class MyNodeVisitor extends PhpParser\NodeVisitorAbstract       // all parsing a
                             $arg = $node->args[0]->value;           if (! ($arg instanceof PhpParser\Node\Scalar\String_) ) break;
                             $name = $arg->value;                    if (! is_string($name) || (strlen($name) == 0) )        break;
                             $ok     = true;
-                            $r = $scrambler->scramble($name);
+                            $r = $this->lookup($name) ?? $scrambler->scramble($name);
                             if ($r!==$name)
                             {
                                 $arg->value = $r;
@@ -499,7 +535,7 @@ class MyNodeVisitor extends PhpParser\NodeVisitorAbstract       // all parsing a
                 $name  = $parts[count($parts)-1];
                 if ( is_string($name) && (strlen($name) !== 0) )
                 {
-                    $r = $scrambler->scramble($name);
+                    $r = $this->lookup($name) ?? $scrambler->scramble($name);
                     if ($r!==$name)
                     {
                         $node->name->parts[count($parts)-1] = $r;
@@ -512,7 +548,7 @@ class MyNodeVisitor extends PhpParser\NodeVisitorAbstract       // all parsing a
                 $name = $this->get_identifier_name($node->name);
                 if ( is_string($name) && (strlen($name) !== 0) )
                 {
-                    $r = $scrambler->scramble($name);
+                    $r = $this->lookup($name) ?? $scrambler->scramble($name);
                     if ($r!==$name)
                     {
                         $this->set_identifier_name($node->name,$r);
@@ -530,7 +566,7 @@ class MyNodeVisitor extends PhpParser\NodeVisitorAbstract       // all parsing a
                 $name = $this->get_identifier_name($node->name);
                 if ( is_string($name) && (strlen($name) !== 0) )
                 {
-                    $r = $scrambler->scramble($name);
+                    $r = $this->lookup($name) ?? $scrambler->scramble($name);
                     if ($r!==$name)
                     {
                         $this->set_identifier_name($node->name,$r);
@@ -544,7 +580,7 @@ class MyNodeVisitor extends PhpParser\NodeVisitorAbstract       // all parsing a
                 $name = $this->get_identifier_name($node->name);
                 if ( is_string($name) && (strlen($name) !== 0) )
                 {
-                    $r = $scrambler->scramble($name);
+                    $r = $this->lookup($name) ?? $scrambler->scramble($name);
                     if ($r!==$name)
                     {
                         $this->set_identifier_name($node->name,$r);
@@ -568,7 +604,7 @@ class MyNodeVisitor extends PhpParser\NodeVisitorAbstract       // all parsing a
                     $name = $this->get_identifier_name($node->alias);
                     if ( is_string($name) && (strlen($name) !== 0) )
                     {
-                        $r = $scrambler->scramble($name);
+                        $r = $this->lookup($name) ?? $scrambler->scramble($name);
                         if ($r!==$name)
                         {
                             //$node->alias = $r;
@@ -594,7 +630,7 @@ class MyNodeVisitor extends PhpParser\NodeVisitorAbstract       // all parsing a
                         $name  = $parts[$i];
                         if ( is_string($name) && (strlen($name) !== 0) )
                         {
-                            $r = $scrambler->scramble($name);
+                            $r = $this->lookup($name) ?? $scrambler->scramble($name);
                             if ($r!==$name)
                             {
                                 $node->name->parts[$i] = $r;
@@ -611,7 +647,7 @@ class MyNodeVisitor extends PhpParser\NodeVisitorAbstract       // all parsing a
                 $name = $this->get_identifier_name($node->alias);
                 if ( is_string($name) && (strlen($name) !== 0) )
                 {
-                    $r = $scrambler->scramble($name);
+                    $r = $this->lookup($name) ?? $scrambler->scramble($name);
                     if ($r!==$name)
                     {
                         //$node->alias = $r;
@@ -631,7 +667,7 @@ class MyNodeVisitor extends PhpParser\NodeVisitorAbstract       // all parsing a
                         $name  = $parts[$i];
                         if ( is_string($name) && (strlen($name) !== 0) )
                         {
-                            $r = $scrambler->scramble($name);
+                            $r = $this->lookup($name) ?? $scrambler->scramble($name);
                             if ($r!==$name)
                             {
                                 $node->name->parts[$i] = $r;
@@ -656,7 +692,7 @@ class MyNodeVisitor extends PhpParser\NodeVisitorAbstract       // all parsing a
                         $name  = $parts[$i];
                         if ( is_string($name) && (strlen($name) !== 0) )
                         {
-                            $r = $scrambler->scramble($name);
+                            $r = $this->lookup($name) ?? $scrambler->scramble($name);
                             if ($r!==$name)
                             {
                                 $node->{'class'}->parts[$i] = $r;
@@ -676,7 +712,7 @@ class MyNodeVisitor extends PhpParser\NodeVisitorAbstract       // all parsing a
                         $name  = $parts[$i];
                         if ( is_string($name) && (strlen($name) !== 0) )
                         {
-                            $r = $scrambler->scramble($name);
+                            $r = $this->lookup($name) ?? $scrambler->scramble($name);
                             if ($r!==$name)
                             {
                                 $node->{'extends'}->parts[$i] = $r;
@@ -695,7 +731,7 @@ class MyNodeVisitor extends PhpParser\NodeVisitorAbstract       // all parsing a
                             $name  = $parts[$i];
                             if ( is_string($name) && (strlen($name) !== 0) )
                             {
-                                $r = $scrambler->scramble($name);
+                                $r = $this->lookup($name) ?? $scrambler->scramble($name);
                                 if ($r!==$name)
                                 {
                                     $node->{'implements'}[$j]->parts[$i] = $r;
@@ -716,7 +752,7 @@ class MyNodeVisitor extends PhpParser\NodeVisitorAbstract       // all parsing a
                         $name  = $parts[$i];
                         if ( is_string($name) && (strlen($name) !== 0) )
                         {
-                            $r = $scrambler->scramble($name);
+                            $r = $this->lookup($name) ?? $scrambler->scramble($name);
                             if ($r!==$name)
                             {
                                 $node->type->parts[$i] = $r;
@@ -738,7 +774,7 @@ class MyNodeVisitor extends PhpParser\NodeVisitorAbstract       // all parsing a
                             $name  = $parts[$i];
                             if ( is_string($name) && (strlen($name) !== 0) )
                             {
-                                $r = $scrambler->scramble($name);
+                                $r = $this->lookup($name) ?? $scrambler->scramble($name);
                                 if ($r!==$name)
                                 {
                                     $node->{'extends'}[$j]->parts[$i] = $r;
@@ -761,7 +797,7 @@ class MyNodeVisitor extends PhpParser\NodeVisitorAbstract       // all parsing a
                             $name  = $parts[$i];
                             if ( is_string($name) && (strlen($name) !== 0) )
                             {
-                                $r = $scrambler->scramble($name);
+                                $r = $this->lookup($name) ?? $scrambler->scramble($name);
                                 if ($r!==$name)
                                 {
                                     $node->{'traits'}[$j]->parts[$i] = $r;
@@ -785,7 +821,7 @@ class MyNodeVisitor extends PhpParser\NodeVisitorAbstract       // all parsing a
                             $name  = $parts[$i];
                             if ( is_string($name) && (strlen($name) !== 0) )
                             {
-                                $r = $scrambler->scramble($name);
+                                $r = $this->lookup($name) ?? $scrambler->scramble($name);
                                 if ($r!==$name)
                                 {
                                     $type->parts[$i] = $r;
@@ -806,7 +842,7 @@ class MyNodeVisitor extends PhpParser\NodeVisitorAbstract       // all parsing a
                 $name = $this->get_identifier_name($node->name);
                 if ( is_string($name) && (strlen($name) !== 0) )
                 {
-                    $r = $scrambler->scramble($name);
+                    $r = $this->lookup($name) ?? $scrambler->scramble($name);
                     if ($r!==$name)
                     {
                         $node->name = $r;
@@ -1123,5 +1159,3 @@ class MyNodeVisitor extends PhpParser\NodeVisitorAbstract       // all parsing a
         if ($node_modified) return $node;
     }
 }
-
-?>
