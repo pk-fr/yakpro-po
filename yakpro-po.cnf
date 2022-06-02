@@ -64,6 +64,7 @@ $conf->obfuscate_interface_name         = true;         // self explanatory
 $conf->obfuscate_trait_name             = true;         // self explanatory
 $conf->obfuscate_class_constant_name    = true;         // self explanatory
 $conf->obfuscate_property_name          = true;         // self explanatory
+$conf->obfuscate_property_name_private_only = false;    // Only obfuscate private Classmembers or compatibility reasons
 $conf->obfuscate_method_name            = true;         // self explanatory
 $conf->obfuscate_namespace_name         = true;         // self explanatory
 $conf->obfuscate_label_name             = true;         // label: , goto label;  obfuscation
