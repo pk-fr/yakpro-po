@@ -6,7 +6,7 @@
 
 Free, Open Source, Published under the MIT License.
 
-This tool parses php with the best existing php parser [PHP-Parser 4.x](https://github.com/nikic/PHP-Parser),
+This tool parses php with the best existing php parser [PHP-Parser 4.x](https://github.com/nikic/PHP-Parser/tree/4.x/),
 which is an awesome php parsing library written by [nikic](https://github.com/nikic).
 
 You just have to download the zip archive and uncompress it under the PHP-Parser subdirectory,
@@ -26,7 +26,7 @@ Take a look at it!
 
 Demo : [yakpro-po demo](https://www.php-obfuscator.com/?demo).
 
-Prerequisites:  php 7.0 or higher, [PHP-Parser 4.x](https://github.com/nikic/PHP-Parser).
+Prerequisites:  php 7.0 or higher, [PHP-Parser 4.x](https://github.com/nikic/PHP-Parser/tree/4.x/).
 
 Note: This tool has been written in order to obfuscate pure php sources.
 it is not intended to be used with html and embeded php inside 
@@ -89,7 +89,7 @@ Version 1.0 has been written within a few days...
     4. Go to the yakpro-po directory: 
        # cd yakpro-po 
     5. Then retrieve from GitHub: 
-       # git clone https://github.com/nikic/PHP-Parser.git 
+       # git clone https://github.com/nikic/PHP-Parser.git --branch 4.x
     6. Check that yakpro-po.php has execute rights, otherwise:
                                             # chmod a+x yakpro-po.php 
     7. Create a symbolic link in the /usr/local/bin directory

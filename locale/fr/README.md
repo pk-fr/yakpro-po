@@ -6,15 +6,15 @@
 
 Gratuit, Open Source, Publié sous les termes de la licence MIT.  
 
-Ce programme utilise [PHP-Parser 4.x](https://github.com/nikic/PHP-Parser) pour analyser le php.  
-[PHP-Parser 4.x](https://github.com/nikic/PHP-Parser) est une remarquable bibliothèque développée par [nikic](https://github.com/nikic).
+Ce programme utilise [PHP-Parser 4.x](https://github.com/nikic/PHP-Parser/tree/4.x/) pour analyser le php.
+[PHP-Parser 4.x](https://github.com/nikic/PHP-Parser/tree/4.x/) est une remarquable bibliothèque développée par [nikic](https://github.com/nikic).
 
 Télécharger l'archive zip et décompressez la dans le sous-répertoire PHP-Parser .
 ou alors utilisez git clone.
 
 ### Attention :  
     yakpro-po 2.x utilise PhpParser 4.x   
-    il fonctionne avec php >= 7.0, et obfusque le code pour php 5.2 à php 7.3   
+    il fonctionne avec php >= 7.0, et obfusque le code pour php 5.2 à php 8.1
     
     Si vous utilisez php 5.3 ou supérieur,  
     Veuillez utiliser [yakpro-po 1.x](https://github.com/pk-fr/yakpro-po/tree/1.x) (non supporté) qui fonctionne avec la branche 1.x de PhpParser.   
@@ -28,7 +28,7 @@ Un petit coup d'oeil vaut le détour.
 
 Démo : [yakpro-po demo](https://www.php-obfuscator.com/?demo).
 
-Pré-requis:  php 7.0 ou supérieur, [PHP-Parser 4.x](https://github.com/nikic/PHP-Parser).
+Pré-requis:  php 7.0 ou supérieur, [PHP-Parser 4.x](https://github.com/nikic/PHP-Parser/tree/4.x/).
 
 Remarque : Cet outil à été conçu dans le but d'obfusquer des sources en php pur.  
 Il n'a pas été conçu pour être utilisé avec du html avec des bouts de code php à l'intérieur.  
@@ -100,7 +100,7 @@ La version 1.0 a été écrite en quelques jours...
     4. Placez-vous dans le répertoire de yakpro-po : 
        # cd yakpro-po 
     5. Puis récupérez à partir de GitHub : 
-       # git clone https://github.com/nikic/PHP-Parser.git 
+       # git clone https://github.com/nikic/PHP-Parser.git --branch 4.x
     6. Verifiez que yakpro-po.php possède bien les droits d'exécution, sinon :
                                                     # chmod a+x yakpro-po.php 
     7. Créer un lien symbolique dans /usr/local/bin 
