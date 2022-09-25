@@ -12,8 +12,8 @@
 //========================================================================
 
 $yakpro_po_base_directory   = dirname(realpath($argv[0]));
-//$php_parser_git_commandline = 'git clone --branch=4.x https://github.com/nikic/PHP-Parser.git';
-$php_parser_git_commandline = 'git clone https://github.com/nikic/PHP-Parser.git';
+$php_parser_git_commandline = 'git clone --branch=4.x https://github.com/nikic/PHP-Parser.git';
+//$php_parser_git_commandline = 'git clone https://github.com/nikic/PHP-Parser.git';
 
 if(!file_exists("$yakpro_po_base_directory/PHP-Parser/composer.json"))
 {
