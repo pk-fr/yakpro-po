@@ -14,7 +14,7 @@
 if (isset($_SERVER["SERVER_SOFTWARE"]) && ($_SERVER["SERVER_SOFTWARE"]!="") ){ echo "<h1>Comand Line Interface Only!</h1>"; die; }
 
 
-const PHP_PARSER_DIRECTORY  = 'PHP-Parser';
+const PHP_PARSER_DIRECTORY  = 'libs/php-parser';
 
 
 require_once 'include/check_version.php';
