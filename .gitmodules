@@ -1,0 +1,4 @@
+[submodule "libs/php-parser"]
+	path = libs/php-parser
+	url = https://github.com/nikic/PHP-Parser.git
+	branch = 4.x
