@@ -18,6 +18,9 @@ require_once 'include/get_default_defined_objects.php';     // include this file
 
 require_once __DIR__ . "/vendor/autoload.php";
 
+require_once 'include/functions.php';
+require_once 'version.php';
+
 require_once 'include/retrieve_config_and_arguments.php';
 
 if ($clean_mode && file_exists("$target_directory/yakpro-po/.yakpro-po-directory") )

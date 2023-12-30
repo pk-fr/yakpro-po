@@ -11,7 +11,7 @@
         "nikic/php-parser": "^4.0"
     },
     "autoload": {
-        "classmap": ["include/classes", "include/functions.php", "version.php"]
+        "classmap": ["include/classes"]
     },
     "require-dev": {
         "phpstan/phpstan": "^1",
