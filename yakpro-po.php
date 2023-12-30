@@ -63,7 +63,7 @@ $parser = (new ParserFactory())->create($parser_mode);
 $traverser          = new NodeTraverser();
 
 if ($conf->obfuscate_string_literal) {
-    $prettyPrinter      = new myPrettyprinter();
+    $prettyPrinter      = new Obfuscator\Classes\ParserExtensions\MyPrettyPrinter();
 } else {
     $prettyPrinter      = new PrettyPrinter\Standard();
 }

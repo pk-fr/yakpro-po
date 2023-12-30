@@ -12,11 +12,13 @@
 //          Use and abuse at your own risks.
 //========================================================================
 
+// phpcs:disable PSR1.Methods.CamelCapsMethodName.NotCamelCaps
+
 namespace Obfuscator\Classes\ParserExtensions;
 
-class myPrettyprinter extends PhpParser\PrettyPrinter\Standard
+class MyPrettyPrinter extends PhpParser\PrettyPrinter\Standard
 {
-    private function obfuscate_string($str)
+    private function obfuscate_string($str) /* &phpcs */
     {
         $l = strlen($str);
         $result = '';
@@ -62,7 +64,7 @@ class myPrettyprinter extends PhpParser\PrettyPrinter\Standard
         $result = '';
         foreach ($node->parts as $element) {
             if ($element instanceof PhpParser\Node\Scalar\EncapsedStringPart) {
-                $result .=  $this->obfuscate_string($element->value);
+                $result .=  $this->obfuscateString($element->value);
             } else {
                 $result .= '{' . $this->p($element) . '}';
             }

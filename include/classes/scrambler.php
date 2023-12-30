@@ -382,7 +382,7 @@ class Scrambler
         }
     }
 
-    private function str_scramble($s)                                   // scramble the string according parameters
+    private function strScramble($s)                                   // scramble the string according parameters
     {
         $c1         = $this->t_first_chars[mt_rand(0, $this->l1)];      // first char of the identifier
         $c2         = $this->t_chars      [mt_rand(0, $this->l2)];      // prepending salt for md5
@@ -409,7 +409,7 @@ class Scrambler
         return $s;
     }
 
-    private function case_shuffle($s)   // this function is used to even more obfuscate insensitive names: on each acces to the name, a different randomized case of each letter is used.
+    private function caseShuffle($s)   // this function is used to even more obfuscate insensitive names: on each acces to the name, a different randomized case of each letter is used.
     {
         for ($i = 0; $i < strlen($s); ++$i) {
             $s[$i] = mt_rand(0, 1) ? strtoupper($s[$i]) : strtolower($s[$i]);
@@ -434,7 +434,7 @@ class Scrambler
 
         if (!isset($this->t_scramble[$r])) {      // if not already scrambled:
             for ($i = 0; $i < 50; ++$i) {                // try at max 50 times if the random generated scrambled string has already beeen generated!
-                $x = $this->str_scramble($s);
+                $x = $this->strScramble($s);
                 $z = strtolower($x);
                 $y = $this->case_sensitive ? $x : $z;
                 if (isset($this->t_rscramble[$y]) || isset($this->t_ignore[$z])) {           // this random value is either already used or a reserved name
@@ -452,7 +452,7 @@ class Scrambler
                 exit(2);
             }
         }
-        return $this->case_sensitive ? $this->t_scramble[$r] : $this->case_shuffle($this->t_scramble[$r]);
+        return $this->case_sensitive ? $this->t_scramble[$r] : $this->caseShuffle($this->t_scramble[$r]);
     }
 
     public function unscramble($s)
@@ -463,7 +463,7 @@ class Scrambler
         return isset($this->t_rscramble[$s]) ? $this->t_rscramble[$s] : '';
     }
 
-    public function generate_label_name($prefix = "!label")
+    public function generateLabelName($prefix = "!label")
     {
         return $prefix . ($this->label_counter++);
     }

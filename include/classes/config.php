@@ -115,7 +115,7 @@ class Config
         $this->comment .= "*/" . PHP_EOL;
     }
 
-    public function get_comment()
+    public function getComment()
     {
         global $yakpro_po_version;
         $now = date('Y-m-d H:i:s');

@@ -85,7 +85,7 @@ function obfuscate($filename)                   // takes a file_path as input, r
         $endcode = substr($code, 6);
 
         $code  = '<?php' . PHP_EOL;
-        $code .= $conf->get_comment();                                          // comment obfuscated source
+        $code .= $conf->getComment();                                          // comment obfuscated source
         if (isset($conf->extract_comment_from_line) && isset($conf->extract_comment_to_line)) {
             $t_source = file($filename);
             for ($i = $conf->extract_comment_from_line - 1; $i < $conf->extract_comment_to_line; ++$i) {
@@ -395,7 +395,7 @@ function shuffle_statements($stmts)
     }
 
     $scrambler              = $t_scrambler['label'];
-    $label_name_prev        = $scrambler->scramble($scrambler->generate_label_name());
+    $label_name_prev        = $scrambler->scramble($scrambler->generateLabelName());
     $first_goto             = new PhpParser\Node\Stmt\Goto_($label_name_prev);
     $t                      = array();
     $t_chunk                = array();
@@ -403,7 +403,7 @@ function shuffle_statements($stmts)
         $t_chunk[]              = $stmts[$i];
         if (count($t_chunk) >= $chunk_size) {
             $label              = array(new PhpParser\Node\Stmt\Label($label_name_prev));
-            $label_name         = $scrambler->scramble($scrambler->generate_label_name());
+            $label_name         = $scrambler->scramble($scrambler->generateLabelName());
             $goto               = array(new PhpParser\Node\Stmt\Goto_($label_name));
             $t[]                = array_merge($label, $t_chunk, $goto);
             $label_name_prev    = $label_name;
@@ -412,7 +412,7 @@ function shuffle_statements($stmts)
     }
     if (count($t_chunk) > 0) {
         $label              = array(new PhpParser\Node\Stmt\Label($label_name_prev));
-        $label_name         = $scrambler->scramble($scrambler->generate_label_name());
+        $label_name         = $scrambler->scramble($scrambler->generateLabelName());
         $goto               = array(new PhpParser\Node\Stmt\Goto_($label_name));
         $t[]                = array_merge($label, $t_chunk, $goto);
         $label_name_prev    = $label_name;
