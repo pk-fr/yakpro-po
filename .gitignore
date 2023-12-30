@@ -9,3 +9,4 @@ old/*
 #-----------------------
 run_tests.php
 /nbproject
+/vendor
