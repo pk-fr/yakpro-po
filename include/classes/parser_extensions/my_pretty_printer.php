@@ -23,7 +23,7 @@ use PhpParser\PrettyPrinter\Standard;
 
 class MyPrettyPrinter extends Standard
 {
-    private function obfuscate_string($str) /* &phpcs */
+    private function obfuscate_string($str)
     {
         $l = strlen($str);
         $result = '';
