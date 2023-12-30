@@ -7,7 +7,7 @@
     ],
     "type": "project",
     "require": {
-        "php": ">= 7.0",
+        "php": ">= 8.0",
         "nikic/php-parser": "^4.0"
     },
     "autoload": {
