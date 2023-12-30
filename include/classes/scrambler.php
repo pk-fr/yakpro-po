@@ -16,10 +16,11 @@
 // case-insensitive:    function names, class names, class method names, namespaces, keywords and constructs
 // classes, interfaces, and traits share the same internal naming_space! only a single Scrambler instance for all of them!
 
+namespace Obfuscator\Classes;
 
 class Scrambler
 {
-    const SCRAMBLER_CONTEXT_VERSION = '1.1';
+    private const SCRAMBLER_CONTEXT_VERSION = '1.1';
 
     private $t_first_chars          = null;     // allowed first char of a generated identifier
     private $t_chars                = null;     // allowed all except first char of a generated identifier
@@ -60,7 +61,7 @@ class Scrambler
     private $t_reserved_method_names    = array('__construct', '__destruct', '__call', '__callstatic', '__get', '__set', '__isset', '__unset', '__sleep', '__wakeup', '__tostring', '__invoke', '__set_state', '__clone','__debuginfo' );
 
 
-    function __construct($type, $conf, $target_directory)
+    public function __construct($type, $conf, $target_directory)
     {
         global $t_pre_defined_classes,$t_pre_defined_class_methods,$t_pre_defined_class_properties,$t_pre_defined_class_constants;
         global $t_pre_defined_class_methods_by_class,$t_pre_defined_class_properties_by_class,$t_pre_defined_class_constants_by_class;
@@ -364,7 +365,7 @@ class Scrambler
         }
     }
 
-    function __destruct()
+    public function __destruct()
     {
         //print_r($this->t_scramble);
         if (!$this->silent) {

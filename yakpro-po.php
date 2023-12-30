@@ -71,7 +71,7 @@ if ($conf->obfuscate_string_literal) {
 $t_scrambler = array();
 //foreach(array('variable','function','method','property','class','class_constant','constant','label') as $scramble_what)
 foreach (array('variable','function_or_class','method','property','class_constant','constant','label') as $scramble_what) {
-    $t_scrambler[$scramble_what] = new Scrambler($scramble_what, $conf, ($process_mode == 'directory') ? $target_directory : null);
+    $t_scrambler[$scramble_what] = new \Obfuscator\Classes\Scrambler($scramble_what, $conf, ($process_mode == 'directory') ? $target_directory : null);
 }
 if ($whatis !== '') {
     if ($whatis[0] == '$') {

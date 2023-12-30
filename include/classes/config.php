@@ -14,6 +14,8 @@
 
 // when we use the word ignore, that means that it is ignored during the obfuscation process (i.e. not obfuscated)
 
+namespace Obfuscator\Classes;
+
 class Config
 {
     public $t_ignore_pre_defined_classes    = 'all';        // 'all' (default value) , 'none',  or array of pre-defined classes that you use in your software:
@@ -103,7 +105,7 @@ class Config
 
     private $comment                        = '';
 
-    function __construct()
+    public function __construct()
     {
         $this->comment .= "/*   __________________________________________________" . PHP_EOL;
         $this->comment .= "    |  Obfuscated by YAK Pro - Php Obfuscator  %-6.6s  |" . PHP_EOL;

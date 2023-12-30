@@ -12,6 +12,8 @@
 //          Use and abuse at your own risks.
 //========================================================================
 
+namespace Obfuscator\Classes\ParserExtensions;
+
 class myPrettyprinter extends PhpParser\PrettyPrinter\Standard
 {
     private function obfuscate_string($str)

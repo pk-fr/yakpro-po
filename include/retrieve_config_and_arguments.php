@@ -146,7 +146,7 @@ foreach ($t_where as $dummy => $where) {
     }
 }
 
-$conf = new Config();
+$conf = new \Obfuscator\Classes\Config();
 
 if ($force_conf_silent) {
     $conf->silent = true;

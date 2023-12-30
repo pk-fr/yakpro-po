@@ -12,6 +12,8 @@
 //          Use and abuse at your own risks.
 //========================================================================
 
+namespace Obfuscator\Classes\ParserExtensions;
+
 class MyNodeVisitor extends PhpParser\NodeVisitorAbstract       // all parsing and replacement of scrambled names is done here!
 {
                                                                // see PHP-Parser for documentation!
