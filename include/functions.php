@@ -237,7 +237,14 @@ function confirm($str)                                  // self-explanatory not 
     }
 }
 
-function obfuscate_directory($source_dir, $target_dir, $keep_mode = false)   // self-explanatory recursive obfuscation
+/**
+ * @global \stdClass $conf
+ * @staticvar int $recursion_level
+ * @param string $source_dir Source directory to be obfuscated
+ * @param string $target_dir Target directory where the obfuscated files should be generated
+ * @param bool $keep_mode TRUE to only copy files instead of obfuscating them
+ */
+function obfuscate_directory(string $source_dir, string $target_dir, bool $keep_mode = false)   // self-explanatory recursive obfuscation
 {
     global $conf;
 
