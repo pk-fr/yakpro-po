@@ -17,7 +17,6 @@
         "classmap": ["include/classes"]
     },
     "require-dev": {
-        "phpstan/phpstan": "^1",
         "roave/security-advisories": "dev-latest",
         "slevomat/coding-standard": "^8",
         "squizlabs/php_codesniffer": "^3"
