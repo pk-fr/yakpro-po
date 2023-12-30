@@ -14,7 +14,7 @@ ou alors utilisez git clone.
 
 ### Attention :  
     yakpro-po 2.x utilise PhpParser 4.x   
-    il fonctionne avec php >= 7.0, et obfusque le code pour php 5.2 à php 8.1
+    il fonctionne avec php >= 8.0, et obfusque le code pour php 5.2 à php 8.2
     
     Si vous utilisez php 5.3 ou supérieur,  
     Veuillez utiliser [yakpro-po 1.x](https://github.com/pk-fr/yakpro-po/tree/1.x) (non supporté) qui fonctionne avec la branche 1.x de PhpParser.   
@@ -28,7 +28,7 @@ Un petit coup d'oeil vaut le détour.
 
 Démo : [yakpro-po demo](https://www.php-obfuscator.com/?demo).
 
-Pré-requis:  php 7.0 ou supérieur, [PHP-Parser 4.x](https://github.com/nikic/PHP-Parser/tree/4.x/).
+Pré-requis:  php 8.0 ou supérieur, [PHP-Parser 4.x](https://github.com/nikic/PHP-Parser/tree/4.x/).
 
 Remarque : Cet outil à été conçu dans le but d'obfusquer des sources en php pur.  
 Il n'a pas été conçu pour être utilisé avec du html avec des bouts de code php à l'intérieur.  
@@ -99,8 +99,8 @@ La version 1.0 a été écrite en quelques jours...
        # git clone https://github.com/pk-fr/yakpro-po.git 
     4. Placez-vous dans le répertoire de yakpro-po : 
        # cd yakpro-po 
-    5. Puis récupérez à partir de GitHub : 
-       # git clone https://github.com/nikic/PHP-Parser.git --branch 4.x
+    5. Utilisez ensuite composer pour télécharger les dépendances nécessaires
+       # composer install --no-dev
     6. Verifiez que yakpro-po.php possède bien les droits d'exécution, sinon :
                                                     # chmod a+x yakpro-po.php 
     7. Créer un lien symbolique dans /usr/local/bin 
