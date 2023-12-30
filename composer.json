@@ -10,6 +10,9 @@
         "php": ">= 7.0",
         "nikic/php-parser": "^4.0"
     },
+    "autoload": {
+        "classmap": ["include/classes", "include/functions.php", "version.php"]
+    },
     "require-dev": {
         "phpstan/phpstan": "^1",
         "roave/security-advisories": "dev-latest",
