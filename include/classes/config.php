@@ -1,4 +1,5 @@
 <?php
+
 //========================================================================
 // Author:  Pascal KISSIAN
 // Resume:  http://pascal.kissian.net
@@ -38,7 +39,7 @@ class Config
     public $t_ignore_constants_prefix       = null;         // array where values are prefix of names to ignore.
     public $t_ignore_variables_prefix       = null;         // array where values are prefix of names to ignore.
     public $t_ignore_functions_prefix       = null;         // array where values are prefix of names to ignore.
-    
+
     public $t_ignore_class_constants_prefix = null;         // array where values are prefix of names to ignore.
     public $t_ignore_properties_prefix      = null;         // array where values are prefix of names to ignore.
     public $t_ignore_methods_prefix         = null;         // array where values are prefix of names to ignore.
@@ -104,12 +105,12 @@ class Config
 
     function __construct()
     {
-        $this->comment .= "/*   __________________________________________________".PHP_EOL;
-        $this->comment .= "    |  Obfuscated by YAK Pro - Php Obfuscator  %-6.6s  |".PHP_EOL;
-        $this->comment .= "    |              on %s              |".PHP_EOL;
-        $this->comment .= "    |    GitHub: https://github.com/pk-fr/yakpro-po    |".PHP_EOL;
-        $this->comment .= "    |__________________________________________________|".PHP_EOL;
-        $this->comment .= "*/".PHP_EOL;
+        $this->comment .= "/*   __________________________________________________" . PHP_EOL;
+        $this->comment .= "    |  Obfuscated by YAK Pro - Php Obfuscator  %-6.6s  |" . PHP_EOL;
+        $this->comment .= "    |              on %s              |" . PHP_EOL;
+        $this->comment .= "    |    GitHub: https://github.com/pk-fr/yakpro-po    |" . PHP_EOL;
+        $this->comment .= "    |__________________________________________________|" . PHP_EOL;
+        $this->comment .= "*/" . PHP_EOL;
     }
 
     public function get_comment()
@@ -117,22 +118,30 @@ class Config
         global $yakpro_po_version;
         $now = date('Y-m-d H:i:s');
 
-        return sprintf($this->comment,$yakpro_po_version,$now);
+        return sprintf($this->comment, $yakpro_po_version, $now);
     }
 
     public function validate()
     {
         $this->shuffle_stmts_min_chunk_size += 0;
-        if ($this->shuffle_stmts_min_chunk_size<1)  $this->shuffle_stmts_min_chunk_size = 1;
-        
-        $this->shuffle_stmts_chunk_ratio += 0;
-        if ($this->shuffle_stmts_chunk_ratio<2)     $this->shuffle_stmts_chunk_ratio = 2;
+        if ($this->shuffle_stmts_min_chunk_size < 1) {
+            $this->shuffle_stmts_min_chunk_size = 1;
+        }
 
-        if ($this->shuffle_stmts_chunk_mode!='ratio') $this->shuffle_stmts_chunk_mode = 'fixed';
-        
-        if (!isset( $this->t_ignore_pre_defined_classes))                                                       $this->t_ignore_pre_defined_classes = 'all';
-        if (!is_array($this->t_ignore_pre_defined_classes) && ( $this->t_ignore_pre_defined_classes != 'none')) $this->t_ignore_pre_defined_classes = 'all';
+        $this->shuffle_stmts_chunk_ratio += 0;
+        if ($this->shuffle_stmts_chunk_ratio < 2) {
+            $this->shuffle_stmts_chunk_ratio = 2;
+        }
+
+        if ($this->shuffle_stmts_chunk_mode != 'ratio') {
+            $this->shuffle_stmts_chunk_mode = 'fixed';
+        }
+
+        if (!isset($this->t_ignore_pre_defined_classes)) {
+            $this->t_ignore_pre_defined_classes = 'all';
+        }
+        if (!is_array($this->t_ignore_pre_defined_classes) && ( $this->t_ignore_pre_defined_classes != 'none')) {
+            $this->t_ignore_pre_defined_classes = 'all';
+        }
     }
 }
-
-?>

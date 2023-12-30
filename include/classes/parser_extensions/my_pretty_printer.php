@@ -1,4 +1,5 @@
 <?php
+
 //========================================================================
 // Author:  Pascal KISSIAN
 // Resume:  http://pascal.kissian.net
@@ -17,9 +18,8 @@ class myPrettyprinter extends PhpParser\PrettyPrinter\Standard
     {
         $l = strlen($str);
         $result = '';
-        for($i=0;$i<$l;++$i)
-        {
-            $result .= mt_rand(0,1) ? "\x".dechex(ord($str[$i])) : "\\".decoct(ord($str[$i]));
+        for ($i = 0; $i < $l; ++$i) {
+            $result .= mt_rand(0, 1) ? "\x" . dechex(ord($str[$i])) : "\\" . decoct(ord($str[$i]));
         }
         return $result;
     }
@@ -27,8 +27,11 @@ class myPrettyprinter extends PhpParser\PrettyPrinter\Standard
 
     public function pScalar_String(PhpParser\Node\Scalar\String_ $node)
     {
-        $result = $this->obfuscate_string($node->value);            if (!strlen($result)) return "''";
-        return  '"'.$this->obfuscate_string($node->value).'"';
+        $result = $this->obfuscate_string($node->value);
+        if (!strlen($result)) {
+            return "''";
+        }
+        return  '"' . $this->obfuscate_string($node->value) . '"';
     }
 
 
@@ -36,10 +39,10 @@ class myPrettyprinter extends PhpParser\PrettyPrinter\Standard
     protected function pScalar_Encapsed(PhpParser\Node\Scalar\Encapsed $node)
     {
         /*
-        if ($node->getAttribute('kind') === PhpParser\Node\Scalar\String_::KIND_HEREDOC) 
+        if ($node->getAttribute('kind') === PhpParser\Node\Scalar\String_::KIND_HEREDOC)
         {
             $label = $node->getAttribute('docLabel');
-            if ($label && !$this->encapsedContainsEndLabel($node->parts, $label)) 
+            if ($label && !$this->encapsedContainsEndLabel($node->parts, $label))
             {
                 if (count($node->parts) === 1
                     && $node->parts[0] instanceof PhpParser\Node\Scalar\EncapsedStringPart
@@ -55,19 +58,13 @@ class myPrettyprinter extends PhpParser\PrettyPrinter\Standard
         }
         */
         $result = '';
-        foreach ($node->parts as $element)
-        {
-            if ($element instanceof PhpParser\Node\Scalar\EncapsedStringPart)
-            {
+        foreach ($node->parts as $element) {
+            if ($element instanceof PhpParser\Node\Scalar\EncapsedStringPart) {
                 $result .=  $this->obfuscate_string($element->value);
-            }
-            else
-            {
+            } else {
                 $result .= '{' . $this->p($element) . '}';
             }
         }
-        return '"'.$result.'"';
+        return '"' . $result . '"';
     }
 }
-
-?>
