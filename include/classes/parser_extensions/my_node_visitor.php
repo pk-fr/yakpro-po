@@ -15,6 +15,7 @@
 namespace Obfuscator\Classes\ParserExtensions;
 
 use Exception;
+use Obfuscator\Classes\Config;
 use Obfuscator\Classes\Scrambler\ClassConstantScrambler;
 use Obfuscator\Classes\Scrambler\ConstantScrambler;
 use Obfuscator\Classes\Scrambler\FunctionOrClassScrambler;
