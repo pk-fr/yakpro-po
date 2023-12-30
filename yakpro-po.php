@@ -70,11 +70,18 @@ if ($conf->obfuscate_string_literal) {
     $prettyPrinter      = new PrettyPrinter\Standard();
 }
 
-$t_scrambler = array();
-//foreach(array('variable','function','method','property','class','class_constant','constant','label') as $scramble_what)
-foreach (array('variable','function_or_class','method','property','class_constant','constant','label') as $scramble_what) {
-    $t_scrambler[$scramble_what] = new Scrambler($scramble_what, $conf, ($process_mode == 'directory') ? $target_directory : null);
-}
+$dir = $process_mode == 'directory' ? $target_directory : null;
+
+$t_scrambler = [
+    'variable' => new Scrambler\VariableScrambler($conf, $dir),
+    'function_or_class' => new Scrambler\FunctionOrClassScrambler($conf, $dir),
+    'method' => new Scrambler\MethodScrambler($conf, $dir),
+    'property' => new Scrambler\PropertyScrambler($conf, $dir),
+    'class_constant' => new Scrambler\ClassConstantScrambler($conf, $dir),
+    'constant' => new Scrambler\ConstantScrambler($conf, $dir),
+    'label' => new Scrambler\LabelScrambler($conf, $dir),
+];
+
 if ($whatis !== '') {
     if ($whatis[0] == '$') {
         $whatis = substr($whatis, 1);
@@ -121,6 +128,7 @@ switch ($process_mode) {
                 $conf->t_keep[$key] = "$source_directory/$val";
             }
         }
+        var_dump($conf->t_keep);
         obfuscate_directory($source_directory, "$target_directory/yakpro-po/obfuscated");
         exit(0);
 }
