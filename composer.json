@@ -6,6 +6,9 @@
         "Obfuscator"
     ],
     "type": "project",
+    "license": [
+        "MIT"
+    ],
     "require": {
         "php": ">= 8.0",
         "nikic/php-parser": "^4.0"
