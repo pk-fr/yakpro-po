@@ -69,7 +69,7 @@ class MyPrettyPrinter extends Standard
         $result = '';
         foreach ($node->parts as $element) {
             if ($element instanceof EncapsedStringPart) {
-                $result .=  $this->obfuscateString($element->value);
+                $result .=  $this->obfuscate_string($element->value);
             } else {
                 $result .= '{' . $this->p($element) . '}';
             }
