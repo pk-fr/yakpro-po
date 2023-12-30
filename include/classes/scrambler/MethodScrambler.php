@@ -2,6 +2,8 @@
 
 namespace Obfuscator\Classes\Scrambler;
 
+use Obfuscator\Classes\Config;
+
 /**
  * Description of MethodScrambler
  *
@@ -12,7 +14,7 @@ class MethodScrambler extends AbstractScrambler
 
     protected bool $case_sensitive = false;
 
-    public function __construct(\stdClass $conf, ?string $target_directory)
+    public function __construct(Config $conf, ?string $target_directory)
     {
         global $t_pre_defined_class_methods;
         global $t_pre_defined_class_methods_by_class;
@@ -55,5 +57,10 @@ class MethodScrambler extends AbstractScrambler
     protected function getScrambleType(): string
     {
         return "method";
+    }
+
+    public static function getScrambler(): MethodScrambler
+    {
+        return parent::$scramblers[$this->getScrambleType()];
     }
 }

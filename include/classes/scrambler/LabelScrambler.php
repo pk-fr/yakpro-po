@@ -2,6 +2,8 @@
 
 namespace Obfuscator\Classes\Scrambler;
 
+use Obfuscator\Classes\Config;
+
 /**
  * Description of LabelScrambler
  *
@@ -10,7 +12,7 @@ namespace Obfuscator\Classes\Scrambler;
 class LabelScrambler extends AbstractScrambler
 {
 
-    public function __construct(\stdClass $conf, ?string $target_directory)
+    public function __construct(Config $conf, ?string $target_directory)
     {
         parent::__construct($conf, $target_directory);
 
@@ -28,5 +30,10 @@ class LabelScrambler extends AbstractScrambler
     protected function getScrambleType(): string
     {
         return "label";
+    }
+
+    public static function getScrambler(): LabelScrambler
+    {
+        return parent::$scramblers[$this->getScrambleType()];
     }
 }

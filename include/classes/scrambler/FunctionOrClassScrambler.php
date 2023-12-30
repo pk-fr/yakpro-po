@@ -1,6 +1,8 @@
 <?php
 namespace Obfuscator\Classes\Scrambler;
 
+use Obfuscator\Classes\Config;
+
 /**
  * Same instance is used for scrambling classes, interfaces, and traits.  and namespaces... and functions ...for aliasing
  *
@@ -11,7 +13,7 @@ class FunctionOrClassScrambler extends AbstractScrambler
 
     protected bool $case_sensitive = false;
 
-    public function __construct(\stdClass $conf, ?string $target_directory)
+    public function __construct(Config $conf, ?string $target_directory)
     {
         global $t_pre_defined_classes;
 
@@ -76,5 +78,10 @@ class FunctionOrClassScrambler extends AbstractScrambler
     protected function getScrambleType(): string
     {
         return "function_or_class";
+    }
+
+    public static function getScrambler(): FunctionOrClassScrambler
+    {
+        return parent::$scramblers[$this->getScrambleType()];
     }
 }

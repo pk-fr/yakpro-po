@@ -41,46 +41,20 @@ use PhpParser\NodeTraverser;
 use PhpParser\ParserFactory;
 use PhpParser\PrettyPrinter;
 
-switch ($conf->parser_mode) {
-    case 'PREFER_PHP7':
-        $parser_mode = ParserFactory::PREFER_PHP7;
-        break;
-    case 'PREFER_PHP5':
-        $parser_mode = ParserFactory::PREFER_PHP5;
-        break;
-    case 'ONLY_PHP7':
-        $parser_mode = ParserFactory::ONLY_PHP7;
-        break;
-    case 'ONLY_PHP5':
-        $parser_mode = ParserFactory::ONLY_PHP5;
-        break;
-    default:
-        $parser_mode = ParserFactory::PREFER_PHP5;
-        break;
-}
+$parser_mode = match ($conf->parser_mode) {
+    'PREFER_PHP7' => ParserFactory::PREFER_PHP7,
+    'PREFER_PHP5' => ParserFactory::PREFER_PHP5,
+    'ONLY_PHP7' => ParserFactory::ONLY_PHP7,
+    'ONLY_PHP5' => ParserFactory::ONLY_PHP5,
+    default => ParserFactory::PREFER_PHP5,
+};
 
 $parser = (new ParserFactory())->create($parser_mode);
-
-
-$traverser          = new NodeTraverser();
-
-if ($conf->obfuscate_string_literal) {
-    $prettyPrinter      = new MyPrettyPrinter();
-} else {
-    $prettyPrinter      = new PrettyPrinter\Standard();
-}
-
+$traverser = new NodeTraverser();
+$prettyPrinter = $conf->obfuscate_string_literal ? new MyPrettyPrinter() : new PrettyPrinter\Standard();
 $dir = $process_mode == 'directory' ? $target_directory : null;
 
-$t_scrambler = [
-    'variable' => new Scrambler\VariableScrambler($conf, $dir),
-    'function_or_class' => new Scrambler\FunctionOrClassScrambler($conf, $dir),
-    'method' => new Scrambler\MethodScrambler($conf, $dir),
-    'property' => new Scrambler\PropertyScrambler($conf, $dir),
-    'class_constant' => new Scrambler\ClassConstantScrambler($conf, $dir),
-    'constant' => new Scrambler\ConstantScrambler($conf, $dir),
-    'label' => new Scrambler\LabelScrambler($conf, $dir),
-];
+Scrambler\AbstractScrambler::createScramblers($conf, $dir);
 
 if ($whatis !== '') {
     if ($whatis[0] == '$') {
@@ -88,7 +62,7 @@ if ($whatis !== '') {
     }
 //    foreach(array('variable','function','method','property','class','class_constant','constant','label') as $scramble_what)
     foreach (array('variable','function_or_class','method','property','class_constant','constant','label') as $scramble_what) {
-        if (( $s = $t_scrambler[$scramble_what]-> unscramble($whatis)) !== '') {
+        if (( $s = Scrambler\AbstractScrambler::$scramblers[$scramble_what]-> unscramble($whatis)) !== '') {
             switch ($scramble_what) {
                 case 'variable':
                 case 'property':
@@ -116,7 +90,6 @@ switch ($process_mode) {
             exit(34);
         }
         file_put_contents($target_file, $obfuscated_str);
-        exit(0);
     case 'directory':
         if (isset($conf->t_skip) && is_array($conf->t_skip)) {
             foreach ($conf->t_skip as $key => $val) {
@@ -128,9 +101,6 @@ switch ($process_mode) {
                 $conf->t_keep[$key] = "$source_directory/$val";
             }
         }
-        var_dump($conf->t_keep);
-        obfuscate_directory($source_directory, "$target_directory/yakpro-po/obfuscated");
-        exit(0);
-}
 
-?>
+        obfuscate_directory($source_directory, "$target_directory/yakpro-po/obfuscated");
+}

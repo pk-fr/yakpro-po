@@ -2,6 +2,8 @@
 
 namespace Obfuscator\Classes\Scrambler;
 
+use Obfuscator\Classes\Config;
+
 /**
  * Description of VariableScrambler
  *
@@ -10,7 +12,7 @@ namespace Obfuscator\Classes\Scrambler;
 class VariableScrambler extends AbstractScrambler
 {
 
-    public function __construct(\stdClass $conf, ?string $target_directory)
+    public function __construct(Config $conf, ?string $target_directory)
     {
         parent::__construct($conf, $target_directory);
         $this->t_ignore = array_flip(self::RESERVED_VARIABLE_NAMES);
@@ -27,5 +29,10 @@ class VariableScrambler extends AbstractScrambler
     protected function getScrambleType(): string
     {
         return "variable";
+    }
+
+    public static function getScrambler(): VariableScrambler
+    {
+        return parent::$scramblers[$this->getScrambleType()];
     }
 }

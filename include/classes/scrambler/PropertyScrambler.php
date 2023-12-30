@@ -2,6 +2,8 @@
 
 namespace Obfuscator\Classes\Scrambler;
 
+use Obfuscator\Classes\Config;
+
 /**
  * Description of PropertyScrambler
  *
@@ -10,7 +12,7 @@ namespace Obfuscator\Classes\Scrambler;
 class PropertyScrambler extends AbstractScrambler
 {
 
-    public function __construct(\stdClass $conf, ?string $target_directory)
+    public function __construct(Config $conf, ?string $target_directory)
     {
         global $t_pre_defined_class_properties;
         global $t_pre_defined_class_properties_by_class;
@@ -46,5 +48,10 @@ class PropertyScrambler extends AbstractScrambler
     protected function getScrambleType(): string
     {
         return "property";
+    }
+
+    public static function getScrambler(): PropertyScrambler
+    {
+        return parent::$scramblers[$this->getScrambleType()];
     }
 }

@@ -385,7 +385,6 @@ function shuffle_get_chunk_size(&$stmts)
 function shuffle_statements($stmts)
 {
     global $conf;
-    global $t_scrambler;
 
     if (!$conf->shuffle_stmts) {
         return $stmts;
@@ -401,7 +400,7 @@ function shuffle_statements($stmts)
         return $stmts;
     }
 
-    $scrambler              = $t_scrambler['label'];
+    $scrambler              = \Obfuscator\Classes\Scrambler\LabelScrambler::getScrambler();
     $label_name_prev        = $scrambler->scramble($scrambler->generateLabelName());
     $first_goto             = new PhpParser\Node\Stmt\Goto_($label_name_prev);
     $t                      = array();

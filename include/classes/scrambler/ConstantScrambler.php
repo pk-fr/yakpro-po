@@ -2,6 +2,8 @@
 
 namespace Obfuscator\Classes\Scrambler;
 
+use Obfuscator\Classes\Config;
+
 /**
  * Description of ConstantScrambler
  *
@@ -10,7 +12,7 @@ namespace Obfuscator\Classes\Scrambler;
 class ConstantScrambler extends AbstractScrambler
 {
 
-    public function __construct(\stdClass $conf, ?string $target_directory)
+    public function __construct(Config $conf, ?string $target_directory)
     {
         parent::__construct($conf, $target_directory);
 
@@ -29,5 +31,10 @@ class ConstantScrambler extends AbstractScrambler
     protected function getScrambleType(): string
     {
         return "constant";
+    }
+
+    public static function getScrambler(): ConstantScrambler
+    {
+        return parent::$scramblers[$this->getScrambleType()];
     }
 }

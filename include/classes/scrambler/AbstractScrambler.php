@@ -18,11 +18,17 @@
 
 namespace Obfuscator\Classes\Scrambler;
 
+use Exception;
+use Obfuscator\Classes\Config;
+
 use function count;
 
 abstract class AbstractScrambler
 {
     private const SCRAMBLER_CONTEXT_VERSION = '1.1';
+    private const MODE_IDENTIFIER = 'identifier';
+    private const MODE_HEXA = 'hexa';
+    private const MODE_NUMERIC = 'numeric';
 
     private $t_first_chars          = null;     // allowed first char of a generated identifier
     private $t_chars                = null;     // allowed all except first char of a generated identifier
@@ -40,6 +46,9 @@ abstract class AbstractScrambler
 
     /** @var array|null array where keys are prefix of names to ignore */
     protected ?array $t_ignore_prefix = null;
+
+    /** @var array{string, AbstractScrambler} */
+    public static array $scramblers = [];
     private $t_scramble             = [];     // array of scrambled items (key = source name , value = scrambled name)
     private $t_rscramble            = null;     // array of reversed scrambled items (key = scrambled name, value = source name)
     private $context_directory      = null;     // where to save/restore context
@@ -69,7 +78,24 @@ abstract class AbstractScrambler
 
     protected const RESERVED_METHOD_NAMES    = array('__construct', '__destruct', '__call', '__callstatic', '__get', '__set', '__isset', '__unset', '__sleep', '__wakeup', '__tostring', '__invoke', '__set_state', '__clone', '__debuginfo');
 
-    abstract protected function getScrambleType(): string;     // type on which scrambling is done (i.e. variable, function, etc.)
+    /** @return static Used scrambler */
+    abstract public static function getScrambler(): static;
+
+    /** @return string type on which scrambling is done (i.e. variable, function, etc.) */
+    abstract protected function getScrambleType(): string;     // 
+
+    public static function createScramblers(Config $conf, ?string $target_directory): void
+    {
+        self::$scramblers = [
+            'variable' => new VariableScrambler($conf, $target_directory),
+            'function_or_class' => new FunctionOrClassScrambler($conf, $target_directory),
+            'method' => new MethodScrambler($conf, $target_directory),
+            'property' => new PropertyScrambler($conf, $target_directory),
+            'class_constant' => new ClassConstantScrambler($conf, $target_directory),
+            'constant' => new ConstantScrambler($conf, $target_directory),
+            'label' => new LabelScrambler($conf, $target_directory),
+        ];
+    }
 
     /**
      * Helper funtion to automatically lowercase all values and flip values and keys.
@@ -83,30 +109,29 @@ abstract class AbstractScrambler
         return array_flip(array_map('strtolower', $inputArray));
     }
 
-    public function __construct(\stdClass $conf, ?string $target_directory)
+    public function __construct(Config $conf, ?string $target_directory)
     {
         $this->t_first_chars        = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
         $this->t_chars              = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_';
         $this->r                    = md5(microtime(true));     // random seed
-        $this->t_scramble           = array();
         $this->silent               = $conf->silent;
         if (isset($conf->scramble_mode)) {
             switch ($conf->scramble_mode) {
-                case 'numeric':
+                case self::MODE_NUMERIC:
                     $this->scramble_length_max  = 32;
-                    $this->scramble_mode        = $conf->scramble_mode;
+                    $this->scramble_mode        = self::MODE_NUMERIC;
                     $this->t_first_chars        = 'O';
                     $this->t_chars              = '0123456789';
                     break;
-                case 'hexa':
+                case self::MODE_HEXA:
                     $this->scramble_length_max  = 32;
-                    $this->scramble_mode = $conf->scramble_mode;
+                    $this->scramble_mode = self::MODE_HEXA;
                     $this->t_first_chars = 'abcdefABCDEF';
                     break;
-                case 'identifier':
+                case self::MODE_IDENTIFIER:
                 default:
                     $this->scramble_length_max  = 16;
-                    $this->scramble_mode = 'identifier';
+                    $this->scramble_mode = self::MODE_IDENTIFIER;
             }
         }
         $this->l1                   = strlen($this->t_first_chars) - 1;
@@ -154,7 +179,13 @@ abstract class AbstractScrambler
         }
     }
 
-    private function strScramble($s)                                   // scramble the string according parameters
+    /**
+     * Scramble input string according to parameters
+     *
+     * @param string $s String to scramble
+     * @return string Scrambled string
+     */
+    private function strScramble(string $s): string
     {
         $c1         = $this->t_first_chars[mt_rand(0, $this->l1)];      // first char of the identifier
         $c2         = $this->t_chars      [mt_rand(0, $this->l2)];      // prepending salt for md5
@@ -162,17 +193,17 @@ abstract class AbstractScrambler
 
         $s  = $c1;
         switch ($this->scramble_mode) {
-            case 'numeric':
+            case self::MODE_NUMERIC:
                 for ($i = 0,$l = $this->scramble_length - 1; $i < $l; ++$i) {
                     $s .= $this->t_chars[base_convert(substr($this->r, $i, 2), 16, 10) % ($this->l2 + 1)];
                 }
                 break;
-            case 'hexa':
+            case self::MODE_HEXA:
                 for ($i = 0,$l = $this->scramble_length - 1; $i < $l; ++$i) {
                     $s .= substr($this->r, $i, 1);
                 }
                 break;
-            case 'identifier':
+            case self::MODE_IDENTIFIER:
             default:
                 for ($i = 0,$l = $this->scramble_length - 1; $i < $l; ++$i) {
                     $s .= $this->t_chars[base_convert(substr($this->r, 2 * $i, 2), 16, 10) % ($this->l2 + 1)];
@@ -181,7 +212,13 @@ abstract class AbstractScrambler
         return $s;
     }
 
-    private function caseShuffle($s)   // this function is used to even more obfuscate insensitive names: on each acces to the name, a different randomized case of each letter is used.
+    /**
+     * This function is used to even more obfuscate insensitive names: on each acces to the name, a different randomized case of each letter is used.
+     *
+     * @param string $s
+     * @return string
+     */
+    private function caseShuffle(string $s): string
     {
         for ($i = 0; $i < strlen($s); ++$i) {
             $s[$i] = mt_rand(0, 1) ? strtoupper($s[$i]) : strtolower($s[$i]);
@@ -189,7 +226,15 @@ abstract class AbstractScrambler
         return $s;
     }
 
-    public function scramble($s)
+    /**
+     * Main scrambling function - decides whether this string should be 
+     * scrambled and if so, returns scrambled output and stores original and 
+     * scrambled string to context registers
+     *
+     * @param string $s
+     * @return string
+     */
+    public function scramble(string $s): string
     {
         $r = $this->case_sensitive ? $s : strtolower($s);
         if (array_key_exists($r, $this->t_ignore)) {
@@ -219,23 +264,31 @@ abstract class AbstractScrambler
                 $this->t_rscramble[$y] = $r;
                 break;
             }
+
             if (!isset($this->t_scramble[$r])) {
-                fprintf(STDERR, "Scramble Error: Identifier not found after 50 iterations!%sAborting...%s", PHP_EOL, PHP_EOL); // should statistically never occur!
-                exit(2);
+                throw new Exception("Scramble Error: Identifier not found after 50 iterations!");
             }
         }
         return $this->case_sensitive ? $this->t_scramble[$r] : $this->caseShuffle($this->t_scramble[$r]);
     }
 
-    public function unscramble($s)
+    /**
+     * Unscrambling function - check scrambling registers and return original 
+     * string
+     *
+     * @param string $s
+     * @return string
+     */
+    public function unscramble(string $s): string
     {
         if (!$this->case_sensitive) {
             $s = strtolower($s);
         }
-        return isset($this->t_rscramble[$s]) ? $this->t_rscramble[$s] : '';
+
+        return $this->t_rscramble[$s] ?? '';
     }
 
-    public function generateLabelName($prefix = "!label")
+    public function generateLabelName(string $prefix = "!label"): string
     {
         return $prefix . ($this->label_counter++);
     }
