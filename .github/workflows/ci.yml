@@ -1,0 +1,23 @@
+name: YakPro PO
+
+on:
+  push:
+
+jobs:
+  setup: 
+      name: Setup
+      steps:
+        - name: "Checkout"
+          uses: actions/checkout@v2
+          
+        - name: "Drop vendor"
+          run: rm -fr vendor
+          
+        - name: "Compose"
+          run: composer install --no-interaction
+  PhpCS:
+      needs: setup
+      name: PHP Code Sniffer
+      steps:          
+        - name: "PHPCs"
+          run: vendor/bin/phpcs
