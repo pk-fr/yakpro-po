@@ -77,7 +77,7 @@ if ($whatis !== '') {
     exit(32);
 }
 
-$traverser->addVisitor(new MyNodeVisitor());
+$traverser->addVisitor(new MyNodeVisitor($conf));
 
 switch ($process_mode) {
     case 'file':

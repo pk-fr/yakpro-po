@@ -76,7 +76,10 @@ use function count;
 use function shuffle_get_chunk_size;
 use function shuffle_statements;
 
-class MyNodeVisitor extends NodeVisitorAbstract       // all parsing and replacement of scrambled names is done here!
+/**
+ * All parsing and replacement of scrambled names is done here!
+ */
+class MyNodeVisitor extends NodeVisitorAbstract       // 
 {
                                                                // see PHP-Parser for documentation!
     private $t_loop_stack                   = array();
@@ -84,10 +87,13 @@ class MyNodeVisitor extends NodeVisitorAbstract       // all parsing and replace
     private $current_class_name             = null;
     private $is_in_class_const_definition   = false;
 
+    public function __construct(private Config $conf)
+    {
+    }
+
     private function shuffleStmts(Node &$node)
     {
-        global $conf;
-        if ($conf->shuffle_stmts) {
+        if ($this->conf->shuffle_stmts) {
             if (isset($node->stmts)) {
                 $stmts              = $node->stmts;
                 $chunk_size = shuffle_get_chunk_size($stmts);
@@ -124,14 +130,12 @@ class MyNodeVisitor extends NodeVisitorAbstract       // all parsing and replace
 
     public function enterNode(Node $node)
     {
-        global $conf;
-
         if (count($this->t_node_stack)) {
             $node->setAttribute('parent', $this->t_node_stack[count($this->t_node_stack) - 1]);
         }
         $this->t_node_stack[] = $node;
 
-        if ($conf->obfuscate_loop_statement) {                    // loop statements  are replaced by goto ...
+        if ($this->conf->obfuscate_loop_statement) {                    // loop statements  are replaced by goto ...
             $scrambler = LabelScrambler::getScrambler();
             if (
                 ($node instanceof For_)   || ($node instanceof Foreach_) || ($node instanceof Switch_)
@@ -155,7 +159,6 @@ class MyNodeVisitor extends NodeVisitorAbstract       // all parsing and replace
 
     public function leaveNode(Node $node)
     {
-        global $conf;
         global $debug_mode;
 
         $node_modified = false;
@@ -167,14 +170,14 @@ class MyNodeVisitor extends NodeVisitorAbstract       // all parsing and replace
             $this->is_in_class_const_definition = false;
         }
 
-        if ($conf->obfuscate_string_literal) {
+        if ($this->conf->obfuscate_string_literal) {
             if ($node instanceof InlineHTML) {
                 $node = new Echo_([new String_($node->value)]);
                 $node_modified = true;
             }
         }
 
-        if ($conf->obfuscate_variable_name) {
+        if ($this->conf->obfuscate_variable_name) {
             $scrambler = VariableScrambler::getScrambler();
             if ($node instanceof Variable) {
                 $name = $node->name;
@@ -199,7 +202,7 @@ class MyNodeVisitor extends NodeVisitorAbstract       // all parsing and replace
             }
         }
 
-        if ($conf->obfuscate_function_name) {
+        if ($this->conf->obfuscate_function_name) {
             $scrambler = FunctionOrClassScrambler::getScrambler();
             if ($node instanceof Function_) {
                 $name = $node->name->name;
@@ -266,7 +269,7 @@ class MyNodeVisitor extends NodeVisitorAbstract       // all parsing and replace
             }
         }
 
-        if ($conf->obfuscate_class_name) {
+        if ($this->conf->obfuscate_class_name) {
             $scrambler = FunctionOrClassScrambler::getScrambler();
             if ($node instanceof Class_) {
                 if ($node->name != null) {
@@ -360,7 +363,7 @@ class MyNodeVisitor extends NodeVisitorAbstract       // all parsing and replace
             }
         }
 
-        if ($conf->obfuscate_interface_name) {
+        if ($this->conf->obfuscate_interface_name) {
             $scrambler = FunctionOrClassScrambler::getScrambler();
             if ($node instanceof Interface_) {
                 $name = $this->getIdentifierName($node->name);
@@ -402,7 +405,7 @@ class MyNodeVisitor extends NodeVisitorAbstract       // all parsing and replace
             }
         }
 
-        if ($conf->obfuscate_trait_name) {
+        if ($this->conf->obfuscate_trait_name) {
             $scrambler = FunctionOrClassScrambler::getScrambler();
             if ($node instanceof Trait_) {
                 $name = $this->getIdentifierName($node->name);
@@ -431,7 +434,7 @@ class MyNodeVisitor extends NodeVisitorAbstract       // all parsing and replace
             }
         }
 
-        if ($conf->obfuscate_property_name) {
+        if ($this->conf->obfuscate_property_name) {
             $scrambler = PropertyScrambler::getScrambler();
             if (($node instanceof PropertyFetch) || ($node instanceof PropertyProperty) || ($node instanceof StaticPropertyFetch)) {
                 $name = $this->getIdentifierName($node->name);
@@ -445,7 +448,7 @@ class MyNodeVisitor extends NodeVisitorAbstract       // all parsing and replace
             }
         }
 
-        if ($conf->obfuscate_method_name) {
+        if ($this->conf->obfuscate_method_name) {
             $scrambler = MethodScrambler::getScrambler();
             if (($node instanceof ClassMethod) || ($node instanceof MethodCall) || ($node instanceof StaticCall)) {
                 $name = $this->getIdentifierName($node->name);
@@ -459,7 +462,7 @@ class MyNodeVisitor extends NodeVisitorAbstract       // all parsing and replace
             }
         }
 
-        if ($conf->obfuscate_constant_name) {
+        if ($this->conf->obfuscate_constant_name) {
             $scrambler = ConstantScrambler::getScrambler();
             if ($node instanceof FuncCall) {      // processing define('constant_name',value);
                 if (isset($node->name->parts)) {                      // not set when indirect call (i.e.function name is a variable value!)
@@ -522,7 +525,7 @@ class MyNodeVisitor extends NodeVisitorAbstract       // all parsing and replace
             }
         }
 
-        if ($conf->obfuscate_class_constant_name) {
+        if ($this->conf->obfuscate_class_constant_name) {
             $scrambler  = ClassConstantScrambler::getScrambler();
             if (($node instanceof Const_) && $this->is_in_class_const_definition) {
                 $name = $this->getIdentifierName($node->name);
@@ -548,9 +551,9 @@ class MyNodeVisitor extends NodeVisitorAbstract       // all parsing and replace
         }
 
         if ($node instanceof UseUse) {
-            if ($conf->obfuscate_function_name || $conf->obfuscate_class_name) {
+            if ($this->conf->obfuscate_function_name || $this->conf->obfuscate_class_name) {
                 if (isset($node->alias)) {
-                    if (!$conf->obfuscate_function_name || !$conf->obfuscate_class_name) {
+                    if (!$this->conf->obfuscate_function_name || !$this->conf->obfuscate_class_name) {
                         fprintf(STDERR, "Warning:[use alias] cannot determine at compile time if it is a function or a class alias" . PHP_EOL . "\tyou must obfuscate both functions and classes or none..." . PHP_EOL . "\tObfuscated code may not work!" . PHP_EOL);
                     }
                     $scrambler = FunctionOrClassScrambler::getScrambler();
@@ -568,7 +571,7 @@ class MyNodeVisitor extends NodeVisitorAbstract       // all parsing and replace
         }
 
 
-        if ($conf->obfuscate_namespace_name) {
+        if ($this->conf->obfuscate_namespace_name) {
             $scrambler = FunctionOrClassScrambler::getScrambler();
             if (($node instanceof Namespace_) || ($node instanceof UseUse)) {
                 if (isset($node->name->parts)) {
@@ -737,7 +740,7 @@ class MyNodeVisitor extends NodeVisitorAbstract       // all parsing and replace
             }
         }
 
-        if ($conf->obfuscate_label_name) {                    // label: goto label;   -
+        if ($this->conf->obfuscate_label_name) {                    // label: goto label;   -
             $scrambler = LabelScrambler::getScrambler();
             if (($node instanceof Label) || ($node instanceof Goto_)) {
                 $name = $this->getIdentifierName($node->name);
@@ -751,7 +754,7 @@ class MyNodeVisitor extends NodeVisitorAbstract       // all parsing and replace
             }
         }
 
-        if ($conf->obfuscate_if_statement) {                  // if else elseif   are replaced by goto ...
+        if ($this->conf->obfuscate_if_statement) {                  // if else elseif   are replaced by goto ...
             $scrambler                  = LabelScrambler::getScrambler();
             $ok_to_scramble             = false;
             if (($node instanceof If_)) {   // except if function_exists is ther...
@@ -842,7 +845,7 @@ class MyNodeVisitor extends NodeVisitorAbstract       // all parsing and replace
             }
         }
 
-        if ($conf->obfuscate_loop_statement) {                  // for while do while   are replaced by goto ...
+        if ($this->conf->obfuscate_loop_statement) {                  // for while do while   are replaced by goto ...
             $scrambler = LabelScrambler::getScrambler();
             if ($node instanceof For_) {
                 list($label_loop_break_name,$label_loop_continue_name) = array_pop($this->t_loop_stack);
@@ -984,13 +987,13 @@ class MyNodeVisitor extends NodeVisitorAbstract       // all parsing and replace
             }
         }
 
-        if ($conf->shuffle_stmts) {
+        if ($this->conf->shuffle_stmts) {
             if (
                 ($node instanceof Function_)
                  || ($node instanceof Closure)
                  || ($node instanceof ClassMethod)
-                 || ($node instanceof Foreach_)     // occurs when $conf->obfuscate_loop_statement is set to false
-                 || ($node instanceof If_)          // occurs when $conf->obfuscate_loop_statement is set to false
+                 || ($node instanceof Foreach_)     // occurs when $this->conf->obfuscate_loop_statement is set to false
+                 || ($node instanceof If_)          // occurs when $this->conf->obfuscate_loop_statement is set to false
                  || ($node instanceof TryCatch)
                  || ($node instanceof Catch_)
                  || ($node instanceof Case_)
@@ -1001,7 +1004,7 @@ class MyNodeVisitor extends NodeVisitorAbstract       // all parsing and replace
                 }
             }
 
-            if (($node instanceof If_)) {           // occurs when $conf->obfuscate_if_statement is set to false
+            if (($node instanceof If_)) {           // occurs when $this->conf->obfuscate_if_statement is set to false
                 if (isset($node->{'else'})) {
                     if ($this->shuffleStmts($node->{'else'})) {
                         $node_modified  = true;
