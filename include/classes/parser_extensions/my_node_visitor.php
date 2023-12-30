@@ -79,10 +79,10 @@ use function shuffle_statements;
 
 /**
  * All parsing and replacement of scrambled names is done here!
+ * see nikic/php-parser for documentation!
  */
-class MyNodeVisitor extends NodeVisitorAbstract       // 
+class MyNodeVisitor extends NodeVisitorAbstract
 {
-                                                               // see PHP-Parser for documentation!
     private $t_loop_stack                   = array();
     private $t_node_stack                   = array();
     private $current_class_name             = null;
