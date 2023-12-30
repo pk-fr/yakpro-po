@@ -4,9 +4,9 @@
 PHP-Parser/*
 tests/*
 old/*
+nbproject
+vendor
 #-----------------------
 # files
 #-----------------------
 run_tests.php
-/nbproject
-/vendor
