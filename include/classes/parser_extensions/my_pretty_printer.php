@@ -16,7 +16,12 @@
 
 namespace Obfuscator\Classes\ParserExtensions;
 
-class MyPrettyPrinter extends PhpParser\PrettyPrinter\Standard
+use PhpParser\Node\Scalar\Encapsed;
+use PhpParser\Node\Scalar\EncapsedStringPart;
+use PhpParser\Node\Scalar\String_;
+use PhpParser\PrettyPrinter\Standard;
+
+class MyPrettyPrinter extends Standard
 {
     private function obfuscate_string($str) /* &phpcs */
     {
@@ -29,7 +34,7 @@ class MyPrettyPrinter extends PhpParser\PrettyPrinter\Standard
     }
 
 
-    public function pScalar_String(PhpParser\Node\Scalar\String_ $node)
+    public function pScalar_String(String_ $node)
     {
         $result = $this->obfuscate_string($node->value);
         if (!strlen($result)) {
@@ -40,7 +45,7 @@ class MyPrettyPrinter extends PhpParser\PrettyPrinter\Standard
 
 
     //TODO: pseudo-obfuscate HEREDOC string
-    protected function pScalar_Encapsed(PhpParser\Node\Scalar\Encapsed $node)
+    protected function pScalar_Encapsed(Encapsed $node)
     {
         /*
         if ($node->getAttribute('kind') === PhpParser\Node\Scalar\String_::KIND_HEREDOC)
@@ -63,7 +68,7 @@ class MyPrettyPrinter extends PhpParser\PrettyPrinter\Standard
         */
         $result = '';
         foreach ($node->parts as $element) {
-            if ($element instanceof PhpParser\Node\Scalar\EncapsedStringPart) {
+            if ($element instanceof EncapsedStringPart) {
                 $result .=  $this->obfuscateString($element->value);
             } else {
                 $result .= '{' . $this->p($element) . '}';
