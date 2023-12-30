@@ -62,6 +62,6 @@ class MethodScrambler extends AbstractScrambler
     /** @return MethodScrambler */
     public static function getScrambler(): static
     {
-        return parent::$scramblers[$this->getScrambleType()];
+        return parent::$scramblers["method"];
     }
 }

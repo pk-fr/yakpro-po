@@ -34,6 +34,6 @@ class VariableScrambler extends AbstractScrambler
     /** @return VariableScrambler */
     public static function getScrambler(): static
     {
-        return parent::$scramblers[$this->getScrambleType()];
+        return parent::$scramblers["variable"];
     }
 }

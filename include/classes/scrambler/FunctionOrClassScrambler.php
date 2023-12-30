@@ -83,6 +83,6 @@ class FunctionOrClassScrambler extends AbstractScrambler
     /** @return FunctionOrClassScrambler */
     public static function getScrambler(): static
     {
-        return parent::$scramblers[$this->getScrambleType()];
+        return parent::$scramblers["function_or_class"];
     }
 }
