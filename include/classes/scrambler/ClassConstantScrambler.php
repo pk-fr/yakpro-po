@@ -50,7 +50,8 @@ class ClassConstantScrambler extends AbstractScrambler
         return "class_constant";
     }
 
-    public static function getScrambler(): ClassConstantScrambler
+    /** @return ClassConstantScrambler */
+    public static function getScrambler(): static
     {
         return parent::$scramblers[$this->getScrambleType()];
     }

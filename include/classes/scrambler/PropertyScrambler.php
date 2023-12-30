@@ -50,7 +50,8 @@ class PropertyScrambler extends AbstractScrambler
         return "property";
     }
 
-    public static function getScrambler(): PropertyScrambler
+    /** @return PropertyScrambler */
+    public static function getScrambler(): static
     {
         return parent::$scramblers[$this->getScrambleType()];
     }

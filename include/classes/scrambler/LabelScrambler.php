@@ -32,7 +32,8 @@ class LabelScrambler extends AbstractScrambler
         return "label";
     }
 
-    public static function getScrambler(): LabelScrambler
+    /** @return LabelScrambler */
+    public static function getScrambler(): static
     {
         return parent::$scramblers[$this->getScrambleType()];
     }
