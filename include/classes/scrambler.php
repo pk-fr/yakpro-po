@@ -18,6 +18,8 @@
 
 namespace Obfuscator\Classes;
 
+use function count;
+
 class Scrambler
 {
     private const SCRAMBLER_CONTEXT_VERSION = '1.1';
