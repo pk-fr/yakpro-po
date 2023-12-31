@@ -323,4 +323,24 @@ abstract class AbstractScrambler
             $node->name = $name;
         }
     }
+
+    /**
+     * Universal node->name scrambling function, used in many scramblers.
+     *
+     * @param Node $node
+     * @return bool
+     */
+    protected function scrambleNodeName(Node $node): bool
+    {
+        $name = $this->getIdentifierName($node->name);
+        if (is_string($name) && (strlen($name) !== 0)) {
+            $r = $this->scramble($name);
+            if ($r !== $name) {
+                $node->name = $r;
+                return true;
+            }
+        }
+
+        return false;
+    }
 }
