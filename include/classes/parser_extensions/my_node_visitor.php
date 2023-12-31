@@ -472,27 +472,10 @@ class MyNodeVisitor extends NodeVisitorAbstract
         }
 
         if ($this->conf->obfuscate_class_constant_name) {
-            $scrambler  = ClassConstantScrambler::getScrambler();
-            if (($node instanceof Const_) && $this->is_in_class_const_definition) {
-                $name = $this->getIdentifierName($node->name);
-                if (is_string($name) && (strlen($name) !== 0)) {
-                    $r = $scrambler->scramble($name);
-                    if ($r !== $name) {
-                        $this->setIdentifierName($node->name, $r);
-                        $node_modified = true;
-                    }
-                }
-            }
-            if ($node instanceof ClassConstFetch) {
-                $name       = $node->name;
-                $name = $this->getIdentifierName($node->name);
-                if (is_string($name) && (strlen($name) !== 0)) {
-                    $r = $scrambler->scramble($name);
-                    if ($r !== $name) {
-                        $this->setIdentifierName($node->name, $r);
-                        $node_modified = true;
-                    }
-                }
+            $scrambler = ClassConstantScrambler::getScrambler();
+
+            if (!$node instanceof Const_ || !$this->is_in_class_const_definition) { //pass Const_ Node to scrambler only if we are not in class constant definition. All other nodes falls directly and scrambler decides which node to scramble
+                $scrambler->scrambleNode($node);
             }
         }
 

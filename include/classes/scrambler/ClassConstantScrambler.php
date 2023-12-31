@@ -3,6 +3,9 @@
 namespace Obfuscator\Classes\Scrambler;
 
 use Obfuscator\Classes\Config;
+use PhpParser\Node;
+use PhpParser\Node\Const_;
+use PhpParser\Node\Expr\ClassConstFetch;
 
 /**
  * Description of ClassConstantScrambler
@@ -54,5 +57,57 @@ class ClassConstantScrambler extends AbstractScrambler
     public static function getScrambler(): static
     {
         return parent::$scramblers["class_constant"];
+    }
+
+    public function isScrambled(Node $node): bool
+    {
+        return $node instanceof Const_;
+    }
+
+    /**
+     * Scramble node using this scrambler
+     *
+     * @param Node $node
+     * @return bool
+     */
+    public function scrambleNode(Node $node): bool
+    {
+        return match (get_class($node)) {
+            ClassConstFetch::class => $this->scrambleClassConstFetchNode($node),
+            Const_::class => $this->scrambleConstNode($node),
+            default => false,
+        };
+    }
+
+    /**
+     * @param ClassConstFetch $node
+     * @return bool True if Node has been modified
+     */
+    private function scrambleClassConstFetchNode(ClassConstFetch $node): bool
+    {
+        $name = $this->getIdentifierName($node->name);
+        if (is_string($name) && (strlen($name) !== 0)) {
+            $r = parent::scramble($name);
+            if ($r !== $name) {
+                $this->setIdentifierName($node->name, $r);
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private function scrambleConstNode(Const_ $node): bool
+    {
+        $name = $this->getIdentifierName($node->name);
+        if (is_string($name) && (strlen($name) !== 0)) {
+            $r = parent::scramble($name);
+            if ($r !== $name) {
+                $this->setIdentifierName($node->name, $r);
+                return true;
+            }
+        }
+
+        return false;
     }
 }
