@@ -451,16 +451,7 @@ class MyNodeVisitor extends NodeVisitorAbstract
 
         if ($this->conf->obfuscate_method_name) {
             $scrambler = MethodScrambler::getScrambler();
-            if (($node instanceof ClassMethod) || ($node instanceof MethodCall) || ($node instanceof StaticCall)) {
-                $name = $this->getIdentifierName($node->name);
-                if (is_string($name) && (strlen($name) !== 0)) {
-                    $r = $scrambler->scramble($name);
-                    if ($r !== $name) {
-                        $this->setIdentifierName($node->name, $r);
-                        $node_modified = true;
-                    }
-                }
-            }
+            $node_modified = $scrambler->scrambleNode($node);
         }
 
         if ($this->conf->obfuscate_constant_name) {
