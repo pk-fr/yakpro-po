@@ -20,6 +20,9 @@ namespace Obfuscator\Classes\Scrambler;
 
 use Exception;
 use Obfuscator\Classes\Config;
+use PhpParser\Node;
+use PhpParser\Node\Identifier;
+use PhpParser\Node\VarLikeIdentifier;
 
 use function count;
 
@@ -82,7 +85,10 @@ abstract class AbstractScrambler
     abstract public static function getScrambler(): static;
 
     /** @return string type on which scrambling is done (i.e. variable, function, etc.) */
-    abstract protected function getScrambleType(): string;     // 
+    abstract protected function getScrambleType(): string;
+    
+    /** @return bool True if this node should be scrambled using this scrambler */
+    abstract public function isScrambled(Node $node): bool;
 
     public static function createScramblers(Config $conf, ?string $target_directory): void
     {
@@ -301,5 +307,20 @@ abstract class AbstractScrambler
     public function getT_ignore_prefix()
     {
         return $this->t_ignore_prefix;
+    }
+
+    protected function getIdentifierName(Node $node)
+    {
+        if ($node instanceof Identifier || $node instanceof VarLikeIdentifier) {
+            return $node->name;
+        }
+        return '';
+    }
+
+    protected function setIdentifierName(Node &$node, $name)
+    {
+        if ($node instanceof Identifier || $node instanceof VarLikeIdentifier) {
+            $node->name = $name;
+        }
     }
 }

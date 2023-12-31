@@ -465,64 +465,9 @@ class MyNodeVisitor extends NodeVisitorAbstract
 
         if ($this->conf->obfuscate_constant_name) {
             $scrambler = ConstantScrambler::getScrambler();
-            if ($node instanceof FuncCall) {      // processing define('constant_name',value);
-                if (isset($node->name->parts)) {                      // not set when indirect call (i.e.function name is a variable value!)
-                    $parts      = $node->name->parts;
-                    $fn_name    = $parts[count($parts) - 1];
-                    if (is_string($fn_name) && ( ($fn_name == 'define') || ($fn_name == 'defined') )) {
-                        for ($ok = false;;) {
-                            if (!isset($node->args[0]->value)) {
-                                break;
-                            }
-                            if (($fn_name == 'define') && (count($node->args) != 2)) {
-                                break;
-                            }
-                            $arg = $node->args[0]->value;
-                            if (! ($arg instanceof String_)) {
-                                break;
-                            }
-                            $name = $arg->value;
-                            if (! is_string($name) || (strlen($name) == 0)) {
-                                break;
-                            }
-                            $ok     = true;
-                            $r = $scrambler->scramble($name);
-                            if ($r !== $name) {
-                                $arg->value = $r;
-                                $node_modified = true;
-                            }
-                            break;
-                        }
-                        if (!$ok) {
-                            if ($fn_name == 'define') {
-                                throw new Exception("Error: your use of $fn_name() function is not compatible with yakpro-po!" . PHP_EOL . "\tOnly 2 parameters, when first is a literal string is allowed...");
-                            } else {
-                                throw new Exception("Error: your use of $fn_name() function is not compatible with yakpro-po!" . PHP_EOL . "\tOnly 1 literal string parameter is allowed...");
-                            }
-                        }
-                    }
-                }
-            }
-            if ($node instanceof ConstFetch) {
-                $parts = $node->name->parts;
-                $name  = $parts[count($parts) - 1];
-                if (is_string($name) && (strlen($name) !== 0)) {
-                    $r = $scrambler->scramble($name);
-                    if ($r !== $name) {
-                        $node->name->parts[count($parts) - 1] = $r;
-                        $node_modified = true;
-                    }
-                }
-            }
-            if (($node instanceof Const_) && !$this->is_in_class_const_definition) {
-                $name = $this->getIdentifierName($node->name);
-                if (is_string($name) && (strlen($name) !== 0)) {
-                    $r = $scrambler->scramble($name);
-                    if ($r !== $name) {
-                        $this->setIdentifierName($node->name, $r);
-                        $node_modified = true;
-                    }
-                }
+
+            if (!$node instanceof Const_ || !$this->is_in_class_const_definition) { //pass Const_ Node to scrambler only if we are not in class constant definition. All other nodes falls directly and scrambler decides which node to scramble
+                $scrambler->scrambleNode($node);
             }
         }
 
@@ -743,7 +688,7 @@ class MyNodeVisitor extends NodeVisitorAbstract
 
         if ($this->conf->obfuscate_label_name) {                    // label: goto label;   -
             $scrambler = LabelScrambler::getScrambler();
-            if (($node instanceof Label) || ($node instanceof Goto_)) {
+            if ($scrambler->isScrambled($node)) {
                 $name = $this->getIdentifierName($node->name);
                 if (is_string($name) && (strlen($name) !== 0)) {
                     $r = $scrambler->scramble($name);
