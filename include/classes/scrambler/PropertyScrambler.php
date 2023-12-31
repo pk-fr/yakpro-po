@@ -3,6 +3,10 @@
 namespace Obfuscator\Classes\Scrambler;
 
 use Obfuscator\Classes\Config;
+use PhpParser\Node;
+use PhpParser\Node\Expr\PropertyFetch;
+use PhpParser\Node\Expr\StaticPropertyFetch;
+use PhpParser\Node\Stmt\PropertyProperty;
 
 /**
  * Description of PropertyScrambler
@@ -54,5 +58,25 @@ class PropertyScrambler extends AbstractScrambler
     public static function getScrambler(): static
     {
         return parent::$scramblers["property"];
+    }
+
+    public function isScrambled(Node $node): bool
+    {
+        return true;
+    }
+
+    /**
+     * Scramble node using this scrambler
+     *
+     * @param Node $node
+     * @return bool
+     */
+    public function scrambleNode(Node $node): bool
+    {
+        if (!($node instanceof PropertyFetch || $node instanceof PropertyProperty || $node instanceof StaticPropertyFetch)) {
+            return false;
+        }
+
+        return $this->scrambleNodeName($node);
     }
 }

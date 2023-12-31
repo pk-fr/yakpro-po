@@ -437,16 +437,7 @@ class MyNodeVisitor extends NodeVisitorAbstract
 
         if ($this->conf->obfuscate_property_name) {
             $scrambler = PropertyScrambler::getScrambler();
-            if (($node instanceof PropertyFetch) || ($node instanceof PropertyProperty) || ($node instanceof StaticPropertyFetch)) {
-                $name = $this->getIdentifierName($node->name);
-                if (is_string($name) && (strlen($name) !== 0)) {
-                    $r = $scrambler->scramble($name);
-                    if ($r !== $name) {
-                        $this->setIdentifierName($node->name, $r);
-                        $node_modified = true;
-                    }
-                }
-            }
+            $node_modified = $scrambler->scrambleNode($node);
         }
 
         if ($this->conf->obfuscate_method_name) {
