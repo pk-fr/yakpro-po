@@ -131,15 +131,6 @@ class ConstantScrambler extends AbstractScrambler
     
     private function scrambleConstNode(Const_ $node): bool
     {
-        $name = $this->getIdentifierName($node->name);
-        if (is_string($name) && (strlen($name) !== 0)) {
-            $r = parent::scramble($name);
-            if ($r !== $name) {
-                $this->setIdentifierName($node->name, $r);
-                return true;
-            }
-        }
-
-        return false;
+        return $this->scrambleNodeName($node);
     }
 }

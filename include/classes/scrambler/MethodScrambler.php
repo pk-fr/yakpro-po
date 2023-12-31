@@ -86,15 +86,6 @@ class MethodScrambler extends AbstractScrambler
             return false;
         }
 
-        $name = $this->getIdentifierName($node->name);
-        if (is_string($name) && (strlen($name) !== 0)) {
-            $r = parent::scramble($name);
-            if ($r !== $name) {
-                $node->name = $r;
-                return true;
-            }
-        }
-
-        return false;
+        return $this->scrambleNodeName($node);
     }
 }
