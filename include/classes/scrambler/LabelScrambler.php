@@ -3,6 +3,9 @@
 namespace Obfuscator\Classes\Scrambler;
 
 use Obfuscator\Classes\Config;
+use PhpParser\Node;
+use PhpParser\Node\Stmt\Goto_;
+use PhpParser\Node\Stmt\Label;
 
 /**
  * Description of LabelScrambler
@@ -36,5 +39,34 @@ class LabelScrambler extends AbstractScrambler
     public static function getScrambler(): static
     {
         return parent::$scramblers["label"];
+    }
+
+    public function isScrambled(Node $node): bool
+    {
+        return $node instanceof Label || $node instanceof Goto_;
+    }
+
+    /**
+     * Scramble node using this scrambler
+     *
+     * @param Node $node
+     * @return bool
+     */
+    public function scrambleNode(Node $node): bool
+    {
+        if (!($node instanceof Label || $node instanceof Goto_)) {
+            return false;
+        }
+
+        $name = $this->getIdentifierName($node->name);
+        if (is_string($name) && (strlen($name) !== 0)) {
+            $r = parent::scramble($name);
+            if ($r !== $name) {
+                $node->name = $r;
+                return true;
+            }
+        }
+
+        return false;
     }
 }

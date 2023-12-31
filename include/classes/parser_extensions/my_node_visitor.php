@@ -671,16 +671,7 @@ class MyNodeVisitor extends NodeVisitorAbstract
 
         if ($this->conf->obfuscate_label_name) {                    // label: goto label;   -
             $scrambler = LabelScrambler::getScrambler();
-            if ($scrambler->isScrambled($node)) {
-                $name = $this->getIdentifierName($node->name);
-                if (is_string($name) && (strlen($name) !== 0)) {
-                    $r = $scrambler->scramble($name);
-                    if ($r !== $name) {
-                        $node->name = $r;
-                        $node_modified = true;
-                    }
-                }
-            }
+            $node_modified = $scrambler->scrambleNode($node);
         }
 
         if ($this->conf->obfuscate_if_statement) {                  // if else elseif   are replaced by goto ...
