@@ -180,27 +180,7 @@ class MyNodeVisitor extends NodeVisitorAbstract
 
         if ($this->conf->obfuscate_variable_name) {
             $scrambler = VariableScrambler::getScrambler();
-            if ($node instanceof Variable) {
-                $name = $node->name;
-                if (is_string($name) && (strlen($name) !== 0)) {
-                    $r = $scrambler->scramble($name);
-                    if ($r !== $name) {
-                        $node->name = $r;
-                        $node_modified = true;
-                    }
-                }
-            }
-            if (($node instanceof Catch_) || ($node instanceof ClosureUse) || ($node instanceof Param)) {
-                $name = $node->{'var'};                             // equivalent to $node->var, that works also on my php version!
-                if (is_string($name) && (strlen($name) !== 0)) {    // but 'var' is a reserved function name, so there is no warranty
-                                                                   // that it will work in the future, so the $node->{'var'} form
-                    $r = $scrambler->scramble($name);               // has been used!
-                    if ($r !== $name) {
-                        $node->{'var'} = $r;
-                        $node_modified = true;
-                    }
-                }
-            }
+            $node_modified =  $scrambler->scrambleNode($node);
         }
 
         if ($this->conf->obfuscate_function_name) {
