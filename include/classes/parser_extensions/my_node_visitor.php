@@ -28,19 +28,14 @@ use PhpParser\Node\Const_;
 use PhpParser\Node\Expr\BooleanNot;
 use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\Node\Expr\Closure;
-use PhpParser\Node\Expr\ClosureUse;
 use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\Instanceof_;
-use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\New_;
-use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Expr\StaticPropertyFetch;
-use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
-use PhpParser\Node\NullableType;
 use PhpParser\Node\Param;
 use PhpParser\Node\Scalar\LNumber;
 use PhpParser\Node\Scalar\String_;
@@ -63,9 +58,7 @@ use PhpParser\Node\Stmt\InlineHTML;
 use PhpParser\Node\Stmt\Interface_;
 use PhpParser\Node\Stmt\Label;
 use PhpParser\Node\Stmt\Namespace_;
-use PhpParser\Node\Stmt\PropertyProperty;
 use PhpParser\Node\Stmt\Switch_;
-use PhpParser\Node\Stmt\Trait_;
 use PhpParser\Node\Stmt\TraitUse;
 use PhpParser\Node\Stmt\TryCatch;
 use PhpParser\Node\Stmt\UseUse;
@@ -185,234 +178,22 @@ class MyNodeVisitor extends NodeVisitorAbstract
 
         if ($this->conf->obfuscate_function_name) {
             $scrambler = FunctionOrClassScrambler::getScrambler();
-            if ($node instanceof Function_) {
-                $name = $node->name->name;
-                if (is_string($name) && (strlen($name) !== 0)) {
-                    $r = $scrambler->scramble($name);
-                    if ($r !== $name) {
-                        $node->name = $r;
-                        $node_modified = true;
-                    }
-                }
-            }
-            if ($node instanceof FuncCall) {
-                if (isset($node->name->parts)) {              // not set when indirect call (i.e.function name is a variable value!)
-                    $parts = $node->name->parts;
-                    $name  = $parts[count($parts) - 1];
-                    if (is_string($name) && (strlen($name) !== 0)) {
-                        $r = $scrambler->scramble($name);
-                        if ($r !== $name) {
-                            $node->name->parts[count($parts) - 1] = $r;
-                            $node_modified = true;
-                        }
-                    }
-                }
-            }
-            if ($node instanceof FuncCall) {      // processing function_exists('function_name');
-                if (isset($node->name->parts)) {                      // not set when indirect call (i.e.function name is a variable value!)
-                    $parts = $node->name->parts;
-                    $name  = $parts[count($parts) - 1];
-                    if (is_string($name) && ($name == 'function_exists')) {
-                        for ($ok = false;;) {
-                            if (!isset($node->args[0]->value)) {
-                                break;
-                            }
-                            if (count($node->args) != 1) {
-                                break;
-                            }
-                            $arg = $node->args[0]->value;
-                            if (! ($arg instanceof String_)) {
-                                $ok = true;
-                                $warning = true;
-                                break;
-                            }
-                            $name = $arg->value;
-                            if (! is_string($name) || (strlen($name) == 0)) {
-                                break;
-                            }
-                            $ok     = true;
-                            $warning = false;
-                            $r = $scrambler->scramble($name);
-                            if ($r !== $name) {
-                                $arg->value = $r;
-                                $node_modified = true;
-                            }
-                            break;
-                        }
-                        if (!$ok) {
-                            throw new Exception("Error: your use of function_exists() function is not compatible with yakpro-po!" . PHP_EOL . "\tOnly 1 literal string parameter is allowed...");
-                        }
-                        if ($warning) {
-                            fprintf(STDERR, "Warning: your use of function_exists() function is not compatible with yakpro-po!" . PHP_EOL . "\t Only 1 literal string parameter is allowed..." . PHP_EOL);
-                        }
-                    }
-                }
-            }
+            $scrambler->scrambleFunctionNodes($node);
         }
 
         if ($this->conf->obfuscate_class_name) {
             $scrambler = FunctionOrClassScrambler::getScrambler();
-            if ($node instanceof Class_) {
-                if ($node->name != null) {
-                    $name = $this->getIdentifierName($node->name);
-                    if (is_string($name) && (strlen($name) !== 0)) {
-                        $r = $scrambler->scramble($name);
-                        if ($r !== $name) {
-                            $this->setIdentifierName($node->name, $r);
-                            $node_modified = true;
-                        }
-                    }
-                }
-                if (isset($node->{'extends'})) {
-                    $parts = $node->{'extends'}->parts;
-                    $name  = $parts[count($parts) - 1];
-                    if (is_string($name) && (strlen($name) !== 0)) {
-                        $r = $scrambler->scramble($name);
-                        if ($r !== $name) {
-                            $node->{'extends'}->parts[count($parts) - 1] = $r;
-                            $node_modified = true;
-                        }
-                    }
-                }
-            }
-            if (
-                ($node instanceof New_)
-                || ($node instanceof StaticCall)
-                || ($node instanceof StaticPropertyFetch)
-                || ($node instanceof ClassConstFetch)
-                || ($node instanceof Instanceof_)
-            ) {
-                if (isset($node->{'class'}->parts)) {
-                    $parts = $node->{'class'}->parts;
-                    $name  = $parts[count($parts) - 1];
-                    if (is_string($name) && (strlen($name) !== 0)) {
-                        $r = $scrambler->scramble($name);
-                        if ($r !== $name) {
-                            $node->{'class'}->parts[count($parts) - 1] = $r;
-                            $node_modified = true;
-                        }
-                    }
-                }
-            }
-            if ($node instanceof Param) {
-                if (isset($node->type) && isset($node->type->parts)) {
-                    $parts = $node->type->parts;
-                    $name  = $parts[count($parts) - 1];
-                    if (is_string($name) && (strlen($name) !== 0)) {
-                        $r = $scrambler->scramble($name);
-                        if ($r !== $name) {
-                            $node->type->parts[count($parts) - 1] = $r;
-                            $node_modified = true;
-                        }
-                    }
-                }
-            }
-            if ($node instanceof ClassMethod || $node instanceof Function_) {
-                if (isset($node->returnType)) {
-                    $node_tmp   = $node->returnType;
-                    if ($node_tmp instanceof NullableType && isset($node_tmp->type)) {
-                        $node_tmp = $node_tmp->type;
-                    }
-                    if ($node_tmp instanceof Name && isset($node_tmp->parts)) {
-                        $parts = $node_tmp->parts;
-                        $name  = $parts[count($parts) - 1];
-                        if (is_string($name) && (strlen($name) !== 0)) {
-                            $r = $scrambler->scramble($name);
-                            if ($r !== $name) {
-                                $node_tmp->parts[count($parts) - 1] = $r;
-                                $node_modified = true;
-                            }
-                        }
-                    }
-                }
-            }
-            if ($node instanceof Catch_) {
-                if (isset($node->types)) {
-                    $types = $node->types;
-                    foreach ($types as &$type) {
-                        $parts = $type->parts;
-                        $name  = $parts[count($parts) - 1];
-                        if (is_string($name) && (strlen($name) !== 0)) {
-                            $r = $scrambler->scramble($name);
-                            if ($r !== $name) {
-                                $type->parts[count($parts) - 1] = $r;
-                                $node_modified = true;
-                            }
-                        }
-                    }
-                }
-            }
+            $scrambler->scrambleClassNode($node);
         }
 
         if ($this->conf->obfuscate_interface_name) {
             $scrambler = FunctionOrClassScrambler::getScrambler();
-            if ($node instanceof Interface_) {
-                $name = $this->getIdentifierName($node->name);
-                if (is_string($name) && (strlen($name) !== 0)) {
-                    $r = $scrambler->scramble($name);
-                    if ($r !== $name) {
-                        $this->setIdentifierName($node->name, $r);
-                        $node_modified = true;
-                    }
-                }
-                if (isset($node->{'extends'}) && count($node->{'extends'})) {
-                    for ($j = 0; $j < count($node->{'extends'}); ++$j) {
-                        $parts = $node->{'extends'}[$j]->parts;
-                        $name  = $parts[count($parts) - 1];
-                        if (is_string($name) && (strlen($name) !== 0)) {
-                            $r = $scrambler->scramble($name);
-                            if ($r !== $name) {
-                                $node->{'extends'}[$j]->parts[count($parts) - 1] = $r;
-                                $node_modified = true;
-                            }
-                        }
-                    }
-                }
-            }
-            if ($node instanceof Class_) {
-                if (isset($node->{'implements'}) && count($node->{'implements'})) {
-                    for ($j = 0; $j < count($node->{'implements'}); ++$j) {
-                        $parts = $node->{'implements'}[$j]->parts;
-                        $name  = $parts[count($parts) - 1];
-                        if (is_string($name) && (strlen($name) !== 0)) {
-                            $r = $scrambler->scramble($name);
-                            if ($r !== $name) {
-                                $node->{'implements'}[$j]->parts[count($parts) - 1] = $r;
-                                $node_modified = true;
-                            }
-                        }
-                    }
-                }
-            }
+            $scrambler->scrambleInterfaceNode($node);
         }
 
         if ($this->conf->obfuscate_trait_name) {
             $scrambler = FunctionOrClassScrambler::getScrambler();
-            if ($node instanceof Trait_) {
-                $name = $this->getIdentifierName($node->name);
-                if (is_string($name) && (strlen($name) !== 0)) {
-                    $r = $scrambler->scramble($name);
-                    if ($r !== $name) {
-                        $this->setIdentifierName($node->name, $r);
-                        $node_modified = true;
-                    }
-                }
-            }
-            if ($node instanceof TraitUse) {
-                if (isset($node->{'traits'}) && count($node->{'traits'})) {
-                    for ($j = 0; $j < count($node->{'traits'}); ++$j) {
-                        $parts = $node->{'traits'}[$j]->parts;
-                        $name  = $parts[count($parts) - 1];
-                        if (is_string($name) && (strlen($name) !== 0)) {
-                            $r = $scrambler->scramble($name);
-                            if ($r !== $name) {
-                                $node->{'traits'}[$j]->parts[count($parts) - 1] = $r;
-                                $node_modified = true;
-                            }
-                        }
-                    }
-                }
-            }
+            $scrambler->scrambleTraitNode($node);
         }
 
         if ($this->conf->obfuscate_property_name) {
