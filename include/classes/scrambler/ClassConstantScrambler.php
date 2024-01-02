@@ -14,7 +14,6 @@ use PhpParser\Node\Expr\ClassConstFetch;
  */
 class ClassConstantScrambler extends AbstractScrambler
 {
-
     public function __construct(Config $conf, ?string $target_directory)
     {
         global $t_pre_defined_class_constants;
@@ -38,11 +37,11 @@ class ClassConstantScrambler extends AbstractScrambler
                 }
             }
         }
-        
+
         if (isset($conf->t_ignore_class_constants)) {
             $this->t_ignore += array_flip($conf->t_ignore_class_constants);
         }
-        
+
         if (isset($conf->t_ignore_class_constants_prefix)) {
             $this->t_ignore_prefix = array_flip($conf->t_ignore_class_constants_prefix);
         }

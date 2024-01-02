@@ -1,4 +1,5 @@
 <?php
+
 namespace Obfuscator\Classes\Scrambler;
 
 use Exception;
@@ -32,7 +33,6 @@ use function count;
  */
 class FunctionOrClassScrambler extends AbstractScrambler
 {
-
     protected bool $case_sensitive = false;
 
     public function __construct(Config $conf, ?string $target_directory)

@@ -86,7 +86,7 @@ abstract class AbstractScrambler
 
     /** @return string type on which scrambling is done (i.e. variable, function, etc.) */
     abstract protected function getScrambleType(): string;
-    
+
     /** @return bool True if this node should be scrambled using this scrambler */
     abstract public function isScrambled(Node $node): bool;
 
@@ -233,8 +233,8 @@ abstract class AbstractScrambler
     }
 
     /**
-     * Main scrambling function - decides whether this string should be 
-     * scrambled and if so, returns scrambled output and stores original and 
+     * Main scrambling function - decides whether this string should be
+     * scrambled and if so, returns scrambled output and stores original and
      * scrambled string to context registers
      *
      * @param string $s
@@ -279,7 +279,7 @@ abstract class AbstractScrambler
     }
 
     /**
-     * Unscrambling function - check scrambling registers and return original 
+     * Unscrambling function - check scrambling registers and return original
      * string
      *
      * @param string $s
@@ -297,16 +297,6 @@ abstract class AbstractScrambler
     public function generateLabelName(string $prefix = "!label"): string
     {
         return $prefix . ($this->label_counter++);
-    }
-    
-    public function getT_ignore()
-    {
-        return $this->t_ignore;
-    }
-
-    public function getT_ignore_prefix()
-    {
-        return $this->t_ignore_prefix;
     }
 
     protected function getIdentifierName(Node $node)

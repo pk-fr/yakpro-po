@@ -12,7 +12,6 @@ use PhpParser\Node;
  */
 class VariableScrambler extends AbstractScrambler
 {
-
     public function __construct(Config $conf, ?string $target_directory)
     {
         parent::__construct($conf, $target_directory);

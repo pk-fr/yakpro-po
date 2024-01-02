@@ -15,14 +15,13 @@ use PhpParser\Node\Stmt\ClassMethod;
  */
 class MethodScrambler extends AbstractScrambler
 {
-
     protected bool $case_sensitive = false;
 
     public function __construct(Config $conf, ?string $target_directory)
     {
         global $t_pre_defined_class_methods;
         global $t_pre_defined_class_methods_by_class;
-        
+
         parent::__construct($conf, $target_directory);
 
         if ($conf->parser_mode == 'ONLY_PHP7') {

@@ -15,7 +15,6 @@ use PhpParser\Node\Stmt\PropertyProperty;
  */
 class PropertyScrambler extends AbstractScrambler
 {
-
     public function __construct(Config $conf, ?string $target_directory)
     {
         global $t_pre_defined_class_properties;
@@ -24,7 +23,7 @@ class PropertyScrambler extends AbstractScrambler
         parent::__construct($conf, $target_directory);
 
         $this->t_ignore = array_flip(self::RESERVED_VARIABLE_NAMES);
-        
+
         if ($conf->t_ignore_pre_defined_classes != 'none') {
             if ($conf->t_ignore_pre_defined_classes == 'all') {
                 $this->t_ignore += $t_pre_defined_class_properties;

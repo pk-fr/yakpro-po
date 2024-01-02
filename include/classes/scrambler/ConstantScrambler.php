@@ -20,7 +20,6 @@ use function count;
  */
 class ConstantScrambler extends AbstractScrambler
 {
-
     public function __construct(Config $conf, ?string $target_directory)
     {
         parent::__construct($conf, $target_directory);
@@ -128,7 +127,7 @@ class ConstantScrambler extends AbstractScrambler
 
         return false;
     }
-    
+
     private function scrambleConstNode(Const_ $node): bool
     {
         return $this->scrambleNodeName($node);
