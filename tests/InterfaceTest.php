@@ -1,6 +1,6 @@
 <?php
 
-use Obfuscator\Test\TestAbstract;
+namespace Obfuscator\Test;
 
 final class InterfaceTest extends TestAbstract
 {
