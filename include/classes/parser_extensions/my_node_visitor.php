@@ -178,7 +178,7 @@ class MyNodeVisitor extends NodeVisitorAbstract
 
         if ($this->conf->obfuscate_function_name) {
             $scrambler = FunctionOrClassScrambler::getScrambler();
-            $scrambler->scrambleFunctionNodes($node);
+            $scrambler->scrambleFunctionNode($node);
         }
 
         if ($this->conf->obfuscate_class_name) {
