@@ -2,7 +2,7 @@
 # directories
 #-----------------------
 PHP-Parser/*
-tests/*
+tests/obfuscated/*
 old/*
 nbproject
 vendor
