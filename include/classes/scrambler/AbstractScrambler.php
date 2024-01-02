@@ -20,8 +20,11 @@ namespace Obfuscator\Classes\Scrambler;
 
 use Exception;
 use Obfuscator\Classes\Config;
+use Obfuscator\Classes\Ignore\Ignore;
+use Obfuscator\Classes\Scope;
 use PhpParser\Node;
 use PhpParser\Node\Identifier;
+use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\VarLikeIdentifier;
 
 use function count;
@@ -88,7 +91,23 @@ abstract class AbstractScrambler
     abstract protected function getScrambleType(): string;
 
     /** @return bool True if this node should be scrambled using this scrambler */
-    abstract public function isScrambled(Node $node): bool;
+    protected function isScrambled(Node $node): bool
+    {
+        $name = $node->name ?? null;
+
+        if ($name) {
+            [$scope, $namespace] = $this->getNodeNamespaceScope($node);
+
+            foreach ($this->t_ignore as $ignore) {
+                /* @var $ignore Ignore */
+                if ($ignore->match($name, $scope, $namespace)) { //this obfuscation should be ignored
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
 
     public static function createScramblers(Config $conf, ?string $target_directory): void
     {
@@ -332,5 +351,56 @@ abstract class AbstractScrambler
         }
 
         return false;
+    }
+
+    /**
+     * Travel up in the AST nodes and detect namespace and scope this node belongs to or null if not found
+     *
+     * @param Node|null $node
+     * @param int $depth To guard the max possible depth
+     * @return array{0: string|null Scope, 1:string|null Namespace}
+     * @throws Exception
+     */
+    private function getNodeNamespaceScope(?Node $node, int $depth = 0, ?string $namespace = null, ?string $scope = null): ?array
+    {
+        if ($depth == 30) {
+            throw new \Exception("Depth limit reached");
+        }
+
+        if ($node === null) {// reached top node
+            return [$scope, $namespace];
+        }
+
+        $scope = $scope ?: match (get_class($node)) {
+            Class_::class => Scope::CLSS,
+            default => null,
+        };
+
+        $namespace = $namespace ?: match (get_class($node)) {
+            Node\Stmt\Namespace_::class => (string) $node->name,
+            default => null,
+        };
+
+        if ($namespace && $scope) {
+            return [$scope, $namespace];
+        }
+
+        return $this->getNodeNamespaceScope($node->getAttribute("parent"), $depth++, $namespace, $scope);
+    }
+
+    protected function getNodeNameSpace(?Node $node, $depth = 0): ?string
+    {
+        if ($depth == 10) {
+            throw new \Exception("Depth limit reached");
+        }
+
+        if ($node === null) {
+            return null; // reached top node and nothing found
+        }
+
+        return match (get_class($node)) {
+            Class_::class => Scope::CLSS,
+            default => $this->getNodeScope($node->getAttribute("parent"), $depth++),
+        };
     }
 }

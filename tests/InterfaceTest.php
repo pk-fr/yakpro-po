@@ -1,12 +1,7 @@
 <?php
 
-use Obfuscator\Test\TestAbstract;
+namespace Obfuscator\Test;
 
-/**
- * Description of InterfaceTest
- *
- * @author kminekmatej
- */
 final class InterfaceTest extends TestAbstract
 {
 
@@ -22,11 +17,6 @@ final class InterfaceTest extends TestAbstract
         parent::obfuscateSources();
     }
 
-    public function testDirGenerated(): void
-    {
-        $this->assertDirectoryExists(self::$testsDir . "/obfuscated/" . self::getSourcesDir());
-    }
-
     public function testInterfacedClassObfuscated()
     {
         $original = parent::getParsedFile(self::$sourcesDir . "/InterfacedClass.php");
@@ -35,9 +25,10 @@ final class InterfaceTest extends TestAbstract
         //namespace obfuscation checks
         $this->assertObfuscated($original[0]->name->parts[0], $obfuscated[0]->name->parts[0]); //Obfuscator
         $this->assertObfuscated($original[0]->name->parts[1], $obfuscated[0]->name->parts[1]); //Test
-        $this->assertEquals($original[0]->name->parts[2], $obfuscated[0]->name->parts[2]); //Interface is not obfuscated since it is ignored
+        $this->assertObfuscated($original[0]->name->parts[2], $obfuscated[0]->name->parts[2]); //Interface
+
         //implements obfuscation checks
-        $this->assertEquals($original[0]->stmts[0]->implements[0]->parts[0], $obfuscated[0]->stmts[0]->implements[0]->parts[0]); /** Interface is not obfuscated since it is ignored @todo */
+        $this->assertEquals($original[0]->stmts[0]->implements[0]->parts[0], $obfuscated[0]->stmts[0]->implements[0]->parts[0]);
         //function Foo obfuscation checks
         $this->assertObfuscated($original[0]->stmts[0]->stmts[0]->name->name, $obfuscated[0]->stmts[0]->stmts[0]->name->name); // function name Foo is obfuscated
     }
@@ -50,7 +41,7 @@ final class InterfaceTest extends TestAbstract
         //namespace obfuscation checks
         $this->assertObfuscated($original[0]->name->parts[0], $obfuscated[0]->name->parts[0]); //Obfuscator
         $this->assertObfuscated($original[0]->name->parts[1], $obfuscated[0]->name->parts[1]); //Test
-        $this->assertEquals($original[0]->name->parts[2], $obfuscated[0]->name->parts[2]); //Interface is not obfuscated since it is ignored
+        $this->assertObfuscated($original[0]->name->parts[2], $obfuscated[0]->name->parts[2]); //Interface
 
         //function Foo obfuscation checks
         $this->assertObfuscated($original[0]->stmts[0]->stmts[0]->name->name, $obfuscated[0]->stmts[0]->stmts[0]->name->name); // function name Foo is obfuscated
