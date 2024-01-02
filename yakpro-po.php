@@ -90,6 +90,7 @@ switch ($process_mode) {
             exit(34);
         }
         file_put_contents($target_file, $obfuscated_str);
+        //no break
     case 'directory':
         if (isset($conf->t_skip) && is_array($conf->t_skip)) {
             foreach ($conf->t_skip as $key => $val) {
@@ -103,4 +104,5 @@ switch ($process_mode) {
         }
 
         obfuscate_directory($source_directory, "$target_directory/yakpro-po/obfuscated");
+        //no break
 }
