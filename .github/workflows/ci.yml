@@ -5,7 +5,7 @@ on:
 
 jobs:
   setup: 
-      runs-on: [linux, windows]
+      runs-on: self-hosted
       name: Setup
       steps:
         - name: "Checkout"
@@ -17,7 +17,7 @@ jobs:
         - name: "Compose"
           run: composer install --no-interaction
   PhpCS:
-      runs-on: [linux, windows]
+      runs-on: self-hosted
       needs: setup
       name: PHP Code Sniffer
       steps:          
