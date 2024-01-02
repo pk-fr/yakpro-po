@@ -1,4 +1,5 @@
 <?php
+
 namespace Obfuscator\Classes\Ignore;
 
 use Obfuscator\Classes\Scope;
@@ -8,13 +9,11 @@ use Obfuscator\Classes\Scope;
  */
 class Ignore
 {
-
     private ?string $namespace = null;
     private bool $isRegex = false;
 
     public function __construct(public readonly string $name, public array $scopes = [])
     {
-        
     }
 
     public static function FUNCTION(string $name): Ignore
@@ -77,7 +76,7 @@ class Ignore
     {
         return array_map(fn(string $name): Ignore => Ignore::CLASS($name), $names);
     }
-    
+
     /**
      * Match this Ignore against input name, scope and namespace
      *

@@ -352,7 +352,7 @@ abstract class AbstractScrambler
 
         return false;
     }
-    
+
     /**
      * Travel up in the AST nodes and detect namespace and scope this node belongs to or null if not found
      *
@@ -384,10 +384,10 @@ abstract class AbstractScrambler
         if ($namespace && $scope) {
             return [$scope, $namespace];
         }
-        
+
         return $this->getNodeNamespaceScope($node->getAttribute("parent"), $depth++, $namespace, $scope);
     }
-    
+
     protected function getNodeNameSpace(?Node $node, $depth = 0): ?string
     {
         if ($depth == 10) {

@@ -60,7 +60,7 @@ class FunctionOrClassScrambler extends AbstractScrambler
         if ($conf->t_ignore_pre_defined_classes != 'none') {
             if ($conf->t_ignore_pre_defined_classes == 'all') {
                 array_push($this->t_ignore, ...Ignore::LIST(array_flip($t_pre_defined_classes)));
-            } else if (is_array($conf->t_ignore_pre_defined_classes)) {
+            } elseif (is_array($conf->t_ignore_pre_defined_classes)) {
                 //ignore configured classes but only if they are set in $t_pre_defined_classes
                 $classesToIgnore = array_intersect(array_flip($t_pre_defined_classes), $conf->t_ignore_pre_defined_classes);
                 if (!empty($classesToIgnore)) {
