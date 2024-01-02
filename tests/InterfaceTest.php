@@ -19,8 +19,7 @@ final class InterfaceTest extends TestAbstract
     public static function setUpBeforeClass(): void
     {
         parent::setUpBeforeClass();
-        $command = "php " . self::$rootDir . "/yakpro-po.php " . self::$sourcesDir . " -o " . self::$testsDir . "/obfuscated/" . self::getSourcesDir();
-        shell_exec($command);
+        parent::obfuscateSources();
     }
 
     public function testDirGenerated(): void
