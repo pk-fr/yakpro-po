@@ -23,3 +23,10 @@ jobs:
       steps:          
         - name: "PHPCs"
           run: vendor/bin/phpcs
+  Autotest:
+      runs-on: self-hosted
+      needs: setup
+      name: Autotest
+      steps:          
+        - name: "phpunit"
+          run: vendor/bin/phpunit --testdox tests
