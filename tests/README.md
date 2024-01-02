@@ -5,22 +5,21 @@
     2. Override `setUpBeforeClass()` function and call `parent::obfuscateSources()` from there (dont forget parent::setUpBeforeClass()`)
 3. Standard test should look like:
 ```
-public function testInterfacedClassObfuscated()
+public function testClassObfuscated()
 {
     $original = parent::getParsedFile(self::$sourcesDir . "/Class.php");
     $obfuscated = parent::getParsedFile(self::$obfuscatedDir . "/Class.php");
 
-    //namespace obfuscation checks
+    //namespace \Obfuscator\Test\MyTests
     $this->assertObfuscated($original[0]->name->parts[0], $obfuscated[0]->name->parts[0]); //Obfuscator
     $this->assertObfuscated($original[0]->name->parts[1], $obfuscated[0]->name->parts[1]); //Test
-    $this->assertObfuscated($original[0]->name->parts[2], $obfuscated[0]->name->parts[2]); /MyTest
+    $this->assertObfuscated($original[0]->name->parts[2], $obfuscated[0]->name->parts[2]); //MyTests
 }
 ```
 
 ## Namespace
-All test classes should share the namespace Obfuscator\Test
+All test classes should share the namespace `Obfuscator\Test`
 
 ## Running tests
-`vendor/bin/phpunit --testdox tests`
-or
-`vendor/bin/phpunit --testdox tests/InterfaceTest.php`
+1. `vendor/bin/phpunit --testdox tests` _Run all tests_
+2. `vendor/bin/phpunit --testdox tests/InterfaceTest.php` _Run single tests_
