@@ -77,6 +77,28 @@ class Ignore
     {
         return array_map(fn(string $name): Ignore => Ignore::CLASS($name), $names);
     }
+    
+    /**
+     * Match this Ignore against input name, scope and namespace
+     *
+     * @param string $name
+     * @param string|null $scope
+     * @param string|null $namespace
+     * @return bool
+     */
+    public function match(string $name, ?string $scope = null, ?string $namespace = null): bool
+    {
+        if ($this->name != $name) {
+            return false;
+        }
+        if ($scope && !empty($this->scopes) && in_array($scope, $this->scopes)) {
+            return false;
+        }
+        if ($this->namespace && $namespace && $namespace != $namespace) {
+            return false;
+        }
+        return true;
+    }
 
     public function getNamespace(): ?string
     {
