@@ -376,8 +376,6 @@ abstract class AbstractScrambler
             default => null,
         };
 
-        //echo "Parent $depth: " . (new NodeDumper())->dump($node) . "\n";
-
         $namespace = $namespace ?: match (get_class($node)) {
             Node\Stmt\Namespace_::class => (string) $node->name,
             default => null,
@@ -387,7 +385,7 @@ abstract class AbstractScrambler
             return [$scope, $namespace];
         }
         
-        return $this->getNodeScope($node->getAttribute("parent"), $depth++, $namespace, $scope);
+        return $this->getNodeNamespaceScope($node->getAttribute("parent"), $depth++, $namespace, $scope);
     }
     
     protected function getNodeNameSpace(?Node $node, $depth = 0): ?string
