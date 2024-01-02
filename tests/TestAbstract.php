@@ -2,6 +2,7 @@
 
 namespace Obfuscator\Test;
 
+use PhpParser\Node;
 use PhpParser\NodeDumper;
 use PhpParser\Parser;
 use PhpParser\ParserFactory;
@@ -72,7 +73,7 @@ abstract class TestAbstract extends TestCase
     {
         $command = "php " . self::$rootDir . "/yakpro-po.php " . self::$sourcesDir . " -o " . self::$testsDir . "/obfuscated/" . static::getSourcesDir();
         shell_exec($command);
-        $this->assertDirectoryExists(self::$testsDir . "/obfuscated/" . self::getSourcesDir(), "Folder with obfuscated results failed to generate");
+        self::assertDirectoryExists(self::$testsDir . "/obfuscated/" . static::getSourcesDir(), "Folder with obfuscated results failed to generate");
     }
 
     /**
@@ -146,5 +147,10 @@ abstract class TestAbstract extends TestCase
         }
 
         return $this->context;
+    }
+
+    protected function dumpNode(array|Node $node): void
+    {
+        echo $this->dumper->dump($node) . "\n";
     }
 }
