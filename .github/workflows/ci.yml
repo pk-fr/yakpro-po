@@ -28,5 +28,5 @@ jobs:
       needs: setup
       name: Autotest
       steps:          
-        - name: "phpunit"
-          run: vendor/bin/phpunit --testdox tests
+        - name: "Run all tests"
+          run: vendor/bin/phpunit tests
