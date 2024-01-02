@@ -68,7 +68,7 @@ abstract class TestAbstract extends TestCase
      * Run obfuscator and obfuscates sources, specified in <strong>getSourcesDir()</strong> directory
      * @return void
      */
-    protected function obfuscateSources(): void
+    protected static function obfuscateSources(): void
     {
         $command = "php " . self::$rootDir . "/yakpro-po.php " . self::$sourcesDir . " -o " . self::$testsDir . "/obfuscated/" . static::getSourcesDir();
         shell_exec($command);
