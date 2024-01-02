@@ -2,11 +2,6 @@
 
 use Obfuscator\Test\TestAbstract;
 
-/**
- * Description of InterfaceTest
- *
- * @author kminekmatej
- */
 final class InterfaceTest extends TestAbstract
 {
 
