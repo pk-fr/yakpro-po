@@ -5,6 +5,8 @@ namespace Obfuscator\Classes\Scrambler;
 use Exception;
 use Obfuscator\Classes\Config;
 use Obfuscator\Classes\Exception\ScramblerException;
+use Obfuscator\Classes\Ignore\Ignore;
+use Obfuscator\Classes\Scope;
 use PhpParser\Node;
 use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\Node\Expr\FuncCall;
@@ -41,59 +43,56 @@ class FunctionOrClassScrambler extends AbstractScrambler
 
         parent::__construct($conf, $target_directory);
 
-        $this->t_ignore = array_flip(self::RESERVED_FUNCTION_NAMES) +
-            parent::flipToLowerCase(get_defined_functions()['internal']);
+        $this->t_ignore = Ignore::FUNCTIONS(get_defined_functions()['internal']);
+        array_push($this->t_ignore, Ignore::FUNCTIONS(self::RESERVED_FUNCTION_NAMES));
 
         if (isset($conf->t_ignore_functions)) {
-            $this->t_ignore += parent::flipToLowerCase($conf->t_ignore_functions);
+            array_push($this->t_ignore, Ignore::FUNCTIONS($conf->t_ignore_functions));
         }
 
         if (isset($conf->t_ignore_functions_prefix)) {
-            $this->t_ignore_prefix = parent::flipToLowerCase($conf->t_ignore_functions_prefix);
+            array_push($this->t_ignore, Ignore::PREFIXES($conf->t_ignore_functions_prefix, [Scope::FUNCTION]));
         }
 
-        $this->t_ignore += array_flip(self::RESERVED_CLASS_NAMES);
-        $this->t_ignore += array_flip(self::RESERVED_VARIABLE_NAMES);
+        array_push($this->t_ignore, Ignore::LIST(self::RESERVED_CLASS_NAMES));
+        array_push($this->t_ignore, Ignore::LIST(self::RESERVED_VARIABLE_NAMES));
 
         if ($conf->t_ignore_pre_defined_classes != 'none') {
             if ($conf->t_ignore_pre_defined_classes == 'all') {
-                $this->t_ignore += array_merge($this->t_ignore, $t_pre_defined_classes);
-            }
-            if (is_array($conf->t_ignore_pre_defined_classes)) {
-                $t_class_names = array_map('strtolower', $conf->t_ignore_pre_defined_classes);
-
-                foreach ($t_class_names as $class_name) {
-                    if (isset($t_pre_defined_classes[$class_name])) {
-                        $this->t_ignore[$class_name] = 1;
-                    }
+                array_push($this->t_ignore, Ignore::LIST($t_pre_defined_classes));
+            } else if (is_array($conf->t_ignore_pre_defined_classes)) {
+                //ignore configured classes but only if they are set in $t_pre_defined_classes
+                $classesToIgnore = array_intersect($t_pre_defined_classes, $conf->t_ignore_pre_defined_classes);
+                if (!empty($classesToIgnore)) {
+                    array_push($this->t_ignore, Ignore::LIST($classesToIgnore));
                 }
             }
         }
 
         if (isset($conf->t_ignore_classes)) {
-            $this->t_ignore += parent::flipToLowerCase($conf->t_ignore_classes);
+            array_push($this->t_ignore, Ignore::CLASSES($conf->t_ignore_classes));
         }
 
         if (isset($conf->t_ignore_interfaces)) {
-            $this->t_ignore += parent::flipToLowerCase($conf->t_ignore_interfaces);
+            array_push($this->t_ignore, Ignore::CLASSES($conf->t_ignore_interfaces));
         }
         if (isset($conf->t_ignore_traits)) {
-            $this->t_ignore += parent::flipToLowerCase($conf->t_ignore_traits);
+            array_push($this->t_ignore, Ignore::CLASSES($conf->t_ignore_traits));
         }
         if (isset($conf->t_ignore_namespaces)) {
-            $this->t_ignore += parent::flipToLowerCase($conf->t_ignore_namespaces);
+            array_push($this->t_ignore, Ignore::LIST($conf->t_ignore_namespaces));
         }
         if (isset($conf->t_ignore_classes_prefix)) {
-            $this->t_ignore_prefix += parent::flipToLowerCase($conf->t_ignore_classes_prefix);
+            array_push($this->t_ignore, Ignore::PREFIXES($conf->t_ignore_classes_prefix, [Scope::CLSS]));
         }
         if (isset($conf->t_ignore_interfaces_prefix)) {
-            $this->t_ignore_prefix += parent::flipToLowerCase($conf->t_ignore_interfaces_prefix);
+            array_push($this->t_ignore, Ignore::PREFIXES($conf->t_ignore_interfaces_prefix, [Scope::INTERFACE]));
         }
         if (isset($conf->t_ignore_traits_prefix)) {
-            $this->t_ignore_prefix += parent::flipToLowerCase($conf->t_ignore_traits_prefix);
+            array_push($this->t_ignore, Ignore::PREFIXES($conf->t_ignore_traits_prefix, [Scope::TRAIT]));
         }
         if (isset($conf->t_ignore_namespaces_prefix)) {
-            $this->t_ignore_prefix += parent::flipToLowerCase($conf->t_ignore_namespaces_prefix);
+            array_push($this->t_ignore, Ignore::PREFIXES($conf->t_ignore_namespaces_prefix, [Scope::NAMESPACE]));
         }
     }
 
