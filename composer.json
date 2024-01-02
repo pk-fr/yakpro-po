@@ -16,7 +16,11 @@
     "autoload": {
         "classmap": ["include/classes"]
     },
+    "autoload-dev": {
+        "classmap": ["tests"]
+    },
     "require-dev": {
+        "phpunit/phpunit": "^10.5",
         "roave/security-advisories": "dev-latest",
         "slevomat/coding-standard": "^8",
         "squizlabs/php_codesniffer": "^3"
