@@ -322,8 +322,10 @@ class FunctionOrClassScrambler extends AbstractScrambler
 
     private function scrambleClsNode(Class_ $node): bool
     {
+        $node_modified = false;
+
         if ($node->name != null) {
-            $node_modified = parent::scrambleNodeName($node);
+            $node_modified |= parent::scrambleNodeName($node);
         }
 
         if (isset($node->{'extends'})) {
@@ -333,10 +335,12 @@ class FunctionOrClassScrambler extends AbstractScrambler
                 $r = parent::scramble($name);
                 if ($r !== $name) {
                     $node->{'extends'}->parts[count($parts) - 1] = $r;
-                    $node_modified = true;
+                    $node_modified |= true;
                 }
             }
         }
+
+        return (bool) $node_modified;
     }
 
     private function scrambleFnNode(Function_ $node): bool
