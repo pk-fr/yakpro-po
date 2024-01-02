@@ -19,3 +19,8 @@ public function testInterfacedClassObfuscated()
 
 ## Namespace
 All test classes should share the namespace Obfuscator\Test
+
+## Running tests
+`vendor/bin/phpunit --testdox tests`
+or
+`vendor/bin/phpunit --testdox tests/InterfaceTest.php`
