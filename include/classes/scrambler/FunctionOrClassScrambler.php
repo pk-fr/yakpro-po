@@ -44,55 +44,55 @@ class FunctionOrClassScrambler extends AbstractScrambler
         parent::__construct($conf, $target_directory);
 
         $this->t_ignore = Ignore::FUNCTIONS(get_defined_functions()['internal']);
-        array_push($this->t_ignore, Ignore::FUNCTIONS(self::RESERVED_FUNCTION_NAMES));
+        array_push($this->t_ignore, ...Ignore::FUNCTIONS(self::RESERVED_FUNCTION_NAMES));
 
         if (isset($conf->t_ignore_functions)) {
-            array_push($this->t_ignore, Ignore::FUNCTIONS($conf->t_ignore_functions));
+            array_push($this->t_ignore, ...Ignore::FUNCTIONS($conf->t_ignore_functions));
         }
 
         if (isset($conf->t_ignore_functions_prefix)) {
-            array_push($this->t_ignore, Ignore::PREFIXES($conf->t_ignore_functions_prefix, [Scope::FUNCTION]));
+            array_push($this->t_ignore, ...Ignore::PREFIXES($conf->t_ignore_functions_prefix, [Scope::FUNCTION]));
         }
 
-        array_push($this->t_ignore, Ignore::LIST(self::RESERVED_CLASS_NAMES));
-        array_push($this->t_ignore, Ignore::LIST(self::RESERVED_VARIABLE_NAMES));
+        array_push($this->t_ignore, ...Ignore::LIST(self::RESERVED_CLASS_NAMES));
+        array_push($this->t_ignore, ...Ignore::LIST(self::RESERVED_VARIABLE_NAMES));
 
         if ($conf->t_ignore_pre_defined_classes != 'none') {
             if ($conf->t_ignore_pre_defined_classes == 'all') {
-                array_push($this->t_ignore, Ignore::LIST($t_pre_defined_classes));
+                array_push($this->t_ignore, ...Ignore::LIST(array_flip($t_pre_defined_classes)));
             } else if (is_array($conf->t_ignore_pre_defined_classes)) {
                 //ignore configured classes but only if they are set in $t_pre_defined_classes
-                $classesToIgnore = array_intersect($t_pre_defined_classes, $conf->t_ignore_pre_defined_classes);
+                $classesToIgnore = array_intersect(array_flip($t_pre_defined_classes), $conf->t_ignore_pre_defined_classes);
                 if (!empty($classesToIgnore)) {
-                    array_push($this->t_ignore, Ignore::LIST($classesToIgnore));
+                    array_push($this->t_ignore, ...Ignore::LIST($classesToIgnore));
                 }
             }
         }
 
         if (isset($conf->t_ignore_classes)) {
-            array_push($this->t_ignore, Ignore::CLASSES($conf->t_ignore_classes));
+            array_push($this->t_ignore, ...Ignore::CLASSES($conf->t_ignore_classes));
         }
 
         if (isset($conf->t_ignore_interfaces)) {
-            array_push($this->t_ignore, Ignore::CLASSES($conf->t_ignore_interfaces));
+            array_push($this->t_ignore, ...Ignore::CLASSES($conf->t_ignore_interfaces));
         }
         if (isset($conf->t_ignore_traits)) {
-            array_push($this->t_ignore, Ignore::CLASSES($conf->t_ignore_traits));
+            array_push($this->t_ignore, ...Ignore::CLASSES($conf->t_ignore_traits));
         }
         if (isset($conf->t_ignore_namespaces)) {
-            array_push($this->t_ignore, Ignore::LIST($conf->t_ignore_namespaces));
+            array_push($this->t_ignore, ...Ignore::LIST($conf->t_ignore_namespaces));
         }
         if (isset($conf->t_ignore_classes_prefix)) {
             array_push($this->t_ignore, Ignore::PREFIXES($conf->t_ignore_classes_prefix, [Scope::CLSS]));
         }
         if (isset($conf->t_ignore_interfaces_prefix)) {
-            array_push($this->t_ignore, Ignore::PREFIXES($conf->t_ignore_interfaces_prefix, [Scope::INTERFACE]));
+            array_push($this->t_ignore, ...Ignore::PREFIXES($conf->t_ignore_interfaces_prefix, [Scope::INTERFACE]));
         }
         if (isset($conf->t_ignore_traits_prefix)) {
-            array_push($this->t_ignore, Ignore::PREFIXES($conf->t_ignore_traits_prefix, [Scope::TRAIT]));
+            array_push($this->t_ignore, ...Ignore::PREFIXES($conf->t_ignore_traits_prefix, [Scope::TRAIT]));
         }
         if (isset($conf->t_ignore_namespaces_prefix)) {
-            array_push($this->t_ignore, Ignore::PREFIXES($conf->t_ignore_namespaces_prefix, [Scope::NAMESPACE]));
+            array_push($this->t_ignore, ...Ignore::PREFIXES($conf->t_ignore_namespaces_prefix, [Scope::NAMESPACE]));
         }
     }
 
@@ -107,11 +107,6 @@ class FunctionOrClassScrambler extends AbstractScrambler
         return parent::$scramblers["function_or_class"];
     }
 
-    public function isScrambled(Node $node): bool
-    {
-        return true;
-    }
-
     /**
      * Scramble node using this scrambler
      *
@@ -120,6 +115,10 @@ class FunctionOrClassScrambler extends AbstractScrambler
      */
     public function scrambleFunctionNode(Node $node): bool
     {
+        if (!$this->isScrambled($node)) {
+            return false;
+        }
+
         return match (get_class($node)) {
             Function_::class => $this->scrambleFnNode($node),
             FuncCall::class => $this->scrambleFuncCallNode($node),
@@ -135,6 +134,10 @@ class FunctionOrClassScrambler extends AbstractScrambler
      */
     public function scrambleClassNode(Node $node): bool
     {
+        if (!$this->isScrambled($node)) {
+            return false;
+        }
+
         return match (get_class($node)) {
             Class_::class => $this->scrambleClsNode($node),
             New_::class, StaticCall::class, StaticPropertyFetch::class, ClassConstFetch::class, Instanceof_::class, => $this->scrambleLastClassPart($node),
@@ -153,6 +156,10 @@ class FunctionOrClassScrambler extends AbstractScrambler
      */
     public function scrambleInterfaceNode(Node $node): bool
     {
+        if (!$this->isScrambled($node)) {
+            return false;
+        }
+
         return match (gettype($node)) {
             Interface_::class => $this->scrambleNodeName($node) || $this->scrambleExtends($node),
             Class_::class => $this->scrambleImplements($node),
@@ -168,6 +175,10 @@ class FunctionOrClassScrambler extends AbstractScrambler
      */
     public function scrambleTraitNode(Node $node): bool
     {
+        if (!$this->isScrambled($node)) {
+            return false;
+        }
+
         return match (gettype($node)) {
             Trait_::class => $this->scrambleNodeName($node),
             TraitUse::class => $this->scrambleUsedTrait($node),
