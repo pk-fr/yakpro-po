@@ -41,7 +41,6 @@ class Config
     public $t_ignore_constants_prefix       = null;         // array where values are prefix of names to ignore.
     public $t_ignore_variables_prefix       = null;         // array where values are prefix of names to ignore.
     public $t_ignore_functions_prefix       = null;         // array where values are prefix of names to ignore.
-
     public $t_ignore_class_constants_prefix = null;         // array where values are prefix of names to ignore.
     public $t_ignore_properties_prefix      = null;         // array where values are prefix of names to ignore.
     public $t_ignore_methods_prefix         = null;         // array where values are prefix of names to ignore.
