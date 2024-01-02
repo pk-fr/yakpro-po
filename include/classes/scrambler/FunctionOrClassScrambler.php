@@ -367,8 +367,10 @@ class FunctionOrClassScrambler extends AbstractScrambler
         return false;
     }
 
-    private function scrambleFuncCallNode(Node $node)
+    private function scrambleFuncCallNode(Node $node): bool
     {
+        $node_modified = false;
+
         if (isset($node->name->parts)) {              // not set when indirect call (i.e.function name is a variable value!)
             $parts = $node->name->parts;
             $name = $parts[count($parts) - 1];
@@ -404,5 +406,7 @@ class FunctionOrClassScrambler extends AbstractScrambler
                 }
             }
         }
+
+        return $node_modified;
     }
 }
