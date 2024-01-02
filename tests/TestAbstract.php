@@ -72,6 +72,7 @@ abstract class TestAbstract extends TestCase
     {
         $command = "php " . self::$rootDir . "/yakpro-po.php " . self::$sourcesDir . " -o " . self::$testsDir . "/obfuscated/" . static::getSourcesDir();
         shell_exec($command);
+        $this->assertDirectoryExists(self::$testsDir . "/obfuscated/" . self::getSourcesDir(), "Folder with obfuscated results failed to generate");
     }
 
     /**

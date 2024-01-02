@@ -17,11 +17,6 @@ final class InterfaceTest extends TestAbstract
         parent::obfuscateSources();
     }
 
-    public function testDirGenerated(): void
-    {
-        $this->assertDirectoryExists(self::$testsDir . "/obfuscated/" . self::getSourcesDir());
-    }
-
     public function testInterfacedClassObfuscated()
     {
         $original = parent::getParsedFile(self::$sourcesDir . "/InterfacedClass.php");
