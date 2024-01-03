@@ -4,6 +4,10 @@ namespace Obfuscator\Classes\Scrambler;
 
 use Obfuscator\Classes\Config;
 use PhpParser\Node;
+use PhpParser\Node\Expr\ClosureUse;
+use PhpParser\Node\Expr\Variable;
+use PhpParser\Node\Param;
+use PhpParser\Node\Stmt\Catch_;
 
 /**
  * Description of VariableScrambler
