@@ -18,6 +18,7 @@ namespace Obfuscator\Classes;
 
 class Config
 {
+    public const YAKPRO_PO_VERSION = "2.0.14";
     public $t_ignore_pre_defined_classes    = 'all';        // 'all' (default value) , 'none',  or array of pre-defined classes that you use in your software:
                                                             //      ex: array('Exception', 'PDO', 'PDOStatement', 'PDOException');
                                                             // As instantiation is done at runtime, it is impossible to statically determinate when a method call is detected, on which class the object belong.
@@ -116,10 +117,9 @@ class Config
 
     public function getComment()
     {
-        global $yakpro_po_version;
         $now = date('Y-m-d H:i:s');
 
-        return sprintf($this->comment, $yakpro_po_version, $now);
+        return sprintf($this->comment, self::YAKPRO_PO_VERSION, $now);
     }
 
     public function validate()
