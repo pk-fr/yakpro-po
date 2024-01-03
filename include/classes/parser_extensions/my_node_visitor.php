@@ -555,7 +555,7 @@ class MyNodeVisitor extends NodeVisitorAbstract
                     $if->stmts          = $goto_break;
                     $new_node           = array_merge($new_node, array($if));
                 }
-                if (isset($stmts)) {
+                if (!empty($stmts)) {
                     $new_node           = array_merge($new_node, $stmts);
                 }
                 $new_node               = array_merge($new_node, $label_continue);
@@ -675,7 +675,7 @@ class MyNodeVisitor extends NodeVisitorAbstract
                 }
 
                 $elseif                 = $node->elseifs;
-                if (isset($elseif) && count($elseif)) {       // elseif mode
+                if (!empty($elseif)) {       // elseif mode
                     for ($i = 0; $i < count($elseif); ++$i) {
                         if ($this->shuffleStmts($elseif[$i])) {
                             $node_modified  = true;
