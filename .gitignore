@@ -4,6 +4,8 @@
 PHP-Parser/*
 tests/obfuscated/*
 old/*
+temp/*
+!temp/.gitkeep
 nbproject
 vendor
 #-----------------------
