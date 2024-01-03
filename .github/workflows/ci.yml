@@ -32,7 +32,7 @@ jobs:
           run: vendor/bin/phpstan
   Autotest:
       runs-on: self-hosted
-      needs: setup
+      needs: PhpStan
       name: Autotest
       steps:          
         - name: "Run all tests"
