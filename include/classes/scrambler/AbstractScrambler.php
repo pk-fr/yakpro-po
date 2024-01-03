@@ -387,20 +387,4 @@ abstract class AbstractScrambler
 
         return $this->getNodeNamespaceScope($node->getAttribute("parent"), $depth++, $namespace, $scope);
     }
-
-    protected function getNodeNameSpace(?Node $node, $depth = 0): ?string
-    {
-        if ($depth == 10) {
-            throw new \Exception("Depth limit reached");
-        }
-
-        if ($node === null) {
-            return null; // reached top node and nothing found
-        }
-
-        return match (get_class($node)) {
-            Class_::class => Scope::CLSS,
-            default => $this->getNodeScope($node->getAttribute("parent"), $depth++),
-        };
-    }
 }
