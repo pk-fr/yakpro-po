@@ -1,5 +1,7 @@
 <?php
 
+use Obfuscator\Classes\Config;
+
 //========================================================================
 // Author:  Pascal KISSIAN
 // Resume:  http://pascal.kissian.net
@@ -19,12 +21,10 @@ $yakpro_po_dirname      = $t_yakpro_po_pathinfo['dirname'];
 $config_filename        = '';
 $process_mode           = '';   // can be: 'file' or 'directory'
 
-$pos = array_search('-h', $t_args);
-if (!isset($pos) || ($pos === false)) {
-    $pos = array_search('--help', $t_args);
-}
-if (isset($pos) && ($pos !== false)) {
-    fprintf(STDERR, "Info:\tyakpro-po version = %s%s", $yakpro_po_version, PHP_EOL . PHP_EOL);
+$pos = array_search('-h', $t_args) ?? array_search('--help', $t_args);
+
+if ($pos) {
+    fprintf(STDERR, "Info:\tyakpro-po version = %s%s", Config::YAKPRO_PO_VERSION, PHP_EOL . PHP_EOL);
     $lang = '';
     if (($x = getenv('LANG')) !== false) {
         $s = strtolower($x);
@@ -52,18 +52,16 @@ if (isset($pos) && ($pos !== false)) {
 }
 
 $pos = array_search('--config-file', $t_args);
-if (isset($pos) && ($pos !== false) && isset($t_args[$pos + 1])) {
+if ($pos !== false && isset($t_args[$pos + 1])) {
     $argument_config_filename = $t_args[$pos + 1];
     array_splice($t_args, $pos, 2);           // remove the 2 args and reorder
 } else {
     $argument_config_filename = '';
 }
 
-$pos = array_search('-o', $t_args);
-if (!isset($pos) || ($pos === false)) {
-    $pos = array_search('--output-file', $t_args);
-}
-if (isset($pos) && ($pos !== false) && isset($t_args[$pos + 1])) {
+$pos = array_search('-o', $t_args) ?? array_search('--output-file', $t_args);
+
+if ($pos !== false && isset($t_args[$pos + 1])) {
     $target = $t_args[$pos + 1];
     array_splice($t_args, $pos, 2);           // remove the 2 args and reorder
 } else {
@@ -71,7 +69,7 @@ if (isset($pos) && ($pos !== false) && isset($t_args[$pos + 1])) {
 }
 
 $pos = array_search('--clean', $t_args);
-if (isset($pos) && ($pos !== false)) {
+if ($pos !== false) {
     $clean_mode = true;
     array_splice($t_args, $pos, 1);           // remove the arg and reorder
 } else {
@@ -79,15 +77,15 @@ if (isset($pos) && ($pos !== false)) {
 }
 
 $pos = array_search('--silent', $t_args);
-if (isset($pos) && ($pos !== false)) {
+if ($pos !== false) {
     $force_conf_silent = true;
     array_splice($t_args, $pos, 1);           // remove the arg and reorder
 } else {
     $force_conf_silent = false;
-};
+}
 
 $pos = array_search('--whatis', $t_args);
-if (isset($pos) && ($pos !== false) && isset($t_args[$pos + 1])) {
+if ($pos !== false && isset($t_args[$pos + 1])) {
     $whatis = $t_args[$pos + 1];
     array_splice($t_args, $pos, 2);           // remove the 2 args and reorder
     $force_conf_silent = true;
@@ -96,7 +94,7 @@ if (isset($pos) && ($pos !== false) && isset($t_args[$pos + 1])) {
 }
 
 $pos = array_search('--debug', $t_args);
-if (isset($pos) && ($pos !== false)) {
+if ($pos !== false) {
     $debug_mode = true;
     array_splice($t_args, $pos, 1);           // remove the arg and reorder
 } else {
@@ -104,7 +102,7 @@ if (isset($pos) && ($pos !== false)) {
 };
 
 $pos = array_search('--debug', $t_args);     // repeated --debug
-if (isset($pos) && ($pos !== false)) {
+if ($pos !== false) {
     $debug_mode = 2;
     array_splice($t_args, $pos, 1);           // remove the arg and reorder
 }
@@ -146,7 +144,7 @@ foreach ($t_where as $dummy => $where) {
     }
 }
 
-$conf = new \Obfuscator\Classes\Config();
+$conf = new Config();
 
 if ($force_conf_silent) {
     $conf->silent = true;
@@ -168,194 +166,194 @@ if ($config_filename == '') {
 //var_dump($conf);
 
 if (!$conf->silent) {
-    fprintf(STDERR, "Info:\tyakpro-po version = %s%s", $yakpro_po_version, PHP_EOL);
+    fprintf(STDERR, "Info:\tyakpro-po version = %s%s", Config::YAKPRO_PO_VERSION, PHP_EOL);
 }
 
 
 $pos = array_search('-y', $t_args);
-if (isset($pos) && ($pos !== false)) {
+if ($pos !== false) {
     $conf->confirm = false;
     array_splice($t_args, $pos, 1);           // remove the arg and reorder
 }
 
 $pos = array_search('-s', $t_args);
-if (isset($pos) && ($pos !== false)) {
+if ($pos !== false) {
     $conf->strip_indentation               = false;
     array_splice($t_args, $pos, 1);
 }
 $pos = array_search('--no-strip-indentation', $t_args);
-if (isset($pos) && ($pos !== false)) {
+if ($pos !== false) {
     $conf->strip_indentation               = false;
     array_splice($t_args, $pos, 1);
 }
 $pos = array_search('--strip-indentation', $t_args);
-if (isset($pos) && ($pos !== false)) {
+if ($pos !== false) {
     $conf->strip_indentation               = true;
     array_splice($t_args, $pos, 1);
 }
 
 $pos = array_search('--no-shuffle-statements', $t_args);
-if (isset($pos) && ($pos !== false)) {
+if ($pos !== false) {
     $conf->shuffle_stmts                   = false;
     array_splice($t_args, $pos, 1);
 }
 $pos = array_search('--shuffle-statements', $t_args);
-if (isset($pos) && ($pos !== false)) {
+if ($pos !== false) {
     $conf->shuffle_stmts                   = true;
     array_splice($t_args, $pos, 1);
 }
 
 $pos = array_search('--no-obfuscate-string-literal', $t_args);
-if (isset($pos) && ($pos !== false)) {
+if ($pos !== false) {
     $conf->obfuscate_string_literal        = false;
     array_splice($t_args, $pos, 1);
 }
 $pos = array_search('--obfuscate-string-literal', $t_args);
-if (isset($pos) && ($pos !== false)) {
+if ($pos !== false) {
     $conf->obfuscate_string_literal        = true;
     array_splice($t_args, $pos, 1);
 }
 
 $pos = array_search('--no-obfuscate-loop-statement', $t_args);
-if (isset($pos) && ($pos !== false)) {
+if ($pos !== false) {
     $conf->obfuscate_loop_statement        = false;
     array_splice($t_args, $pos, 1);
 }
 $pos = array_search('--obfuscate-loop-statement', $t_args);
-if (isset($pos) && ($pos !== false)) {
+if ($pos !== false) {
     $conf->obfuscate_loop_statement        = true;
     array_splice($t_args, $pos, 1);
 }
 
 $pos = array_search('--no-obfuscate-if-statement', $t_args);
-if (isset($pos) && ($pos !== false)) {
+if ($pos !== false) {
     $conf->obfuscate_if_statement          = false;
     array_splice($t_args, $pos, 1);
 }
 $pos = array_search('--obfuscate-if-statement', $t_args);
-if (isset($pos) && ($pos !== false)) {
+if ($pos !== false) {
     $conf->obfuscate_if_statement          = true;
     array_splice($t_args, $pos, 1);
 }
 
 
 $pos = array_search('--no-obfuscate-constant-name', $t_args);
-if (isset($pos) && ($pos !== false)) {
+if ($pos !== false) {
     $conf->obfuscate_constant_name         = false;
     array_splice($t_args, $pos, 1);
 }
 $pos = array_search('--obfuscate-constant-name', $t_args);
-if (isset($pos) && ($pos !== false)) {
+if ($pos !== false) {
     $conf->obfuscate_constant_name         = true;
     array_splice($t_args, $pos, 1);
 }
 
 $pos = array_search('--no-obfuscate-variable-name', $t_args);
-if (isset($pos) && ($pos !== false)) {
+if ($pos !== false) {
     $conf->obfuscate_variable_name         = false;
     array_splice($t_args, $pos, 1);
 }
 $pos = array_search('--obfuscate-variable-name', $t_args);
-if (isset($pos) && ($pos !== false)) {
+if ($pos !== false) {
     $conf->obfuscate_variable_name         = true;
     array_splice($t_args, $pos, 1);
 }
 
 $pos = array_search('--no-obfuscate-function-name', $t_args);
-if (isset($pos) && ($pos !== false)) {
+if ($pos !== false) {
     $conf->obfuscate_function_name         = false;
     array_splice($t_args, $pos, 1);
 }
 $pos = array_search('--obfuscate-function-name', $t_args);
-if (isset($pos) && ($pos !== false)) {
+if ($pos !== false) {
     $conf->obfuscate_function_name         = true;
     array_splice($t_args, $pos, 1);
 }
 
 $pos = array_search('--no-obfuscate-class-name', $t_args);
-if (isset($pos) && ($pos !== false)) {
+if ($pos !== false) {
     $conf->obfuscate_class_name            = false;
     array_splice($t_args, $pos, 1);
 }
 $pos = array_search('--obfuscate-class-name', $t_args);
-if (isset($pos) && ($pos !== false)) {
+if ($pos !== false) {
     $conf->obfuscate_class_name            = true;
     array_splice($t_args, $pos, 1);
 }
 
 $pos = array_search('--no-obfuscate-class_constant-name', $t_args);
-if (isset($pos) && ($pos !== false)) {
+if ($pos !== false) {
     $conf->obfuscate_class_constant_name   = false;
     array_splice($t_args, $pos, 1);
 }
 $pos = array_search('--obfuscate-class_constant-name', $t_args);
-if (isset($pos) && ($pos !== false)) {
+if ($pos !== false) {
     $conf->obfuscate_class_constant_name   = true;
     array_splice($t_args, $pos, 1);
 }
 
 $pos = array_search('--no-obfuscate-interface-name', $t_args);
-if (isset($pos) && ($pos !== false)) {
+if ($pos !== false) {
     $conf->obfuscate_interface_name        = false;
     array_splice($t_args, $pos, 1);
 }
 $pos = array_search('--obfuscate-interface-name', $t_args);
-if (isset($pos) && ($pos !== false)) {
+if ($pos !== false) {
     $conf->obfuscate_interface_name        = true;
     array_splice($t_args, $pos, 1);
 }
 
 $pos = array_search('--no-obfuscate-trait-name', $t_args);
-if (isset($pos) && ($pos !== false)) {
+if ($pos !== false) {
     $conf->obfuscate_trait_name            = false;
     array_splice($t_args, $pos, 1);
 }
 $pos = array_search('--obfuscate-trait-name', $t_args);
-if (isset($pos) && ($pos !== false)) {
+if ($pos !== false) {
     $conf->obfuscate_trait_name            = true;
     array_splice($t_args, $pos, 1);
 }
 
 $pos = array_search('--no-obfuscate-property-name', $t_args);
-if (isset($pos) && ($pos !== false)) {
+if ($pos !== false) {
     $conf->obfuscate_property_name         = false;
     array_splice($t_args, $pos, 1);
 }
 $pos = array_search('--obfuscate-property-name', $t_args);
-if (isset($pos) && ($pos !== false)) {
+if ($pos !== false) {
     $conf->obfuscate_property_name         = true;
     array_splice($t_args, $pos, 1);
 }
 
 $pos = array_search('--no-obfuscate-method-name', $t_args);
-if (isset($pos) && ($pos !== false)) {
+if ($pos !== false) {
     $conf->obfuscate_method_name           = false;
     array_splice($t_args, $pos, 1);
 }
 $pos = array_search('--obfuscate-method-name', $t_args);
-if (isset($pos) && ($pos !== false)) {
+if ($pos !== false) {
     $conf->obfuscate_method_name           = true;
     array_splice($t_args, $pos, 1);
 }
 
 $pos = array_search('--no-obfuscate-namespace-name', $t_args);
-if (isset($pos) && ($pos !== false)) {
+if ($pos !== false) {
     $conf->obfuscate_namespace_name        = false;
     array_splice($t_args, $pos, 1);
 }
 $pos = array_search('--obfuscate-namespace-name', $t_args);
-if (isset($pos) && ($pos !== false)) {
+if ($pos !== false) {
     $conf->obfuscate_namespace_name        = true;
     array_splice($t_args, $pos, 1);
 }
 
 $pos = array_search('--no-obfuscate-label-name', $t_args);
-if (isset($pos) && ($pos !== false)) {
+if ($pos !== false) {
     $conf->obfuscate_label_name            = false;
     array_splice($t_args, $pos, 1);
 }
 $pos = array_search('--obfuscate-label-name', $t_args);
-if (isset($pos) && ($pos !== false)) {
+if ($pos !== false) {
     $conf->obfuscate_label_name            = true;
     array_splice($t_args, $pos, 1);
 }
@@ -364,13 +362,13 @@ if (isset($pos) && ($pos !== false)) {
 
 
 $pos = array_search('--scramble-mode', $t_args);
-if (isset($pos) && ($pos !== false) && isset($t_args[$pos + 1])) {
+if ($pos !== false && isset($t_args[$pos + 1])) {
     $conf->scramble_mode = $t_args[$pos + 1];
     array_splice($t_args, $pos, 2);           // remove the 2 args and reorder
 }
 
 $pos = array_search('--scramble-length', $t_args);
-if (isset($pos) && ($pos !== false) && isset($t_args[$pos + 1])) {
+if ($pos !== false && isset($t_args[$pos + 1])) {
     $conf->scramble_length = $t_args[$pos + 1] + 0;
     array_splice($t_args, $pos, 2);           // remove the 2 args and reorder
 }
@@ -442,18 +440,18 @@ if (!$conf->silent) {
 switch ($process_mode) {
     case 'file':
         if (!$conf->silent) {
-            fprintf(STDERR, "Info:\tsource_file\t\t= [%s]%s", $source_file, PHP_EOL);
+            fprintf(STDERR, "Info:\tsource_file\t\t= [%s]%s", $source_file ?? "", PHP_EOL);
         }
         if (!$conf->silent) {
-            fprintf(STDERR, "Info:\ttarget_file\t\t= [%s]%s", ($target_file !== '') ? $target_file : 'stdout', PHP_EOL);
+            fprintf(STDERR, "Info:\ttarget_file\t\t= [%s]%s", (!empty($target_file)) ? $target_file : 'stdout', PHP_EOL);
         }
         break;
     case 'directory':
         if (!$conf->silent) {
-            fprintf(STDERR, "Info:\tsource_directory\t= [%s]%s", $source_directory, PHP_EOL);
+            fprintf(STDERR, "Info:\tsource_directory\t= [%s]%s", $source_directory ?? "", PHP_EOL);
         }
         if (!$conf->silent) {
-            fprintf(STDERR, "Info:\ttarget_directory\t= [%s]%s", $target_directory, PHP_EOL);
+            fprintf(STDERR, "Info:\ttarget_directory\t= [%s]%s", $target_directory ?? "", PHP_EOL);
         }
         break;
 }
