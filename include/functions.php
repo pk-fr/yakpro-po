@@ -425,7 +425,11 @@ function shuffle_statements($stmts)
         $t_chunk            = array();
     }
 
-    $last_label             = new PhpParser\Node\Stmt\Label($label_name);
+    if (!isset($label_name)) {
+        return $stmts;  //should never occur
+    }
+
+    $last_label = new PhpParser\Node\Stmt\Label($label_name);
     shuffle($t);
     $stmts = array();
     $stmts[] = $first_goto;
