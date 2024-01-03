@@ -21,8 +21,15 @@ jobs:
       needs: setup
       name: PHP Code Sniffer
       steps:          
-        - name: "PHPCs"
+        - name: "Run PHP Code sniffer"
           run: vendor/bin/phpcs
+  PhpStan:
+      runs-on: self-hosted
+      needs: setup
+      name: PHP Stan
+      steps:          
+        - name: "Run PHPStan static analyser"
+          run: vendor/bin/phpstan
   Autotest:
       runs-on: self-hosted
       needs: setup
