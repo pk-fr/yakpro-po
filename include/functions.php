@@ -3,7 +3,7 @@
 // Author:  Pascal KISSIAN
 // Resume:  http://pascal.kissian.net
 //
-// Copyright (c) 2015-2020 Pascal KISSIAN
+// Copyright (c) 2015-2025 Pascal KISSIAN
 //
 // Published under the MIT License
 //          Consider it as a proof of concept!
@@ -61,7 +61,7 @@ function obfuscate($filename)                   // takes a file_path as input, r
             $last_use_stmt_pos = -1;
             foreach($stmts as $i => $stmt)                      // if a use statement exists, do not shuffle before the last use statement
             {                                                   //TODO: enhancement: keep all use statements at their position, and shuffle all sub-parts
-                if ( $stmt instanceof PhpParser\Node\Stmt\Use_ ) $last_use_stmt_pos = $i;
+                if ( $stmt instanceof PhpParser\Node\Stmt\Use_ || $stmt instanceof PhpParser\Node\Stmt\GroupUse ) $last_use_stmt_pos = $i;
             }
 
             if ($last_use_stmt_pos<0)   { $stmts_to_shuffle = $stmts;                                   $stmts = array();                                       }
@@ -225,7 +225,7 @@ function obfuscate_directory($source_dir,$target_dir,$keep_mode=false)   // self
 
         $new_keep_mode = $keep_mode;
 
-        $source_path = "$source_dir/$entry";    $source_stat = @lstat($source_path);
+        $source_path = "$source_dir/$entry";    $source_stat = @lstat($source_path); //echo "source [$source_path]\n";
         $target_path = "$target_dir/$entry";    $target_stat = @lstat($target_path);
         if ($source_stat===false)
         {
@@ -335,7 +335,6 @@ function shuffle_statements($stmts)
 {
     global $conf;
     global $t_scrambler;
-
     if (!$conf->shuffle_stmts)          return $stmts;
     
     $chunk_size = shuffle_get_chunk_size($stmts);
