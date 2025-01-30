@@ -27,7 +27,7 @@ $required_php_version   = $t_composer->{'require'}->{'php'};
 
 $operator = '';for($i=0;!ctype_digit($c=$required_php_version[$i]);++$i) $operator.=$c; $required_php_version = substr($required_php_version,$i);
 
-if (substr($php_parser_branch,0,2)!='4.')
+if ((int)substr($php_parser_branch,0,1) < 4)
 {
     fprintf(STDERR,"Error:\tWrong version of PHP-Parser detected!%sCurrently, only 4.x branch of PHP-Parser is supported!%s\tYou can try to use the following command:%s\t# %s%s",PHP_EOL,PHP_EOL,PHP_EOL,$php_parser_git_commandline,PHP_EOL);
     exit(22);
