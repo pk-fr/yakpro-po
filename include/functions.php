@@ -61,7 +61,7 @@ function obfuscate($filename)                   // takes a file_path as input, r
             $last_use_stmt_pos = -1;
             foreach($stmts as $i => $stmt)                      // if a use statement exists, do not shuffle before the last use statement
             {                                                   //TODO: enhancement: keep all use statements at their position, and shuffle all sub-parts
-                if ( $stmt instanceof PhpParser\Node\Stmt\Use_ || $stmt instanceof PhpParser\Node\Stmt\GroupUse ) $last_use_stmt_pos = $i;
+                if ( $stmt instanceof PhpParser\Node\Stmt\Use_ || $stmt instanceof PhpParser\Node\Stmt\GroupUse || $stmt instanceof PhpParser\Node\Stmt\Declare_ ) $last_use_stmt_pos = $i;
             }
 
             if ($last_use_stmt_pos<0)   { $stmts_to_shuffle = $stmts;                                   $stmts = array();                                       }
