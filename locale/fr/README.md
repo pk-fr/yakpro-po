@@ -6,8 +6,8 @@
 
 Gratuit, Open Source, Publié sous les termes de la licence MIT.  
 
-Ce programme utilise [PHP-Parser 4.x](https://github.com/nikic/PHP-Parser/tree/4.x/) pour analyser le php.
-[PHP-Parser 4.x](https://github.com/nikic/PHP-Parser/tree/4.x/) est une remarquable bibliothèque développée par [nikic](https://github.com/nikic).
+Ce programme utilise [PHP-Parser 5.x](https://github.com/nikic/PHP-Parser/tree/master/) pour analyser le php.  
+[PHP-Parser 5.x](https://github.com/nikic/PHP-Parser/tree/master/) est une remarquable bibliothèque développée par [nikic](https://github.com/nikic).
 
 Télécharger l'archive zip et décompressez la dans le sous-répertoire PHP-Parser .
 ou alors utilisez git clone.
@@ -20,6 +20,24 @@ ou alors utilisez git clone.
     Veuillez utiliser [yakpro-po 1.x](https://github.com/pk-fr/yakpro-po/tree/1.x) (non supporté) qui fonctionne avec la branche 1.x de PhpParser.   
 
 
+> [!WARNING]
+> yakpro-po 3.x utilise on PhpParser 5.x  
+> il fonctionne avec php >= 7.4, et obfusque le code pour php php 7.0 à php 8.x  
+>
+> Si vous utilisez php 7.0 ou supérieur pour obfusquer php 5.2 à 8.3,  
+> Veuillez utiliser [yakpro-po 2.x](https://github.com/pk-fr/yakpro-po/tree/2.x) (non supporté) qui fonctionne avec la branche 4.x de PhpParser.
+>
+> Si vous utilisez php 5.3 ou supérieur,  
+> Veuillez utiliser [yakpro-po 1.x](https://github.com/pk-fr/yakpro-po/tree/1.x) (non supporté) qui fonctionne avec la branche 1.x de PhpParser.
+
+
+> [!CAUTION]
+> Backward Compatibility Break dans yakpro-po.cnf :  
+> les valeurs possibles de $conf->parser_mode ont changé :  
+> Avant : 'PREFER_PHP7', 'PREFER_PHP5', 'ONLY_PHP7', 'ONLY_PHP5'  
+> Maintenant : 'HOST_VERSION', 'NEWEST_VERSION', or version number like '8.1'  
+> cf la documentation de PHP-Parser...
+
 
 
 Le fichier de configuration yakpro-po.cnf est auto-documenté et contient de
@@ -28,12 +46,14 @@ Un petit coup d'oeil vaut le détour.
 
 Démo : [yakpro-po demo](https://www.php-obfuscator.com/?demo).
 
-Pré-requis:  php 7.0 ou supérieur, [PHP-Parser 4.x](https://github.com/nikic/PHP-Parser/tree/4.x/).
+Pré-requis:  php 4.0 ou supérieur, [PHP-Parser 5.x](https://github.com/nikic/PHP-Parser/tree/master/).  
 
-Remarque : Cet outil à été conçu dans le but d'obfusquer des sources en php pur.  
-Il n'a pas été conçu pour être utilisé avec du html avec des bouts de code php à l'intérieur.  
-(utilisation à vos risques et périls)  
-Par contre, vous pouvez intégrer du html dans votre php en utilisant la syntaxe echo <<<END ... END;
+
+> [!NOTE]
+> Cet outil à été conçu dans le but d'obfusquer des sources en php pur.  
+> Il n'a pas été conçu pour être utilisé avec du html avec des bouts de code php à l'intérieur.  
+> (utilisation à vos risques et périls).  
+> Par contre, vous pouvez intégrer du html dans votre php en utilisant la syntaxe echo <<<END ... END;
 
 
 

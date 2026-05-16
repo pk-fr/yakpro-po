@@ -1,6 +1,6 @@
 [Cette page en Français](https://github.com/pk-fr/yakpro-po/blob/master/locale/fr/README.md)
 
-# YAK Pro - Php Obfuscator
+# YAK Pro - Php Obfuscator 3.x
 
 **YAK Pro** stands for **Y**et **A**nother **K**iller **Pro**duct.
 
@@ -16,7 +16,7 @@ or make a git clone ...
 > yakpro-po 3.x works on PhpParser 5.x  
 > it will run on php >= 7.4, obfuscating code for php 7.0 to php 8.x  
 >
-> If you are running php 7.0 or higher for parsing php 5.2 to 8.3,  
+> If you are running php 7.0 or higher for obfuscating php 5.2 to 8.3,  
 > Please use unsupported [yakpro-po 2.x](https://github.com/pk-fr/yakpro-po/tree/2.x) which works on 4.x branch of PhpParser.
 >
 > If you are running php 5.3 or higher,  
@@ -24,8 +24,8 @@ or make a git clone ...
 
 
 > [!CAUTION]
-> Backward Compatibility Break in yakpro-po.cnf :  
-> $conf->parser_mode possible values have changed :  
+> Backward Compatibility Break in yakpro-po.cnf:  
+> $conf->parser_mode possible values have changed:  
 > before: 'PREFER_PHP7', 'PREFER_PHP5', 'ONLY_PHP7', 'ONLY_PHP5'  
 > now   : 'HOST_VERSION', 'NEWEST_VERSION', or version number like '8.1'  
 > refer to PHP-Parser documentation for meaning...
@@ -36,11 +36,11 @@ Take a look at it!
 
 Demo : [yakpro-po demo](https://www.php-obfuscator.com/?demo).
 
-Prerequisites:  php 7.4 or higher, [PHP-Parser 5.x](https://github.com/nikic/PHP-Parser/tree/master/).
+Prerequisites:  php 7.4 or higher, [PHP-Parser 5.x](https://github.com/nikic/PHP-Parser/tree/master/).  
 
 > [!NOTE]
 > This tool has been written in order to obfuscate pure php sources.  
-> it is not intended to be used with html and embeded php inside  
+> it is not intended to be used with html and embeded php inside.  
 > (use at your own risks...you may try to deactivate statements shuffling...).  
 > You can still embed html within php using the echo <<<END ... END; syntax!
 
