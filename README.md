@@ -6,19 +6,29 @@
 
 Free, Open Source, Published under the MIT License.
 
-This tool parses php with the best existing php parser [PHP-Parser 4.x](https://github.com/nikic/PHP-Parser/tree/4.x/),
+This tool parses php with the best existing php parser [PHP-Parser 5.x](https://github.com/nikic/PHP-Parser/tree/master/),
 which is an awesome php parsing library written by [nikic](https://github.com/nikic).
 
 You just have to download the zip archive and uncompress it under the PHP-Parser subdirectory,
 or make a git clone ...
 
-### Warning:  
-    yakpro-po 2.x works on PhpParser 4.x   
-    it will run on php >= 7.0, obfuscating code for php 5.2 to php 7.3   
-    
-    If you are running php 5.3 or higher,  
-    Please use unsupported [yakpro-po 1.x](https://github.com/pk-fr/yakpro-po/tree/1.x) which works on 1.x branch of PhpParser.   
-    
+> [!WARNING]
+> yakpro-po 3.x works on PhpParser 5.x
+> it will run on php >= 7.4, obfuscating code for php 7.0 to php 8.x
+>
+> If you are running php 7.0 or higher for parsing php 5.2 to 8.3,
+> Please use unsupported [yakpro-po 2.x](https://github.com/pk-fr/yakpro-po/tree/2.x) which works on 4.x branch of PhpParser.
+>
+> If you are running php 5.3 or higher,
+> Please use unsupported [yakpro-po 1.x](https://github.com/pk-fr/yakpro-po/tree/1.x) which works on 1.x branch of PhpParser.
+
+
+> [!CAUTION]
+> Backward Compatibility Break in yakpro-po.cnf :
+> $conf->parser_mode possible values have changed :
+> before: 'PREFER_PHP7', 'PREFER_PHP5', 'ONLY_PHP7', 'ONLY_PHP5'
+> now   : 'HOST_VERSION', 'NEWEST_VERSION', or version number like '8.1'
+> refer to PHP-Parser documentation for meaning...
 
 
 The yakpro-po.cnf self-documented file contains many configuration options!
@@ -26,12 +36,13 @@ Take a look at it!
 
 Demo : [yakpro-po demo](https://www.php-obfuscator.com/?demo).
 
-Prerequisites:  php 7.0 or higher, [PHP-Parser 4.x](https://github.com/nikic/PHP-Parser/tree/4.x/).
+Prerequisites:  php 7.4 or higher, [PHP-Parser 5.x](https://github.com/nikic/PHP-Parser/tree/master/).
 
-Note: This tool has been written in order to obfuscate pure php sources.
-it is not intended to be used with html and embeded php inside 
-(use at your own risks...you may try to deactivate statements shuffling...).
-You can still embed html within php using the echo <<<END ... END; syntax!
+> [!NOTE]
+> This tool has been written in order to obfuscate pure php sources.
+> it is not intended to be used with html and embeded php inside
+> (use at your own risks...you may try to deactivate statements shuffling...).
+> You can still embed html within php using the echo <<<END ... END; syntax!
 
 ## What is Php Obfuscation?
 

@@ -1,9 +1,9 @@
 <?php
 //========================================================================
 // Author:  Pascal KISSIAN
-// Resume:  http://pascal.kissian.net
+// Resume:  https://pascal.kissian.net
 //
-// Copyright (c) 2015-2020 Pascal KISSIAN
+// Copyright (c) 2015-2026 Pascal KISSIAN
 //
 // Published under the MIT License
 //          Consider it as a proof of concept!
@@ -25,7 +25,7 @@ class myPrettyprinter extends PhpParser\PrettyPrinter\Standard
     }
 
 
-    public function pScalar_String(PhpParser\Node\Scalar\String_ $node)
+    public function pScalar_String(PhpParser\Node\Scalar\String_ $node) : string
     {
         $result = $this->obfuscate_string($node->value);            if (!strlen($result)) return "''";
         return  '"'.$this->obfuscate_string($node->value).'"';
@@ -33,31 +33,32 @@ class myPrettyprinter extends PhpParser\PrettyPrinter\Standard
 
 
     //TODO: pseudo-obfuscate HEREDOC string
-    protected function pScalar_Encapsed(PhpParser\Node\Scalar\Encapsed $node)
+   
+    
+    protected function pScalar_InterpolatedString(PhpParser\Node\Scalar\InterpolatedString $node): string 
     {
         /*
-        if ($node->getAttribute('kind') === PhpParser\Node\Scalar\String_::KIND_HEREDOC) 
-        {
+        if ($node->getAttribute('kind') === Scalar\String_::KIND_HEREDOC) {
             $label = $node->getAttribute('docLabel');
-            if ($label && !$this->encapsedContainsEndLabel($node->parts, $label)) 
-            {
+            if ($label && !$this->encapsedContainsEndLabel($node->parts, $label)) {
+                $nl = $this->phpVersion->supportsFlexibleHeredoc() ? $this->nl : $this->newline;
                 if (count($node->parts) === 1
-                    && $node->parts[0] instanceof PhpParser\Node\Scalar\EncapsedStringPart
+                    && $node->parts[0] instanceof Node\InterpolatedStringPart
                     && $node->parts[0]->value === ''
-                )
-                {
-                    return "<<<$label\n$label" . $this->docStringEndToken;
+                ) {
+                    return "<<<$label$nl$label{$this->docStringEndToken}";
                 }
 
-                return "<<<$label\n" . $this->pEncapsList($node->parts, null) . "\n$label"
-                     . $this->docStringEndToken;
+                return "<<<$label$nl" . $this->pEncapsList($node->parts, null)
+                     . "$nl$label{$this->docStringEndToken}";
             }
         }
+        return '"' . $this->pEncapsList($node->parts, '"') . '"';
         */
         $result = '';
         foreach ($node->parts as $element)
         {
-            if ($element instanceof PhpParser\Node\Scalar\EncapsedStringPart)
+            if ($element instanceof PhpParser\Node\InterpolatedStringPart)
             {
                 $result .=  $this->obfuscate_string($element->value);
             }

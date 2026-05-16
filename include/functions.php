@@ -1,9 +1,9 @@
 <?php
 //========================================================================
 // Author:  Pascal KISSIAN
-// Resume:  http://pascal.kissian.net
+// Resume:  https://pascal.kissian.net
 //
-// Copyright (c) 2015-2025 Pascal KISSIAN
+// Copyright (c) 2015-2026 Pascal KISSIAN
 //
 // Published under the MIT License
 //          Consider it as a proof of concept!
@@ -256,7 +256,7 @@ function obfuscate_directory($source_dir,$target_dir,$keep_mode=false)   // self
                 }
             }
             @symlink(readlink($source_path), $target_path);     // Do not warn on non existing symbolinc link target!
-            if (strtolower(PHP_OS)=='linux')    $x = `touch '$target_path' --no-dereference --reference='$source_path' `;
+            if (strtolower(PHP_OS)=='linux')    $x = shell_exec("touch '$target_path' --no-dereference --reference='$source_path'");
             continue;
         }
         if (is_dir($source_path))

@@ -1,9 +1,9 @@
 <?php
 //========================================================================
 // Author:  Pascal KISSIAN
-// Resume:  http://pascal.kissian.net
+// Resume:  https://pascal.kissian.net
 //
-// Copyright (c) 2015-2022 Pascal KISSIAN
+// Copyright (c) 2015-2026 Pascal KISSIAN
 //
 // Published under the MIT License
 //          Consider it as a proof of concept!
@@ -49,7 +49,8 @@ class Config
     public $t_ignore_namespaces_prefix      = null;         // array where values are prefix of names to ignore.
     public $t_ignore_labels_prefix          = null;         // array where values are prefix of names to ignore.
 
-    public $parser_mode                     = 'PREFER_PHP5';// allowed modes are 'PREFER_PHP7', 'PREFER_PHP5', 'ONLY_PHP7', 'ONLY_PHP5'
+    // !!! BC BREAK !!! from previous version !
+    public $parser_mode                     = 'HOST_VERSION';// allowed modes are 'HOST_VERSION', 'NEWEST_VERSION', or version number like '8.1'
                                                             // see PHP-Parser documentation for meaning...
 
     public $scramble_mode                   = 'identifier'; // allowed modes are identifier, hexa, numeric

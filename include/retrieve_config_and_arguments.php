@@ -1,9 +1,9 @@
 <?php
 //========================================================================
 // Author:  Pascal KISSIAN
-// Resume:  http://pascal.kissian.net
+// Resume:  https://pascal.kissian.net
 //
-// Copyright (c) 2015-2020 Pascal KISSIAN
+// Copyright (c) 2015-2026 Pascal KISSIAN
 //
 // Published under the MIT License
 //          Consider it as a proof of concept!
@@ -45,7 +45,7 @@ if ( isset($pos) && ($pos!==false) && isset($t_args[$pos+1]) )
 $pos = array_search('-o',$t_args); if (!isset($pos) || ($pos===false)) $pos = array_search('--output-file',$t_args);
 if ( isset($pos) && ($pos!==false) && isset($t_args[$pos+1]) )
 {
-    $target = $t_args[$pos+1];
+    $target = escapeshellcmd($t_args[$pos+1]);
     array_splice($t_args,$pos,2);           // remove the 2 args and reorder
 } else $target = '';
 
@@ -211,7 +211,7 @@ switch(count($t_args))
         fprintf(STDERR,"Error:\tsource_directory and target_directory not specified!%s\tneither within command line parameter,%s\tnor in config file!%s",PHP_EOL,PHP_EOL,PHP_EOL);
         exit(12);
     case 1:
-        $source_file = realpath($t_args[0]);
+        $source_file = realpath(escapeshellcmd($t_args[0]));
         if (($source_file!==false) && file_exists($source_file))
         {
             if (is_file($source_file) && is_readable($source_file))

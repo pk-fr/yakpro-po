@@ -2,9 +2,9 @@
 <?php
 //========================================================================
 // Author:  Pascal KISSIAN
-// Resume:  http://pascal.kissian.net
+// Resume:  https://pascal.kissian.net
 //
-// Copyright (c) 2015-2020 Pascal KISSIAN
+// Copyright (c) 2015-2026 Pascal KISSIAN
 //
 // Published under the MIT License
 //          Consider it as a proof of concept!
@@ -48,15 +48,10 @@ use PhpParser\PrettyPrinter;
 
 switch($conf->parser_mode)
 {
-    case 'PREFER_PHP7': $parser_mode = ParserFactory::PREFER_PHP7;  break;
-    case 'PREFER_PHP5': $parser_mode = ParserFactory::PREFER_PHP5;  break;
-    case 'ONLY_PHP7':   $parser_mode = ParserFactory::ONLY_PHP7;    break;
-    case 'ONLY_PHP5':   $parser_mode = ParserFactory::ONLY_PHP5;    break;
-    default:            $parser_mode = ParserFactory::PREFER_PHP5;  break;
+    case 'HOST_VERSION':    $parser = (new ParserFactory)->createForHostVersion();                  break;
+    case 'NEWEST_VERSION':  $parser = (new ParserFactory)->createForNewestSupportedVersion();       break;
+    default:                $parser = (new ParserFactory)->createForVersion($conf->parser_mode);    break;
 }
-
-$parser = (new ParserFactory)->create($parser_mode);
-
 
 $traverser          = new NodeTraverser;
 
@@ -64,7 +59,6 @@ if ($conf->obfuscate_string_literal)    $prettyPrinter      = new myPrettyprinte
 else                                    $prettyPrinter      = new PrettyPrinter\Standard;
 
 $t_scrambler = array();
-//foreach(array('variable','function','method','property','class','class_constant','constant','label') as $scramble_what)
 foreach(array('variable','function_or_class','method','property','class_constant','constant','label') as $scramble_what)
 {
     $t_scrambler[$scramble_what] = new Scrambler($scramble_what, $conf, ($process_mode=='directory') ? $target_directory : null);
@@ -72,7 +66,6 @@ foreach(array('variable','function_or_class','method','property','class_constant
 if ($whatis!=='')
 {
     if ($whatis[0] == '$') $whatis = substr($whatis,1);
-//    foreach(array('variable','function','method','property','class','class_constant','constant','label') as $scramble_what)
     foreach(array('variable','function_or_class','method','property','class_constant','constant','label') as $scramble_what)
     {
         if ( ( $s = $t_scrambler[$scramble_what]-> unscramble($whatis)) !== '')

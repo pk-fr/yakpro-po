@@ -48,7 +48,8 @@ $conf->t_ignore_traits_prefix           = null;         // array where values ar
 $conf->t_ignore_namespaces_prefix       = null;         // array where values are prefix of names to ignore.
 $conf->t_ignore_labels_prefix           = null;         // array where values are prefix of names to ignore.
 
-$conf->parser_mode                      = 'PREFER_PHP5';// allowed modes are 'PREFER_PHP7', 'PREFER_PHP5', 'ONLY_PHP7', 'ONLY_PHP5'
+// !!! BC BREAK !!!
+$conf->parser_mode                      = 'HOST_VERSION';// allowed modes are 'HOST_VERSION', 'NEWEST_VERSION', or version number like '8.1'
                                                         // see PHP-Parser documentation for meaning...
 
 $conf->scramble_mode                    = 'identifier'; // allowed modes are 'identifier', 'hexa', 'numeric'

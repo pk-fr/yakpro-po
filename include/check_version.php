@@ -1,9 +1,9 @@
 <?php
 //========================================================================
 // Author:  Pascal KISSIAN
-// Resume:  http://pascal.kissian.net
+// Resume:  https://pascal.kissian.net
 //
-// Copyright (c) 2015-2025 Pascal KISSIAN
+// Copyright (c) 2015-2026 Pascal KISSIAN
 //
 // Published under the MIT License
 //          Consider it as a proof of concept!
@@ -12,8 +12,8 @@
 //========================================================================
 
 $yakpro_po_base_directory   = dirname(realpath($argv[0]));
-$php_parser_git_commandline = 'git clone --branch=4.x https://github.com/nikic/PHP-Parser.git';
-//$php_parser_git_commandline = 'git clone https://github.com/nikic/PHP-Parser.git';
+//$php_parser_git_commandline = 'git clone --branch=4.x https://github.com/nikic/PHP-Parser.git';
+$php_parser_git_commandline = 'git clone https://github.com/nikic/PHP-Parser.git';
 
 if(!file_exists("$yakpro_po_base_directory/PHP-Parser/composer.json"))
 {
@@ -44,7 +44,7 @@ if (!isset($php_parser_version))    // removed on August 13, 2025 ... so get ver
             fprintf(STDERR,"Error: cannot open [%s] file!%s",$changelog_filename,PHP_EOL);
             exit(23);
         }
-        while($str=fgets($fp))
+        while( ($str=fgets($fp)) !==false )
         {
             $t_str = explode(" ",$str);
             if (strtolower($t_str[0]) != 'version') continue;
@@ -65,9 +65,9 @@ if (!isset($php_parser_version))    // removed on August 13, 2025 ... so get ver
 }
 
 
-if (substr($php_parser_version,0,2)!='4.')
+if (substr($php_parser_version,0,2)!='5.')
 {
-    fprintf(STDERR,"Error:\tWrong version of PHP-Parser detected!%sCurrently, only 4.x branch of PHP-Parser is supported!%s\tYou can try to use the following command:%s\t# %s%s",PHP_EOL,PHP_EOL,PHP_EOL,$php_parser_git_commandline,PHP_EOL);
+    fprintf(STDERR,"Error:\tWrong version of PHP-Parser detected!%sCurrently, only 5.x branch of PHP-Parser is supported!%s\tYou can try to use the following command:%s\t# %s%s",PHP_EOL,PHP_EOL,PHP_EOL,$php_parser_git_commandline,PHP_EOL);
     exit(26);
 }
 
