@@ -12,13 +12,6 @@ Ce programme utilise [PHP-Parser 5.x](https://github.com/nikic/PHP-Parser/tree/m
 Télécharger l'archive zip et décompressez la dans le sous-répertoire PHP-Parser .
 ou alors utilisez git clone.
 
-### Attention :  
-    yakpro-po 2.x utilise PhpParser 4.x   
-    il fonctionne avec php >= 7.0, et obfusque le code pour php 5.2 à php 8.1
-    
-    Si vous utilisez php 5.3 ou supérieur,  
-    Veuillez utiliser [yakpro-po 1.x](https://github.com/pk-fr/yakpro-po/tree/1.x) (non supporté) qui fonctionne avec la branche 1.x de PhpParser.   
-
 
 > [!WARNING]
 > yakpro-po 3.x utilise on PhpParser 5.x  
