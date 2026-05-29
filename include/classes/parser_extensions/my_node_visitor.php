@@ -69,6 +69,10 @@ class MyNodeVisitor extends PhpParser\NodeVisitorAbstract       // all parsing a
 
     private function scramble_name(&$scrambler, &$node)         // only last part
     {
+        if ($node instanceof PhpParser\Node\NullableType && isset($node->type))
+        {
+            return $this->scramble_name($scrambler, $node->type);
+        }
         if ($node instanceof PhpParser\Node\Name || $node->name instanceof PhpParser\Node\Name)
         {
             if ($node       instanceof PhpParser\Node\Name) $tmp_node = $node;
@@ -91,6 +95,10 @@ class MyNodeVisitor extends PhpParser\NodeVisitorAbstract       // all parsing a
     }
     private function scramble_names(&$scrambler, &$node)        // all except last part
     {
+        if ($node instanceof PhpParser\Node\NullableType && isset($node->type))
+        {
+            return $this->scramble_names($scrambler, $node->type);
+        }
         if ($node instanceof PhpParser\Node\Name || $node->name instanceof PhpParser\Node\Name)
         {
             if ($node       instanceof PhpParser\Node\Name) $tmp_node = $node;
@@ -121,6 +129,10 @@ class MyNodeVisitor extends PhpParser\NodeVisitorAbstract       // all parsing a
     }
     private function scramble_all_names(&$scrambler, &$node)    // all pparts
     {
+        if ($node instanceof PhpParser\Node\NullableType && isset($node->type))
+        {
+            return $this->scramble_all_names($scrambler, $node->type);
+        }
         if ($node instanceof PhpParser\Node\Name || $node->name instanceof PhpParser\Node\Name)
         {
             if ($node       instanceof PhpParser\Node\Name) $tmp_node = $node;
