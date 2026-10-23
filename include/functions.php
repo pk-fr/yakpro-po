@@ -20,11 +20,11 @@ function obfuscate($filename)                   // takes a file_path as input, r
     $src_filename = $filename;
     $tmp_filename = $first_line = '';
     $t_source = file($filename);
-    if (substr($t_source[0],0,2)=='#!')
+    if (isset($t_source[0]) && (substr($t_source[0],0,2)=='#!') )
     {
         $first_line = array_shift($t_source);
         $tmp_filename = tempnam(sys_get_temp_dir(), 'po-');
-        file_put_contents($tmp_filename,implode(PHP_EOL,$t_source));
+        file_put_contents($tmp_filename,implode('',$t_source));        // file() keeps line endings
         $filename = $tmp_filename; // override 
     }
     
@@ -55,7 +55,9 @@ function obfuscate($filename)                   // takes a file_path as input, r
         if ($debug_mode) var_dump($stmts);
 
         $stmts  = $traverser->traverse($stmts);                 //  Use PHP-Parser function to traverse the syntax tree and obfuscate names
-        if ($conf->shuffle_stmts && (count($stmts)>2) )
+        $has_namespace = false;                                 // statements cannot be shuffled outside of multiple namespace declarations
+        foreach($stmts as $stmt) if ($stmt instanceof PhpParser\Node\Stmt\Namespace_) $has_namespace = true;
+        if ($conf->shuffle_stmts && (count($stmts)>2) && !$has_namespace)
         {
             $last_inst  = array_pop($stmts);
             $last_use_stmt_pos = -1;
@@ -99,18 +101,18 @@ function obfuscate($filename)                   // takes a file_path as input, r
         }
         $code .= $endcode;
         
-        if (($tmp_filename!='') && ($first_line!=''))
-        {
-            $code = $first_line.$code;
-            unlink($tmp_filename);
-        }
+        if ($first_line!='') $code = $first_line.$code;
         
         return trim($code);
     }
     catch (Exception $e)
     {
-        fprintf(STDERR,"Obfuscator Parse Error [%s]:%s\t%s%s", $filename,PHP_EOL, $e->getMessage(),PHP_EOL);
+        fprintf(STDERR,"Obfuscator Parse Error [%s]:%s\t%s%s", $src_filename,PHP_EOL, $e->getMessage(),PHP_EOL);
         return null;
+    }
+    finally
+    {
+        if ($tmp_filename!='') unlink($tmp_filename);
     }
 }
 
@@ -239,6 +241,7 @@ function obfuscate_directory($source_dir,$target_dir,$keep_mode=false)   // self
         }
 
         if (isset($conf->t_skip) && is_array($conf->t_skip) && in_array($source_path,$conf->t_skip))    continue;
+        if (file_exists("$source_path/.yakpro-po-directory"))                                             continue;  // target directory inside source directory
 
         if (!$conf->follow_symlinks && is_link($source_path))
         {
@@ -256,7 +259,7 @@ function obfuscate_directory($source_dir,$target_dir,$keep_mode=false)   // self
                 }
             }
             @symlink(readlink($source_path), $target_path);     // Do not warn on non existing symbolinc link target!
-            if (strtolower(PHP_OS)=='linux')    $x = shell_exec("touch '$target_path' --no-dereference --reference='$source_path'");
+            if (strtolower(PHP_OS)=='linux')    $x = shell_exec('touch --no-dereference --reference='.escapeshellarg($source_path).' '.escapeshellarg($target_path));
             continue;
         }
         if (is_dir($source_path))
@@ -297,7 +300,7 @@ function obfuscate_directory($source_dir,$target_dir,$keep_mode=false)   // self
                 $obfuscated_str =  obfuscate($source_path);
                 if ($obfuscated_str===null)
                 {
-                    if (isset($conf->abort_on_error))
+                    if ($conf->abort_on_error)
                     {
                         fprintf(STDERR, "Aborting...%s",PHP_EOL);
                         exit(57);

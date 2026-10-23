@@ -56,7 +56,11 @@ class Scrambler
                                                 'int', 'float', 'bool', 'string', 'true', 'false', 'null', 'void', 'iterable', 'object',  'resource', 'scalar', 'mixed', 'numeric','fn'
                                                );
 
-    private $t_reserved_method_names    = array('__construct', '__destruct', '__call', '__callstatic', '__get', '__set', '__isset', '__unset', '__sleep', '__wakeup', '__tostring', '__invoke', '__set_state', '__clone','__debuginfo' );
+    private $t_reserved_method_names    = array('__construct', '__destruct', '__call', '__callstatic', '__get', '__set', '__isset', '__unset', '__sleep', '__wakeup', '__tostring', '__invoke', '__set_state', '__clone','__debuginfo', '__serialize', '__unserialize',
+                                                'cases', 'from', 'tryfrom'                      // enum methods
+                                               );
+
+    private $t_reserved_property_names  = array('name', 'value');                      // enum properties
 
 
     function __construct($type,$conf,$target_directory)
@@ -179,6 +183,7 @@ class Scrambler
            case 'property':
                 $this->case_sensitive       = true;
                 $this->t_ignore             = array_flip($this->t_reserved_variable_names);
+                $this->t_ignore             = array_merge($this->t_ignore, array_flip($this->t_reserved_property_names));
                 if ($conf->t_ignore_pre_defined_classes!='none')
                 {
                     if ($conf->t_ignore_pre_defined_classes=='all') $this->t_ignore = array_merge($this->t_ignore,$t_pre_defined_class_properties);
@@ -252,22 +257,22 @@ class Scrambler
                 if (isset($conf->t_ignore_classes_prefix))
                 {
                     $t                      = $conf->t_ignore_classes_prefix;           $t = array_map('strtolower',$t);                $t = array_flip($t);
-                    $this->t_ignore_prefix  = array_merge($this->t_ignore_prefix,$t);
+                    $this->t_ignore_prefix  = array_merge($this->t_ignore_prefix ?? array(),$t);
                 }
                 if (isset($conf->t_ignore_interfaces_prefix))
                 {
                     $t                      = $conf->t_ignore_interfaces_prefix;        $t = array_map('strtolower',$t);                $t = array_flip($t);
-                    $this->t_ignore_prefix  = array_merge($this->t_ignore_prefix,$t);
+                    $this->t_ignore_prefix  = array_merge($this->t_ignore_prefix ?? array(),$t);
                 }
                 if (isset($conf->t_ignore_traits_prefix))
                 {
                     $t                      = $conf->t_ignore_traits_prefix;            $t = array_map('strtolower',$t);                $t = array_flip($t);
-                    $this->t_ignore_prefix  = array_merge($this->t_ignore_prefix,$t);
+                    $this->t_ignore_prefix  = array_merge($this->t_ignore_prefix ?? array(),$t);
                 }
                 if (isset($conf->t_ignore_namespaces_prefix))
                 {
                     $t                      = $conf->t_ignore_namespaces_prefix;        $t = array_map('strtolower',$t);                 $t = array_flip($t);
-                    $this->t_ignore_prefix  = array_merge($this->t_ignore_prefix,$t);
+                    $this->t_ignore_prefix  = array_merge($this->t_ignore_prefix ?? array(),$t);
                 }
                 break;
             case 'method':
@@ -320,7 +325,7 @@ class Scrambler
             $this->context_directory = $target_directory;
             if (file_exists("{$this->context_directory}/yakpro-po/context/{$this->scramble_type}"))
             {
-                $t = unserialize(file_get_contents("{$this->context_directory}/yakpro-po/context/{$this->scramble_type}"));
+                $t = unserialize(file_get_contents("{$this->context_directory}/yakpro-po/context/{$this->scramble_type}"), array('allowed_classes' => false));
                 if ($t[0] !== self::SCRAMBLER_CONTEXT_VERSION)
                 {
                     fprintf(STDERR,"Error:\tContext format has changed! run with --clean option!".PHP_EOL);
@@ -379,15 +384,22 @@ class Scrambler
         return $s;
     }
 
-    public function scramble($s)
+    public function is_ignored($s)
     {
         $r = $this->case_sensitive ? $s : strtolower($s);
-        if ( array_key_exists($r,$this->t_ignore) ) return $s;
+        if ( array_key_exists($r,$this->t_ignore) ) return true;
 
         if (isset($this->t_ignore_prefix))
         {
-            foreach($this->t_ignore_prefix as $key => $dummy) if (substr($r,0,strlen($key))===$key) return $s;
+            foreach($this->t_ignore_prefix as $key => $dummy) if (substr($r,0,strlen($key))===$key) return true;
         }
+        return false;
+    }
+
+    public function scramble($s)
+    {
+        if ($this->is_ignored($s)) return $s;
+        $r = $this->case_sensitive ? $s : strtolower($s);
 
         if (!isset($this->t_scramble[$r]))      // if not already scrambled:
         {

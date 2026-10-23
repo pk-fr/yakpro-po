@@ -1,10 +1,15 @@
 #-----------------------
 # directories
 #-----------------------
-PHP-Parser/*
+PHP-Parser/
 tests/*
 old/*
 #-----------------------
 # files
 #-----------------------
 run_tests.php
+
+#-----------------------
+# regression tests are versioned
+#-----------------------
+!tests/regression/

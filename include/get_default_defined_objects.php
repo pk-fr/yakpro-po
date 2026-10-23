@@ -22,16 +22,14 @@ $t_pre_defined_class_constants  = array();  $t_pre_defined_class_constants_by_cl
 
 foreach($t_pre_defined_classes as $pre_defined_class_name => $dummy)
 {
-    $t = array_flip(array_map('strtolower', get_class_methods($pre_defined_class_name)));
+    $r = new ReflectionClass($pre_defined_class_name);                 // reflection: get_class_methods() and get_class_vars() only return public members
+    $t = array();   foreach($r->getMethods() as $m)     $t[strtolower($m->name)] = 1;
     if (count($t)) $t_pre_defined_class_methods_by_class[$pre_defined_class_name] = $t;
     $t_pre_defined_class_methods = array_merge($t_pre_defined_class_methods, $t);
     
-    $t = get_class_vars($pre_defined_class_name);
+    $t = array();   foreach($r->getProperties() as $p)  $t[$p->name] = 1;
     if (count($t)) $t_pre_defined_class_properties_by_class[$pre_defined_class_name] = $t;
     $t_pre_defined_class_properties = array_merge($t_pre_defined_class_properties, $t);
-
-    
-    $r = new ReflectionClass($pre_defined_class_name);
     $t = $r->getConstants();
     if (count($t)) $t_pre_defined_class_constants_by_class[$pre_defined_class_name] = $t;
     $t_pre_defined_class_constants = array_merge($t_pre_defined_class_constants, $t);

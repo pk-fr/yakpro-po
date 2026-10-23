@@ -1,0 +1,42 @@
+name: tests
+
+on: [push, pull_request]
+
+env:
+  PHP_PARSER_VERSION: v5.9.0      # tested PHP-Parser release (see README)
+
+jobs:
+  tests:
+    name: PHP ${{ matrix.php }} (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    continue-on-error: ${{ matrix.experimental }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest]
+        php: ['7.4', '8.0', '8.1', '8.2', '8.3', '8.4', '8.5']
+        experimental: [false]
+        include:
+          - { os: windows-latest, php: '8.3', experimental: false }
+          - { os: ubuntu-latest,  php: 'nightly', experimental: true }    # unreleased PHP: informative only, not a support claim
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          coverage: none
+
+      - name: Install PHP-Parser
+        run: git clone --quiet --depth 1 --branch ${{ env.PHP_PARSER_VERSION }} https://github.com/nikic/PHP-Parser.git PHP-Parser
+
+      - name: Lint yakpro-po sources
+        shell: bash
+        run: for f in yakpro-po.php version.php include/*.php include/classes/*.php include/classes/parser_extensions/*.php tests/regression/run.php; do php -l "$f" || exit 1; done
+
+      - name: Smoke test
+        shell: bash
+        run: php yakpro-po.php --silent --config-file yakpro-po.cnf tests/regression/cases/do_while_continue.php -o smoke.php && php smoke.php
+
+      - name: Differential regression tests
+        run: php tests/regression/run.php

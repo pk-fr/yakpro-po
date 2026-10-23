@@ -1,0 +1,3 @@
+<?php
+// YAK Pro - Php Obfuscator: Config File
+$conf->parser_mode = '8.1';

@@ -28,7 +28,7 @@ class myPrettyprinter extends PhpParser\PrettyPrinter\Standard
     public function pScalar_String(PhpParser\Node\Scalar\String_ $node) : string
     {
         $result = $this->obfuscate_string($node->value);            if (!strlen($result)) return "''";
-        return  '"'.$this->obfuscate_string($node->value).'"';
+        return  '"'.$result.'"';
     }
 
 

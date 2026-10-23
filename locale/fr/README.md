@@ -39,7 +39,7 @@ Un petit coup d'oeil vaut le détour.
 
 Démo : [yakpro-po demo](https://www.php-obfuscator.com/?demo).
 
-Pré-requis:  php 4.0 ou supérieur, [PHP-Parser 5.x](https://github.com/nikic/PHP-Parser/tree/master/).  
+Pré-requis:  php 7.4 ou supérieur, [PHP-Parser 5.x](https://github.com/nikic/PHP-Parser/tree/master/).  
 
 
 > [!NOTE]
@@ -113,7 +113,7 @@ La version 1.0 a été écrite en quelques jours...
     4. Placez-vous dans le répertoire de yakpro-po : 
        # cd yakpro-po 
     5. Puis récupérez à partir de GitHub : 
-       # git clone https://github.com/nikic/PHP-Parser.git --branch 4.x
+       # git clone https://github.com/nikic/PHP-Parser.git --branch v5.9.0
     6. Verifiez que yakpro-po.php possède bien les droits d'exécution, sinon :
                                                     # chmod a+x yakpro-po.php 
     7. Créer un lien symbolique dans /usr/local/bin 

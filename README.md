@@ -100,7 +100,8 @@ Version 1.0 has been written within a few days...
     4. Go to the yakpro-po directory: 
        # cd yakpro-po 
     5. Then retrieve from GitHub: 
-       # git clone https://github.com/nikic/PHP-Parser.git --branch 4.x
+       # git clone https://github.com/nikic/PHP-Parser.git --branch v5.9.0
+       (any 5.x release should work; v5.9.0 is the version the regression tests were run with)
     6. Check that yakpro-po.php has execute rights, otherwise:
                                             # chmod a+x yakpro-po.php 
     7. Create a symbolic link in the /usr/local/bin directory
@@ -296,6 +297,39 @@ Recursivly removes target_directory/yakpro-po
     There is no problem with the const MY_CONST = something; form!
 
 
+    Names used as data are scrambled too, so their runtime value changes:
+        get_class($obj), Foo::class, static::class        return scrambled class names
+        Suit::Hearts->name                                 returns the scrambled enum case name
+        json_encode($obj), (array)$obj, get_object_vars(),
+        var_export(), serialize()                          expose scrambled property names
+    Put such names in the corresponding $conf->t_ignore_* array.
+
+
+    Names built at runtime or written in strings are not scrambled:
+        compact('var'), extract($array), ${'var'}          variables
+        'my_function', [$obj, 'method'], 'Foo::method'     callables
+        constant('X'), Foo::{$name} (php 8.3)              constants
+        clone($obj, ['prop' => 1]) (php 8.5)               property names in array keys
+        f(...['param' => 1])                               named arguments from array keys
+
+
+    Named arguments are scrambled like the parameter names they match, except for calls to
+    php internal functions and classes. For method calls, the callee is not known statically:
+    if the method name also exists in a pre-defined class (e.g. format, get, count...),
+    named arguments are left as is. Add the corresponding parameter names to
+    $conf->t_ignore_variables if such a user method is called with named arguments.
+
+
+    Class name obfuscation is not compatible with PSR-4 autoloading (file names are not
+    scrambled). Load your classes with require/include, or generate a classmap autoloader
+    on the obfuscated tree (composer dump-autoload --classmap-authoritative), or disable
+    class, interface, trait and namespace name obfuscation.
+
+
+    Pre-defined (php internal) classes, functions and constants are detected on the php that
+    runs yakpro-po: run it with the same extensions loaded as your target environment.
+
+
 ## Performance considerations
 
     Except for the statements shuffling obfuscation option,
@@ -314,6 +348,39 @@ Recursivly removes target_directory/yakpro-po
     You can tune it as you wish!
 
 
+
+## PHP 8 compatibility
+
+    There are three distinct levels of compatibility:
+      A. running yakpro-po itself                   (php >= 7.4, required by PHP-Parser 5.x)
+      B. parsing the source code                    (PHP-Parser 5.x, according to $conf->parser_mode)
+      C. obfuscated code running like the original  (checked by the differential regression tests)
+
+    Tested with PHP-Parser v5.9.0, on Windows:
+      php 8.2.12, 8.3.12, 8.5.12    A, B, C: all regression tests pass
+      php 7.4, 8.0, 8.1, 8.4        not tested locally (covered by the GitHub Actions matrix)
+      later php versions            not tested
+
+    Language features covered by the regression tests (tests/regression/cases):
+      union, intersection and DNF types, nullable types, typed properties and class constants,
+      constructor property promotion (incl. readonly), enums (pure and backed), attributes,
+      named arguments, nullsafe operator, match, first-class callables, arrow functions,
+      closures, generators, fibers, readonly classes, anonymous classes, traits (incl. insteadof/as),
+      namespaces and group use, heredoc/nowdoc, property hooks and asymmetric visibility (8.4),
+      pipe operator and final promoted properties (8.5).
+
+## Running the regression tests
+
+    # php tests/regression/run.php [filter] [--runs=N]
+
+    Each tests/regression/cases/*.php file (and each tests/regression/projects/*/main.php
+    project, obfuscated in directory mode) is run as is and after obfuscation, in separate
+    processes, using the same php binary as the runner. Exit codes and outputs must be identical.
+    Statements shuffling is random, so each case is obfuscated N times (default: 3).
+    A case may contain these directives:
+        // min-php: 8.4                                 skip the case on older php versions
+        // yakpro-args: --no-shuffle-statements          extra yakpro-po arguments
+        // yakpro-args: --config-file conf/x.cnf         use a config file of tests/regression
 
 ## Known Issues
 

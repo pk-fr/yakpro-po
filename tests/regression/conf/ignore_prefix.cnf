@@ -1,0 +1,3 @@
+<?php
+// YAK Pro - Php Obfuscator: Config File
+$conf->t_ignore_classes_prefix = array('Keep');
