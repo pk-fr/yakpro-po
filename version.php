@@ -11,6 +11,6 @@
 //          Use and abuse at your own risks.
 //========================================================================
 
-$yakpro_po_version = "3.0.0";
+$yakpro_po_version = "3.0.1";
 
 ?>
