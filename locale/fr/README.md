@@ -28,7 +28,7 @@ ou alors utilisez git clone.
 > Backward Compatibility Break dans yakpro-po.cnf :  
 > les valeurs possibles de $conf->parser_mode ont changé :  
 > Avant : 'PREFER_PHP7', 'PREFER_PHP5', 'ONLY_PHP7', 'ONLY_PHP5'  
-> Maintenant : 'HOST_VERSION', 'NEWEST_VERSION', or version number like '8.1'  
+> Maintenant : 'HOST_VERSION', 'NEWEST_VERSION', ou un numéro de version du type '8.1'  
 > cf la documentation de PHP-Parser...
 
 
@@ -39,7 +39,7 @@ Un petit coup d'oeil vaut le détour.
 
 Démo : [yakpro-po demo](https://www.php-obfuscator.com/?demo).
 
-Pré-requis:  php 4.0 ou supérieur, [PHP-Parser 5.x](https://github.com/nikic/PHP-Parser/tree/master/).  
+Pré-requis:  php 7.4 ou supérieur, [PHP-Parser 5.x](https://github.com/nikic/PHP-Parser/tree/master/).  
 
 
 > [!NOTE]

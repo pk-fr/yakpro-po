@@ -48,9 +48,9 @@ use PhpParser\PrettyPrinter;
 
 switch($conf->parser_mode)
 {
-    case 'HOST_VERSION':    $parser = (new ParserFactory)->createForHostVersion();                  break;
-    case 'NEWEST_VERSION':  $parser = (new ParserFactory)->createForNewestSupportedVersion();       break;
-    default:                $parser = (new ParserFactory)->createForVersion($conf->parser_mode);    break;
+    case 'HOST_VERSION':    $parser = (new ParserFactory)->createForHostVersion();                                          break;
+    case 'NEWEST_VERSION':  $parser = (new ParserFactory)->createForNewestSupportedVersion();                               break;
+    default:                $parser = (new ParserFactory)->createForVersion(PhpVersion::fromString($conf->parser_mode));    break;
 }
 
 $traverser          = new NodeTraverser;
