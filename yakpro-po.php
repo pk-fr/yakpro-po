@@ -45,6 +45,7 @@ use PhpParser\Error;
 use PhpParser\ParserFactory;
 use PhpParser\NodeTraverser;
 use PhpParser\PrettyPrinter;
+use PhpParser\PhpVersion;
 
 switch($conf->parser_mode)
 {
